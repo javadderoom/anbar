@@ -1,0 +1,160 @@
+// Prisma Schema for Anbar (Inventory, Client Magic Links, Invoices)
+// Follows Prisma 7 standards: NO url property inside datasource db
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum OrderStatus {
+  PENDING
+  REVIEWED
+  CONVERTED
+  REJECTED
+}
+
+enum InvoiceType {
+  PROFORMA
+  SALES
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  role         Role     @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String?
+  company   String?
+  address   String?
+  notes     String?
+  isGuest   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  links    ClientLink[]
+  orders   OrderRequest[]
+  invoices Invoice[]
+}
+
+model ClientLink {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  label     String?
+  clientId  String?
+  client    Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  isActive  Boolean   @default(true)
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  orders OrderRequest[]
+}
+
+model Product {
+  id             String   @id @default(cuid())
+  sku            String   @unique
+  name           String
+  description    String?
+  category       String?
+  specifications Json?
+  unit           String   @default("عدد")
+  unitPrice      Decimal  @default(0)
+  stockQuantity  Int      @default(0)
+  minStockAlert  Int      @default(5)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  orderItems   OrderItem[]
+  invoiceItems InvoiceItem[]
+}
+
+model OrderRequest {
+  id          String      @id @default(cuid())
+  orderNumber String      @unique
+  linkId      String?
+  link        ClientLink? @relation(fields: [linkId], references: [id], onDelete: SetNull)
+  clientId    String?
+  client      Client?     @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientName  String?
+  clientPhone String?
+  status      OrderStatus @default(PENDING)
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  items   OrderItem[]
+  invoice Invoice?
+}
+
+model OrderItem {
+  id             String       @id @default(cuid())
+  orderRequestId String
+  orderRequest   OrderRequest @relation(fields: [orderRequestId], references: [id], onDelete: Cascade)
+  productId      String
+  product        Product      @relation(fields: [productId], references: [id])
+  productName    String
+  productSku     String?
+  quantity       Int
+  unitPrice      Decimal
+  unit           String
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  invoiceNumber  String        @unique
+  type           InvoiceType   @default(PROFORMA)
+  status         InvoiceStatus @default(DRAFT)
+  clientId       String?
+  client         Client?       @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  orderRequestId String?       @unique
+  orderRequest   OrderRequest? @relation(fields: [orderRequestId], references: [id], onDelete: SetNull)
+  subtotal       Decimal       @default(0)
+  discount       Decimal       @default(0)
+  tax            Decimal       @default(0)
+  total          Decimal       @default(0)
+  issuedDate     DateTime      @default(now())
+  dueDate        DateTime?
+  terms          String?
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  items InvoiceItem[]
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  description String
+  unit        String
+  quantity    Int
+  unitPrice   Decimal
+  totalPrice  Decimal
+}
