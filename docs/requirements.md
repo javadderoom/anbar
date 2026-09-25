@@ -1,22 +1,27 @@
 # Anbar Project Requirements & Specification Document (PRD)
 
 ## 1. Project Overview & Vision
-**Anbar** is a private, bespoke Inventory Management and Invoicing / Proforma system designed for a business/warehouse operator. Rather than being a public open-registration e-commerce store, it serves as a streamlined internal and client-facing B2B platform to track warehouse inventory, present available products to clients, accept product requests, and issue quotations (proforma invoices) and finalized invoices.
+**Anbar** is a bespoke, private Inventory Management, Quotation (Proforma), and Invoicing system designed for warehouse operators and businesses. Rather than an open, self-registration e-commerce store, it serves as an exclusive, zero-friction B2B portal. 
+
+The business owner can manage inventory, track stock levels, and share customized, dedicated catalog links with specific clients. Clients can browse current stock, specify required quantities, and submit quote/order requests without creating an account or logging in.
 
 ---
 
-## 2. Core Stakeholders & User Roles
+## 2. Core Stakeholders & Access Patterns
 
 ### A. Admin / Warehouse Operator
-- **Inventory Control:** Add, update, and manage product specifications, pricing, units of measurement, and real-time stock levels.
-- **Quotation & Order Review:** Receive real-time requests submitted by clients, review quantities, adjust pricing/discounts if needed, and issue proforma invoices.
-- **Invoice Finalization:** Convert proforma invoices into finalized sales invoices and deduct stock accordingly.
-- **Data Exchange:** Import/export product and inventory data via Excel (`.xlsx`), and generate PDF documents.
+- **Full Operational Control:** Add, update, and manage inventory, product specifications, unit pricing, and stock levels.
+- **Dedicated Link Generator:** Generate custom, tokenized links for clients (or anonymous guests).
+- **Request & Order Review:** Monitor incoming client requests in real time, adjust quantities or discounts, and generate proforma invoices.
+- **Invoice Conversion:** Finalize proforma invoices into official sales invoices with automatic inventory decrement.
+- **Data Exchange:** Import/export product data via Excel (`.xlsx`) and generate official PDF invoices/proformas.
+- **Client Promotion:** Convert guest requests/tokens into formal client records or keep them as guests.
 
-### B. Client / Customer (External Users)
-- **Controlled Catalog Access:** Browse available inventory items, view specifications and current availability.
-- **Self-Service Order / Quote Request:** Select desired items, pick requested quantities, and submit requests directly through the web platform.
-- **Document Access:** View and download proforma invoices / invoices prepared for their requests.
+### B. Client / Customer (Zero-Friction Access)
+- **No Registration Required:** Clients never need to sign up or remember passwords.
+- **Dedicated / Magic Link Access:** Access the catalog via a unique, personalized link provided by the admin.
+- **Mobile-First Experience:** Seamless browsing on smartphones with responsive product cards, attribute inspectors, and quick-add controls.
+- **Direct Request Submission:** Add items and quantities to a request basket and submit directly through the site with immediate confirmation.
 
 ---
 
@@ -24,63 +29,72 @@
 
 ### 3.1 Inventory & Warehouse Management (`انبارداری`)
 - **Product Registry:**
-  - Product Code / SKU
-  - Name / Title
-  - Technical specifications and custom attributes
-  - Unit of measure (e.g., piece, box, kg, meter)
-  - Unit base price
+  - SKU / Product Code
+  - Title / Name
+  - Detailed technical specifications & custom key-value attributes
+  - Units of measure (e.g., Piece, Box, Kg, Meter, Roll)
+  - Unit base price (in IRR / Tomans)
   - Available stock quantity
-- **Stock Movement & Tracking:**
-  - Real-time stock decrement upon invoice issuance/order fulfillment.
-  - Stock updates (manual adjustments or bulk batch updates).
-  - Out-of-stock and low-stock indicators.
+- **Stock Movement & Audit:**
+  - Real-time stock decrement upon invoice confirmation.
+  - Manual stock adjustments with notes (e.g., restock, damage, return).
+  - Out-of-stock and low-stock alerts.
 
-### 3.2 Client Request & Presentation Flow (`کاتالوگ و ثبت درخواست`)
-- **Private/Protected Catalog:**
-  - Clean, responsive interface for clients to view available goods.
-  - Search, filter by category/attributes, and check stock availability.
-- **Cart / Request Builder:**
-  - Clients choose items and specify requested quantities.
-  - Validation ensuring requested quantities align with stock constraints.
-  - Submission mechanism notifying the warehouse operator.
+### 3.2 Dedicated Client Links & Self-Service Ordering (`لینک‌های اختصاصی و ثبت سفارش`)
+- **Tokenized Access:** Admin generates unique shareable links (e.g., `/c/[clientToken]`).
+- **Client Association:** Links can be pre-tagged with a client's name/phone or generated as a generic guest link.
+- **Instant Request Submission:** When an order is submitted from a link:
+  - Automatically ties the request to that client/token.
+  - Admin receives real-time notification of the new request.
+  - Admin can convert the guest order into a permanent client profile or leave it as a one-time guest order.
 
-### 3.3 Proforma Invoices & Official Invoices (`پیش‌فاکتور و فاکتور`)
+### 3.3 Invoicing & Proforma Management (`پیش‌فاکتور و فاکتور`)
 - **Proforma Invoices (پیش‌فاکتور):**
-  - Generated automatically from client submissions or created manually by the admin.
-  - Includes quotation validity period, payment terms, and itemized cost breakdown.
+  - Generated from client requests or created manually by admin.
+  - Custom validity dates, payment instructions, discounts, and line-item notes.
 - **Sales Invoices (فاکتور فروش):**
-  - Ability to convert an accepted proforma invoice into an official invoice with one click.
-  - Calculates line totals, discounts, taxes (if applicable), and grand total.
-  - Updates inventory records upon finalization.
+  - One-click transformation from Proforma to finalized Invoice.
+  - Immediate stock deduction and audit record creation.
+  - Status tracking (Draft, Issued, Paid, Cancelled).
 
-### 3.4 Excel Integration (`خوردن و نوشتن اکسل`)
-- **Import:** Bulk upload and update products, specifications, and initial stock quantities from `.xlsx` files.
-- **Export:** Export product lists, current inventory levels, sales summaries, and invoice logs to `.xlsx` sheets.
+### 3.4 Excel Integration (`ورود و خروج اکسل`)
+- **Import:** Bulk upload and update products, specifications, and initial quantities via `.xlsx`.
+- **Export:** Export stock lists, client request logs, and invoice histories to `.xlsx`.
 
-### 3.5 PDF Generation (`ساخت فایل پی‌دی‌اف`)
-- **Print-Ready Invoices & Proforma:**
-  - Generate clean, standardized PDF invoices for download, printing, or sending to clients.
-  - Proper layout including business logo, header, buyer info, tabular item list, payment terms, notes, and stamp/signature area.
-  - Robust RTL (Persian) typography and formatting (correct handling of numbers, Rial/Toman currencies, and Jalali dates).
-
----
-
-## 4. Key Technical & Architectural Considerations
-1. **Localization & RTL Standards:**
-   - Full Persian (Farsi) UI support with Jalali (Shamsi) calendar picker and formatting.
-   - Careful Bidirectional (BiDi) handling for numbers, formulas, and currency signs (ensuring numbers and symbols do not reverse).
-2. **Access Control & Privacy:**
-   - Role-based authentication (Admin vs. Authorized Client).
-   - Private links or client credentials to restrict catalog viewing to intended partners.
-3. **Data Integrity:**
-   - Transactional safety for inventory deduction when invoices are confirmed.
-   - Consistent database modeling with proper audit trails (created at, updated at, status tracking).
+### 3.5 PDF Document Generation (`ساخت فایل پی‌دی‌اف`)
+- **Print-Ready Documents:**
+  - Clean, standardized PDF invoices and proformas.
+  - Proper layout with company logo, buyer info, itemized table, total breakdowns, payment terms, and stamp/signature box.
+  - Strict RTL Persian typography, Jalali dates, and clean number/symbol formatting.
 
 ---
 
-## 5. Development Roadmap & Next Steps
-- [ ] **Phase 1: Architecture & Technology Stack Selection** (Framework, Database, ORM, Auth).
-- [ ] **Phase 2: Database Schema & Core Data Modeling** (Products, Categories, Invoices, InvoiceItems, Customers).
-- [ ] **Phase 3: Inventory Management Module** (Admin CRUD + Excel Import/Export).
-- [ ] **Phase 4: Client Catalog & Request Submission Portal**.
-- [ ] **Phase 5: Invoicing Engine & PDF Export**.
+## 4. UI / UX & Design Principles
+
+### 4.1 Mobile-First Philosophy
+- Primary focus on mobile viewport ergonomics: bottom sheets for quick actions, sticky action bars, touch-friendly stepper inputs, and card layouts.
+- Adaptive desktop viewports: multi-column dashboard, dense data tables, keyboard shortcuts.
+
+### 4.2 Premium Visual Aesthetic & Usability
+- High-grade visual design: tailored dark/light themes, subtle borders, soft shadows, purposeful micro-animations.
+- Fast, intuitive, and clutter-free workflows for both admin and external clients.
+- Clean RTL Persian typography (Vazirmatn or Shabnam font) with strict adherence to BiDi number/sign formatting rules.
+
+---
+
+## 5. Deployment & Technical Architecture
+
+### 5.1 Infrastructure & Services
+- **Hosting & Deployment:** **Vercel** (Serverless Next.js deployment).
+- **Database:** **Neon** (Serverless PostgreSQL with connection pooling).
+- **Application Framework:** Next.js (App Router, Server Actions, TypeScript).
+- **ORM:** Prisma (configured to support Prisma 7 & Neon serverless pooled connection).
+
+---
+
+## 6. Implementation Roadmap
+- [ ] **Phase 1: Project Setup & Neon / Prisma Configuration**
+- [ ] **Phase 2: Database Schema & Migrations (Products, Clients, Links, Invoices, Orders)**
+- [ ] **Phase 3: Admin Inventory Management & Excel Import/Export**
+- [ ] **Phase 4: Dedicated Client Links & Mobile-First Catalog/Order Flow**
+- [ ] **Phase 5: Proforma/Invoice Generation, PDF Export & Polish**
