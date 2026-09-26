@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { CreateClientLinkSchema } from '@/lib/validations';
+import { handleApiError, apiSuccess } from '@/lib/api-response';
 
 // GET /api/links - list all client links with order counts
 export async function GET() {
@@ -25,47 +27,51 @@ export async function GET() {
       expiresAt: l.expiresAt?.toISOString(),
     }));
 
-    return NextResponse.json(formatted);
+    return apiSuccess(formatted);
   } catch (error) {
-    console.error('Error fetching links:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch client links from database' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
 
-// POST /api/links - create a new client link
+// POST /api/links - create a new client link with Zod validation
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { clientName, phone, customToken } = body;
+    const validated = CreateClientLinkSchema.parse(body);
 
-    if (!clientName?.trim()) {
+    // Generate unique token slug
+    const cleanSlug = validated.customToken?.trim()
+      ? validated.customToken.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '-')
+      : `c-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
+
+    // Check if token is already taken
+    const existingLink = await prisma.clientLink.findUnique({
+      where: { token: cleanSlug },
+    });
+    if (existingLink) {
       return NextResponse.json(
-        { error: 'Client name is required' },
-        { status: 400 }
+        {
+          success: false,
+          code: 'DUPLICATE_TOKEN',
+          message: 'این شناسه لینک قبلاً انتخاب شده است. لطفاً شناسه دیگری انتخاب کنید',
+        },
+        { status: 409 }
       );
     }
 
-    // Generate unique token slug
-    const cleanSlug = customToken?.trim()
-      ? customToken.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '-')
-      : `c-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
-
     // Check if client exists by phone or create new client
     let client = null;
-    if (phone?.trim()) {
+    if (validated.phone) {
       client = await prisma.client.findFirst({
-        where: { phone: phone.trim() },
+        where: { phone: validated.phone },
       });
     }
 
     if (!client) {
       client = await prisma.client.create({
         data: {
-          name: clientName.trim(),
-          phone: phone?.trim() || null,
+          name: validated.clientName,
+          phone: validated.phone || null,
           isGuest: false,
         },
       });
@@ -75,15 +81,16 @@ export async function POST(request: Request) {
       data: {
         token: cleanSlug,
         clientId: client.id,
-        label: clientName.trim(),
+        label: validated.clientName,
         isActive: true,
+        expiresAt: validated.expiresAt ? new Date(validated.expiresAt) : null,
       },
       include: {
         client: true,
       },
     });
 
-    return NextResponse.json(
+    return apiSuccess(
       {
         id: link.id,
         token: link.token,
@@ -93,13 +100,9 @@ export async function POST(request: Request) {
         requestCount: 0,
         isActive: link.isActive,
       },
-      { status: 201 }
+      201
     );
   } catch (error) {
-    console.error('Error creating client link:', error);
-    return NextResponse.json(
-      { error: 'Failed to create client link in database' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }

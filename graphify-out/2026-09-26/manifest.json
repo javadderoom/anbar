@@ -655,8 +655,8 @@
     "semantic_hash": ""
   },
   "docs/README.md": {
-    "mtime": 1790362463.991726,
-    "ast_hash": "4d9c2d39592e7d764b5f2e671372ecee",
+    "mtime": 1790450560.9924889,
+    "ast_hash": "30e600e7fae8ecd6bb0f49e922c47b16",
     "semantic_hash": ""
   },
   "docs/architecture.md": {
@@ -737,6 +737,11 @@
   "src/lib/notify.ts": {
     "mtime": 1790449522.3095987,
     "ast_hash": "c6159b1805413db01fa1f2ddbf70be4f",
+    "semantic_hash": ""
+  },
+  "docs/engineering-roadmap.md": {
+    "mtime": 1790450528.501729,
+    "ast_hash": "e7294cb3e3d98755b71efed34958e24c",
     "semantic_hash": ""
   }
 }

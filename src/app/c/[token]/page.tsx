@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { CreateOrderRequestSchema } from '@/lib/validations';
 import type { Product } from '@/types';
 
 export default function ClientCatalogPage({
@@ -123,35 +124,42 @@ export default function ClientCatalogPage({
     e.preventDefault();
     if (totalItemsCount === 0) return;
 
+    const items = Object.entries(cart).map(([productId, quantity]) => {
+      const prod = products.find((p) => p.id === productId);
+      return {
+        productId,
+        name: prod?.name || '',
+        sku: prod?.sku || '',
+        unit: prod?.unit || 'عدد',
+        unitPrice: prod?.unitPrice || 0,
+        quantity,
+      };
+    });
+
+    const validation = CreateOrderRequestSchema.safeParse({
+      token,
+      clientName: clientName.trim(),
+      clientPhone: clientPhone.trim(),
+      notes: clientNotes.trim() || undefined,
+      items,
+    });
+
+    if (!validation.success) {
+      alert(validation.error.issues[0].message);
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      const items = Object.entries(cart).map(([productId, quantity]) => {
-        const prod = products.find((p) => p.id === productId);
-        return {
-          productId,
-          name: prod?.name || '',
-          sku: prod?.sku || '',
-          unit: prod?.unit || 'عدد',
-          unitPrice: prod?.unitPrice || 0,
-          quantity,
-        };
-      });
-
       const res = await fetch('/api/requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          token,
-          clientName: clientName.trim(),
-          clientPhone: clientPhone.trim(),
-          notes: clientNotes.trim(),
-          items,
-        }),
+        body: JSON.stringify(validation.data),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || 'خطا در ثبت سفارش');
+        alert(data.message || data.error || 'خطا در ثبت سفارش');
         return;
       }
 

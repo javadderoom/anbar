@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Plus, Copy, Check, ExternalLink, Link2, Loader2 } from 'lucide-react';
 import { formatNumber } from '@/lib/utils';
 import { notify } from '@/lib/notify';
+import { CreateClientLinkSchema } from '@/lib/validations';
 
 export interface ClientLinkItem {
   id: string;
@@ -44,23 +45,28 @@ export default function ClientLinksModule({
 
   const handleCreateLink = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newClientName?.trim()) return;
+    const validation = CreateClientLinkSchema.safeParse({
+      clientName: newClientName.trim(),
+      phone: newClientPhone.trim() || undefined,
+      customToken: customToken.trim() || undefined,
+    });
+
+    if (!validation.success) {
+      notify.error(validation.error.issues[0].message);
+      return;
+    }
 
     try {
       setIsSubmitting(true);
       const res = await fetch('/api/links', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          clientName: newClientName.trim(),
-          phone: newClientPhone.trim() || undefined,
-          customToken: customToken.trim() || undefined,
-        }),
+        body: JSON.stringify(validation.data),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'خطا در ثبت لینک');
+        throw new Error(data.message || data.error || 'خطا در ثبت لینک');
       }
 
       setLinks((prev) => [data, ...prev]);

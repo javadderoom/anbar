@@ -15,6 +15,8 @@ import {
   Download,
 } from 'lucide-react';
 import { useTheme } from '@/components/ThemeProvider';
+import { WarehouseSettingsSchema } from '@/lib/validations';
+import { notify } from '@/lib/notify';
 
 export interface WarehouseSettings {
   businessName: string;
@@ -54,8 +56,15 @@ export default function SettingsModule() {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem('anbar-business-settings', JSON.stringify(settings));
+    const result = WarehouseSettingsSchema.safeParse(settings);
+    if (!result.success) {
+      notify.error(result.error.issues[0].message);
+      return;
+    }
+
+    localStorage.setItem('anbar-business-settings', JSON.stringify(result.data));
     setSavedSuccess(true);
+    notify.success('تنظیمات انبار و فاکتور با موفقیت ذخیره گردید');
     setTimeout(() => setSavedSuccess(false), 2500);
   };
 

@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { CreateProductSchema } from '@/lib/validations';
+import { handleApiError, apiSuccess } from '@/lib/api-response';
 
 // GET /api/products - list all active products
 export async function GET(request: Request) {
@@ -36,80 +38,59 @@ export async function GET(request: Request) {
       updatedAt: p.updatedAt.toISOString(),
     }));
 
-    return NextResponse.json(serialized);
+    return apiSuccess(serialized);
   } catch (error) {
-    console.error('Error fetching products:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch products from database' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
 
-// POST /api/products - create a new product
+// POST /api/products - create a new product with Zod validation
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const {
-      sku,
-      name,
-      category,
-      unit,
-      unitPrice,
-      stockQuantity,
-      minStockAlert,
-      specifications,
-      description,
-    } = body;
-
-    if (!sku?.trim() || !name?.trim()) {
-      return NextResponse.json(
-        { error: 'SKU and product name are required' },
-        { status: 400 }
-      );
-    }
+    const validated = CreateProductSchema.parse(body);
 
     // Check SKU uniqueness
     const existing = await prisma.product.findUnique({
-      where: { sku: sku.trim() },
+      where: { sku: validated.sku },
     });
 
     if (existing) {
       return NextResponse.json(
-        { error: 'کالایی با این کد فنی (SKU) از قبل وجود دارد' },
+        {
+          success: false,
+          code: 'DUPLICATE_SKU',
+          message: `کالایی با کد فنی (SKU) «${validated.sku}» قبلاً ثبت شده است`,
+        },
         { status: 409 }
       );
     }
 
     const created = await prisma.product.create({
       data: {
-        sku: sku.trim(),
-        name: name.trim(),
-        category: category?.trim() || 'دسته‌بندی نشده',
-        unit: unit?.trim() || 'عدد',
-        unitPrice: Number(unitPrice) || 0,
-        stockQuantity: parseInt(stockQuantity) || 0,
-        minStockAlert: parseInt(minStockAlert) || 5,
-        description: description?.trim() || null,
-        specifications: specifications || null,
+        sku: validated.sku,
+        name: validated.name,
+        category: validated.category,
+        unit: validated.unit,
+        unitPrice: validated.unitPrice,
+        stockQuantity: validated.stockQuantity,
+        minStockAlert: validated.minStockAlert,
+        description: validated.description ?? null,
+        specifications: validated.specifications ? (validated.specifications as any) : undefined,
         isActive: true,
       },
     });
 
-    return NextResponse.json(
+    return apiSuccess(
       {
         ...created,
         unitPrice: Number(created.unitPrice),
         createdAt: created.createdAt.toISOString(),
         updatedAt: created.updatedAt.toISOString(),
       },
-      { status: 201 }
+      201
     );
   } catch (error) {
-    console.error('Error creating product:', error);
-    return NextResponse.json(
-      { error: 'Failed to create product in database' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }

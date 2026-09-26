@@ -16,6 +16,7 @@ import {
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { exportProductsToExcelFile, parseProductsFromExcelFile } from '@/lib/excel';
 import { notify } from '@/lib/notify';
+import { CreateProductSchema } from '@/lib/validations';
 import type { Product } from '@/types';
 
 interface InventoryModuleProps {
@@ -112,11 +113,12 @@ export default function InventoryModule({
     }
   };
 
-  // Add Product Submit (Writes directly to Neon DB)
+  // Add Product Submit (Writes directly to Neon DB with Zod validation)
   const handleAddProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newProduct.name?.trim() || !newProduct.sku?.trim()) {
-      setAddError('کد کالا (SKU) و نام کالا الزامی است');
+    const validation = CreateProductSchema.safeParse(newProduct);
+    if (!validation.success) {
+      setAddError(validation.error.issues[0].message);
       return;
     }
 
@@ -127,12 +129,12 @@ export default function InventoryModule({
       const res = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newProduct),
+        body: JSON.stringify(validation.data),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        setAddError(data.error || 'خطا در ثبت کالا در پایگاه داده');
+        setAddError(data.message || data.error || 'خطا در ثبت کالا در پایگاه داده');
         return;
       }
 

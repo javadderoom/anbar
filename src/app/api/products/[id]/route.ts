@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { UpdateProductSchema } from '@/lib/validations';
+import { handleApiError, apiSuccess } from '@/lib/api-response';
 
 export async function PUT(
   request: Request,
@@ -8,33 +10,32 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
+    const validated = UpdateProductSchema.parse(body);
 
     const updated = await prisma.product.update({
       where: { id },
       data: {
-        ...(body.name && { name: body.name.trim() }),
-        ...(body.sku && { sku: body.sku.trim() }),
-        ...(body.category !== undefined && { category: body.category.trim() }),
-        ...(body.unit && { unit: body.unit.trim() }),
-        ...(body.unitPrice !== undefined && { unitPrice: Number(body.unitPrice) }),
-        ...(body.stockQuantity !== undefined && { stockQuantity: parseInt(body.stockQuantity) }),
-        ...(body.minStockAlert !== undefined && { minStockAlert: parseInt(body.minStockAlert) }),
-        ...(body.isActive !== undefined && { isActive: Boolean(body.isActive) }),
+        ...(validated.name && { name: validated.name }),
+        ...(validated.sku && { sku: validated.sku }),
+        ...(validated.category !== undefined && { category: validated.category }),
+        ...(validated.unit && { unit: validated.unit }),
+        ...(validated.unitPrice !== undefined && { unitPrice: validated.unitPrice }),
+        ...(validated.stockQuantity !== undefined && { stockQuantity: validated.stockQuantity }),
+        ...(validated.minStockAlert !== undefined && { minStockAlert: validated.minStockAlert }),
+        ...(validated.description !== undefined && { description: validated.description }),
+        ...(validated.specifications !== undefined && { specifications: validated.specifications ?? undefined }),
+        ...(validated.isActive !== undefined && { isActive: validated.isActive }),
       },
     });
 
-    return NextResponse.json({
+    return apiSuccess({
       ...updated,
       unitPrice: Number(updated.unitPrice),
       createdAt: updated.createdAt.toISOString(),
       updatedAt: updated.updatedAt.toISOString(),
     });
   } catch (error) {
-    console.error('Error updating product:', error);
-    return NextResponse.json(
-      { error: 'Failed to update product in database' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
 
@@ -51,12 +52,8 @@ export async function DELETE(
       data: { isActive: false },
     });
 
-    return NextResponse.json({ success: true, message: 'کالا با موفقیت حذف گردید' });
+    return apiSuccess({ success: true, message: 'کالا با موفقیت حذف گردید' });
   } catch (error) {
-    console.error('Error deleting product:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete product in database' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }

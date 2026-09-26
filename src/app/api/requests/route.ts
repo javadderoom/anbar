@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { CreateOrderRequestSchema } from '@/lib/validations';
+import { handleApiError, apiSuccess } from '@/lib/api-response';
 
 // GET /api/requests - list all incoming requests
 export async function GET() {
@@ -45,35 +47,24 @@ export async function GET() {
       };
     });
 
-    return NextResponse.json(formatted);
+    return apiSuccess(formatted);
   } catch (error) {
-    console.error('Error fetching order requests:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch order requests from database' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
 
-// POST /api/requests - client submits an order request via catalog magic link
+// POST /api/requests - client submits an order request with Zod validation
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { token, clientName, clientPhone, items, notes } = body;
-
-    if (!Array.isArray(items) || items.length === 0) {
-      return NextResponse.json(
-        { error: 'At least one item is required' },
-        { status: 400 }
-      );
-    }
+    const validated = CreateOrderRequestSchema.parse(body);
 
     // Find link if provided
     let link = null;
     let client = null;
-    if (token && token !== 'demo') {
+    if (validated.token && validated.token !== 'demo') {
       link = await prisma.clientLink.findUnique({
-        where: { token },
+        where: { token: validated.token },
         include: { client: true },
       });
       if (link?.client) {
@@ -81,7 +72,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // Auto-generate order number (e.g. REQ-1043)
+    // Auto-generate sequential order number
     const count = await prisma.orderRequest.count();
     const orderNumber = `REQ-${1001 + count}`;
 
@@ -90,18 +81,18 @@ export async function POST(request: Request) {
         orderNumber,
         linkId: link?.id || null,
         clientId: client?.id || null,
-        clientName: clientName?.trim() || client?.name || 'مشتری مهمان',
-        clientPhone: clientPhone?.trim() || client?.phone || null,
-        notes: notes?.trim() || null,
+        clientName: validated.clientName,
+        clientPhone: validated.clientPhone,
+        notes: validated.notes ?? null,
         status: 'PENDING',
         items: {
-          create: items.map((it: any) => ({
-            productId: it.productId || it.id,
-            productName: it.name || it.description,
-            productSku: it.sku || null,
+          create: validated.items.map((it) => ({
+            productId: it.productId,
+            productName: it.name,
+            productSku: it.sku ?? null,
             quantity: it.quantity,
-            unitPrice: Number(it.unitPrice),
-            unit: it.unit || 'عدد',
+            unitPrice: it.unitPrice,
+            unit: it.unit,
           })),
         },
       },
@@ -110,12 +101,8 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json(newOrder, { status: 201 });
+    return apiSuccess(newOrder, 201);
   } catch (error) {
-    console.error('Error submitting order request:', error);
-    return NextResponse.json(
-      { error: 'Failed to submit order request in database' },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }
