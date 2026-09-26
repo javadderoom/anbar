@@ -119,7 +119,7 @@ export default function OrderRequestsModule({
                     • {item.description} ({formatNumber(item.quantity)} {item.unit})
                   </span>
                   <span className="font-mono font-bold text-amber-400" dir="ltr">
-                    \u200E{formatNumber(item.totalPrice)} تومان
+                    {formatCurrency(item.totalPrice)}
                   </span>
                 </div>
               ))}

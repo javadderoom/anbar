@@ -80,7 +80,7 @@ export default function InvoicePrintModal({
               <div className="text-xs text-slate-700 flex items-center justify-between gap-3">
                 <span className="text-slate-500">شماره:</span>
                 <span className="font-mono font-bold text-slate-900" dir="ltr">
-                  \u200E{invoice.invoiceNumber}
+                  {invoice.invoiceNumber}
                 </span>
               </div>
               <div className="text-xs text-slate-700 flex items-center justify-between gap-3">
@@ -111,7 +111,7 @@ export default function InvoicePrintModal({
             <div>
               <span className="text-slate-500">شماره تماس: </span>
               <span className="font-mono font-medium" dir="ltr">
-                \u200E{invoice.client?.phone || '—'}
+                {invoice.client?.phone || '—'}
               </span>
             </div>
             {invoice.client?.company && (
@@ -159,10 +159,10 @@ export default function InvoicePrintModal({
                       {item.unit}
                     </td>
                     <td className="p-2.5 text-left font-mono font-semibold" dir="ltr">
-                      \u200E{formatNumber(item.unitPrice)}
+                      {formatNumber(item.unitPrice)}
                     </td>
                     <td className="p-2.5 text-left font-mono font-bold text-slate-900" dir="ltr">
-                      \u200E{formatNumber(item.totalPrice)}
+                      {formatNumber(item.totalPrice)}
                     </td>
                   </tr>
                 ))}
@@ -187,14 +187,14 @@ export default function InvoicePrintModal({
               <div className="flex justify-between text-slate-600">
                 <span>جمع کل اقلام:</span>
                 <span className="font-mono font-bold" dir="ltr">
-                  \u200E{formatNumber(invoice.subtotal)} تومان
+                  {formatCurrency(invoice.subtotal)}
                 </span>
               </div>
               {invoice.discount > 0 && (
                 <div className="flex justify-between text-emerald-600">
                   <span>تخفیف ویژه:</span>
                   <span className="font-mono font-bold" dir="ltr">
-                    \u200E-{formatNumber(invoice.discount)} تومان
+                    -{formatCurrency(invoice.discount)}
                   </span>
                 </div>
               )}
@@ -202,14 +202,14 @@ export default function InvoicePrintModal({
                 <div className="flex justify-between text-slate-600">
                   <span>مالیات بر ارزش افزوده:</span>
                   <span className="font-mono" dir="ltr">
-                    \u200E+{formatNumber(invoice.tax)} تومان
+                    +{formatCurrency(invoice.tax)}
                   </span>
                 </div>
               )}
               <div className="flex justify-between border-t border-slate-300 pt-2 text-sm font-extrabold text-slate-900">
                 <span>مبلغ قابل پرداخت:</span>
                 <span className="font-mono text-base text-amber-600" dir="ltr">
-                  \u200E{formatNumber(invoice.total)} تومان
+                  {formatCurrency(invoice.total)}
                 </span>
               </div>
             </div>
