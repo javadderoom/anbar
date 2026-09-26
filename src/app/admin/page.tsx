@@ -8,6 +8,7 @@ import AdminKpiCards from '@/components/admin/AdminKpiCards';
 import InventoryModule from '@/components/admin/InventoryModule';
 import ClientLinksModule, { type ClientLinkItem } from '@/components/admin/ClientLinksModule';
 import OrderRequestsModule, { type OrderRequestItem } from '@/components/admin/OrderRequestsModule';
+import SettingsModule from '@/components/admin/SettingsModule';
 import InvoicePrintModal from '@/components/InvoicePrintModal';
 import type { Product, Invoice } from '@/types';
 
@@ -103,7 +104,7 @@ export default function AdminDashboardPage() {
   const pendingRequestsCount = requests.filter((r) => r.status === 'PENDING').length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col md:flex-row transition-colors">
       {/* Desktop Sidebar (hidden on mobile) */}
       <AdminSidebar
         activeTab={activeTab}
@@ -118,13 +119,15 @@ export default function AdminDashboardPage() {
 
         {/* Page Content */}
         <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 pb-28 md:pb-8 space-y-6">
-          {/* KPI Summary Cards */}
-          <AdminKpiCards
-            productsCount={products.length}
-            lowStockCount={lowStockCount}
-            linksCount={links.length}
-            pendingRequestsCount={pendingRequestsCount}
-          />
+          {/* KPI Summary Cards (shown on primary management tabs) */}
+          {activeTab !== 'settings' && (
+            <AdminKpiCards
+              productsCount={products.length}
+              lowStockCount={lowStockCount}
+              linksCount={links.length}
+              pendingRequestsCount={pendingRequestsCount}
+            />
+          )}
 
           {/* Active Module */}
           {activeTab === 'inventory' && (
@@ -148,6 +151,10 @@ export default function AdminDashboardPage() {
               setProducts={setProducts}
               onOpenPrintPreview={handleOpenPrintPreview}
             />
+          )}
+
+          {activeTab === 'settings' && (
+            <SettingsModule />
           )}
         </main>
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Printer, X, Download } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import type { Invoice } from '@/types';
@@ -16,6 +16,24 @@ export default function InvoicePrintModal({
   isOpen,
   onClose,
 }: InvoicePrintModalProps) {
+  const [bizSettings, setBizSettings] = useState({
+    businessName: 'بازرگانی و انبار مرکزی',
+    phone: '۰۲۱-۸۸۸۸۸۸۸۸',
+    mobile: '۰۹۱۲۰۰۰۰۰۰۰',
+    address: 'تهران، بازار بزرگ، مجتمع صنعتی انبار',
+    bankAccount: 'IR000000000000000000000000',
+    defaultTerms: '۱. اعتبار قیمت‌های مندرج در پیش‌فاکتور حداکثر ۴۸ ساعت پس از صدور می‌باشد.\n۲. بارگیری و تحویل اقلام پس از تسویه حساب نهایی انجام خواهد شد.',
+  });
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('anbar-business-settings');
+      if (stored) {
+        setBizSettings((prev) => ({ ...prev, ...JSON.parse(stored) }));
+      }
+    } catch (_) {}
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const isProforma = invoice.type === 'PROFORMA';
@@ -61,15 +79,21 @@ export default function InvoicePrintModal({
           <div className="flex items-start justify-between border-b-2 border-slate-900 pb-4">
             <div className="space-y-1">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900">
-                بازرگانی و انبار مرکزی
+                {bizSettings.businessName}
               </h2>
               <p className="text-xs text-slate-600">
-                تامین و توزیع مستقیم تجهیزات صنعتی و تاسیساتی
+                تامین و توزیع مستقیم تجهیزات صنعتی و انبارداری
               </p>
               <div className="text-[11px] text-slate-500 space-x-2 space-x-reverse pt-1">
-                <span>تلفن تماس: ۰۲۱-۸۸۸۸۸۸۸۸</span>
+                <span>تلفن تماس: {bizSettings.phone}</span>
+                {bizSettings.mobile && (
+                  <>
+                    <span>•</span>
+                    <span>همراه: {bizSettings.mobile}</span>
+                  </>
+                )}
                 <span>•</span>
-                <span>نشانی: تهران، بازار بزرگ، مجتمع صنعتی انبار</span>
+                <span>نشانی: {bizSettings.address}</span>
               </div>
             </div>
 
@@ -174,8 +198,14 @@ export default function InvoicePrintModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start pt-2">
             <div className="p-3 rounded-lg border border-slate-200 bg-slate-50/50 space-y-1.5 text-xs text-slate-600">
               <strong className="text-slate-800 block mb-1">شرایط و توضیحات:</strong>
-              <p>۱. اعتبار قیمت‌های مندرج در پیش‌فاکتور حداکثر ۴۸ ساعت پس از صدور می‌باشد.</p>
-              <p>۲. بارگیری و تحویل اقلام پس از تسویه حساب نهایی انجام خواهد شد.</p>
+              <div className="whitespace-pre-line leading-relaxed text-slate-700">
+                {bizSettings.defaultTerms}
+              </div>
+              {bizSettings.bankAccount && (
+                <div className="pt-2 text-[11px] text-slate-600 font-mono" dir="ltr">
+                  Bank / IBAN: <span className="font-bold text-slate-800">{bizSettings.bankAccount}</span>
+                </div>
+              )}
               {invoice.notes && (
                 <p className="text-amber-800 font-medium pt-1">
                   نکات تکمیلی: {invoice.notes}

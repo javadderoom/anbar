@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 // Sample inventory items for demo & client preview
 const initialProducts = [
@@ -174,13 +175,16 @@ export default function ClientCatalogPage({
             </div>
           </div>
 
-          <Link
-            href="/"
-            className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-700/60"
-          >
-            <span>صفحه اصلی</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Link
+              href="/"
+              className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-700/60"
+            >
+              <span>صفحه اصلی</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
 
         {/* Search & Category Filter */}

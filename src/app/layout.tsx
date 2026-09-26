@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Vazirmatn } from 'next/font/google';
 import './globals.css';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 const vazir = Vazirmatn({
   subsets: ['arabic', 'latin'],
@@ -19,9 +20,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fa" dir="rtl" className={`${vazir.variable} font-sans h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100 selection:bg-amber-500/20 selection:text-amber-300">
-        {children}
+    <html lang="fa" dir="rtl" suppressHydrationWarning className={`${vazir.variable} font-sans h-full antialiased`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var theme = localStorage.getItem('anbar-theme');
+                var isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches) || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 selection:bg-amber-500/20 selection:text-amber-600 dark:selection:text-amber-300">
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
