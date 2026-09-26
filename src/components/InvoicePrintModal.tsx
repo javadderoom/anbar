@@ -131,7 +131,7 @@ export default function InvoicePrintModal({
           </div>
 
           {/* Items Table */}
-          <div className="border border-slate-300 rounded-lg overflow-hidden">
+          <div className="border border-slate-300 rounded-lg overflow-x-auto print:overflow-visible">
             <table className="w-full text-right text-xs">
               <thead className="bg-slate-100 text-slate-700 border-b border-slate-300 font-bold">
                 <tr>

@@ -468,8 +468,79 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Inventory Table (Responsive) */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
+            {/* Empty Search Result */}
+            {filteredProducts.length === 0 && (
+              <div className="p-8 text-center text-slate-400 text-xs rounded-2xl border border-slate-800 bg-slate-900/40">
+                کالایی با این مشخصات یافت نشد.
+              </div>
+            )}
+
+            {/* Mobile View: Touch-Friendly Product Cards (hidden on md and above) */}
+            <div className="md:hidden space-y-3">
+              {filteredProducts.map((p) => {
+                const isLow = p.stockQuantity <= p.minStockAlert;
+                return (
+                  <div
+                    key={p.id}
+                    className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 space-y-3 transition-all shadow-md"
+                  >
+                    {/* Header Row: SKU, Category, Alert Status */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-300" dir="ltr">
+                          {p.sku}
+                        </span>
+                        {p.category && (
+                          <span className="text-[11px] px-2 py-0.5 rounded bg-slate-800/60 text-slate-400">
+                            {p.category}
+                          </span>
+                        )}
+                      </div>
+
+                      {isLow ? (
+                        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center gap-1">
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          <span>نیازمند تامین</span>
+                        </span>
+                      ) : (
+                        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          موجودی کافی
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Product Name */}
+                    <h3 className="text-sm font-bold text-white leading-snug">
+                      {p.name}
+                    </h3>
+
+                    {/* Metrics Grid */}
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/60 text-xs">
+                      <div className="space-y-0.5">
+                        <span className="text-slate-400 text-[11px] block">قیمت واحد:</span>
+                        <strong className="text-amber-400 font-bold block">
+                          {formatCurrency(p.unitPrice)}
+                        </strong>
+                      </div>
+
+                      <div className="space-y-0.5 text-left" dir="rtl">
+                        <span className="text-slate-400 text-[11px] block">موجودی انبار:</span>
+                        <span
+                          className={`inline-flex items-center gap-1 font-bold ${
+                            isLow ? 'text-rose-400' : 'text-emerald-400'
+                          }`}
+                        >
+                          {formatNumber(p.stockQuantity)} {p.unit}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop View: Full Table (hidden on mobile, visible on md and above) */}
+            <div className="hidden md:block rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-xl">
               <div className="overflow-x-auto">
                 <table className="w-full text-right text-xs">
                   <thead className="bg-slate-950/80 text-slate-400 border-b border-slate-800">
@@ -488,7 +559,7 @@ export default function AdminDashboardPage() {
                       const isLow = p.stockQuantity <= p.minStockAlert;
                       return (
                         <tr key={p.id} className="hover:bg-slate-800/30 transition-colors">
-                          <td className="p-3.5 font-mono text-slate-300 font-medium">
+                          <td className="p-3.5 font-mono text-slate-300 font-medium" dir="ltr">
                             {p.sku}
                           </td>
                           <td className="p-3.5 font-bold text-white">
