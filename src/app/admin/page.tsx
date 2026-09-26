@@ -1,58 +1,45 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import AdminSidebar, { type AdminTab } from '@/components/admin/AdminSidebar';
 import AdminBottomNav from '@/components/admin/AdminBottomNav';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminKpiCards from '@/components/admin/AdminKpiCards';
 import InventoryModule from '@/components/admin/InventoryModule';
-import ClientLinksModule, { type ClientLinkItem } from '@/components/admin/ClientLinksModule';
+import ClientLinksModule from '@/components/admin/ClientLinksModule';
 import OrderRequestsModule, { type OrderRequestItem } from '@/components/admin/OrderRequestsModule';
 import SettingsModule from '@/components/admin/SettingsModule';
 import InvoicePrintModal from '@/components/InvoicePrintModal';
-import type { Product, Invoice } from '@/types';
+import { useProducts, useClientLinks, useOrderRequests } from '@/hooks';
+import type { Invoice } from '@/types';
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>('inventory');
 
-  // Real data state from Neon PostgreSQL
-  const [products, setProducts] = useState<Product[]>([]);
-  const [links, setLinks] = useState<ClientLinkItem[]>([]);
-  const [requests, setRequests] = useState<OrderRequestItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // TanStack Query v5 state management with live cache synchronization
+  const {
+    data: products = [],
+    isLoading: isProductsLoading,
+    refetch: refetchProducts,
+  } = useProducts();
 
-  // Fetch all database records
-  const fetchAllData = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const [prodRes, linkRes, reqRes] = await Promise.all([
-        fetch('/api/products'),
-        fetch('/api/links'),
-        fetch('/api/requests'),
-      ]);
+  const {
+    data: links = [],
+    isLoading: isLinksLoading,
+    refetch: refetchLinks,
+  } = useClientLinks();
 
-      if (prodRes.ok) {
-        const prodData = await prodRes.json();
-        setProducts(prodData);
-      }
-      if (linkRes.ok) {
-        const linkData = await linkRes.json();
-        setLinks(linkData);
-      }
-      if (reqRes.ok) {
-        const reqData = await reqRes.json();
-        setRequests(reqData);
-      }
-    } catch (error) {
-      console.error('Error fetching admin data from Neon DB:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const {
+    data: requests = [],
+    isLoading: isRequestsLoading,
+    refetch: refetchRequests,
+  } = useOrderRequests({ refetchInterval: 15000 }); // 15s liveness polling for warehouse order requests
 
-  useEffect(() => {
-    fetchAllData();
-  }, [fetchAllData]);
+  const handleRefreshAll = () => {
+    refetchProducts();
+    refetchLinks();
+    refetchRequests();
+  };
 
   // Invoice Print Preview Modal State
   const [selectedInvoiceForPrint, setSelectedInvoiceForPrint] = useState<Invoice | null>(null);
@@ -125,28 +112,24 @@ export default function AdminDashboardPage() {
           {activeTab === 'inventory' && (
             <InventoryModule
               products={products}
-              setProducts={setProducts}
-              isLoading={isLoading}
-              onRefresh={fetchAllData}
+              isLoading={isProductsLoading}
+              onRefresh={handleRefreshAll}
             />
           )}
 
           {activeTab === 'links' && (
             <ClientLinksModule
               links={links}
-              setLinks={setLinks}
-              isLoading={isLoading}
+              isLoading={isLinksLoading}
             />
           )}
 
           {activeTab === 'requests' && (
             <OrderRequestsModule
               requests={requests}
-              setRequests={setRequests}
-              setProducts={setProducts}
               onOpenPrintPreview={handleOpenPrintPreview}
-              isLoading={isLoading}
-              onRefresh={fetchAllData}
+              isLoading={isRequestsLoading}
+              onRefresh={handleRefreshAll}
             />
           )}
 

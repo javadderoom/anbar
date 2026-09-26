@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Printer, Check, Inbox, Loader2 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { notify } from '@/lib/notify';
+import { useConvertOrder } from '@/hooks';
 import type { Product, Invoice } from '@/types';
 
 export interface OrderRequestItem {
@@ -29,11 +30,11 @@ export interface OrderRequestItem {
 
 interface OrderRequestsModuleProps {
   requests: OrderRequestItem[];
-  setRequests: React.Dispatch<React.SetStateAction<OrderRequestItem[]>>;
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  setRequests?: React.Dispatch<React.SetStateAction<OrderRequestItem[]>>;
+  setProducts?: React.Dispatch<React.SetStateAction<Product[]>>;
   onOpenPrintPreview: (req: OrderRequestItem, type: 'PROFORMA' | 'SALES') => void;
   isLoading?: boolean;
-  onRefresh?: () => Promise<void>;
+  onRefresh?: () => Promise<void> | void;
 }
 
 export default function OrderRequestsModule({
@@ -45,6 +46,7 @@ export default function OrderRequestsModule({
   onRefresh,
 }: OrderRequestsModuleProps) {
   const [convertingId, setConvertingId] = useState<string | null>(null);
+  const convertOrderMutation = useConvertOrder();
 
   // Convert Request to Final Invoice (Auto Deduct Stock via DB Transaction)
   const handleConvertToInvoice = async (req: OrderRequestItem) => {
@@ -58,33 +60,30 @@ export default function OrderRequestsModule({
 
     try {
       setConvertingId(req.id);
-      const res = await fetch(`/api/requests/${req.id}/convert`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deductStock: true }),
+      await convertOrderMutation.mutateAsync({
+        id: req.id,
+        data: { deductStock: true, invoiceType: 'SALES' },
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'خطا در تبدیل سفارش به فاکتور');
+      // Update state locally if setters provided
+      if (setRequests) {
+        setRequests((prev) =>
+          prev.map((r) => (r.id === req.id ? { ...r, status: 'CONVERTED' } : r))
+        );
       }
 
-      // Update state locally
-      setRequests((prev) =>
-        prev.map((r) => (r.id === req.id ? { ...r, status: 'CONVERTED' } : r))
-      );
-
-      // Decrement stock in local product list
-      setProducts((prevProducts) =>
-        prevProducts.map((prod) => {
-          const matchingItem = req.items.find((item) => item.productId === prod.id);
-          if (matchingItem) {
-            const updatedStock = Math.max(0, prod.stockQuantity - matchingItem.quantity);
-            return { ...prod, stockQuantity: updatedStock };
-          }
-          return prod;
-        })
-      );
+      if (setProducts) {
+        setProducts((prevProducts) =>
+          prevProducts.map((prod) => {
+            const matchingItem = req.items.find((item) => item.productId === prod.id);
+            if (matchingItem) {
+              const updatedStock = Math.max(0, prod.stockQuantity - matchingItem.quantity);
+              return { ...prod, stockQuantity: updatedStock };
+            }
+            return prod;
+          })
+        );
+      }
 
       if (onRefresh) await onRefresh();
 

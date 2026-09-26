@@ -154,5 +154,8 @@
   "152": "pg",
   "153": "@prisma/client",
   "154": "react-dom",
-  "155": "@tailwindcss/postcss"
+  "155": "@tailwindcss/postcss",
+  "156": "@prisma/adapter-pg",
+  "157": "tailwind-merge",
+  "158": "tailwindcss"
 }

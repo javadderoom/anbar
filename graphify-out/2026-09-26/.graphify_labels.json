@@ -147,5 +147,12 @@
   "145": "Phase 4: Concurrency, Inventory Race Conditions & Atomic Transactions",
   "146": "Phase 5: Scalability, Virtualization & Database Performance",
   "147": "Phase 6: Edge Security, Abuse Prevention & Rate Limiting",
-  "148": "Phase 7: Document Engine & PDF Generation"
+  "148": "Phase 7: Document Engine & PDF Generation",
+  "149": "live-target.mjs",
+  "150": "createManualEditRoutes",
+  "151": "writeAuditLog",
+  "152": "pg",
+  "153": "@prisma/client",
+  "154": "react-dom",
+  "155": "@tailwindcss/postcss"
 }

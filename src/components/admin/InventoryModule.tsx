@@ -17,13 +17,14 @@ import { formatCurrency, formatNumber } from '@/lib/utils';
 import { exportProductsToExcelFile, parseProductsFromExcelFile } from '@/lib/excel';
 import { notify } from '@/lib/notify';
 import { CreateProductSchema } from '@/lib/validations';
+import { useCreateProduct, useDeleteProduct, useBulkImportProducts } from '@/hooks';
 import type { Product } from '@/types';
 
 interface InventoryModuleProps {
   products: Product[];
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  setProducts?: React.Dispatch<React.SetStateAction<Product[]>>;
   isLoading?: boolean;
-  onRefresh?: () => Promise<void>;
+  onRefresh?: () => Promise<void> | void;
 }
 
 export default function InventoryModule({
@@ -34,10 +35,16 @@ export default function InventoryModule({
 }: InventoryModuleProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isImporting, setIsImporting] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // TanStack Query mutations
+  const createProductMutation = useCreateProduct();
+  const deleteProductMutation = useDeleteProduct();
+  const bulkImportMutation = useBulkImportProducts();
+
+  const isSubmitting = createProductMutation.isPending;
+  const isImporting = bulkImportMutation.isPending;
 
   const [newProduct, setNewProduct] = useState({
     sku: '',
@@ -73,42 +80,17 @@ export default function InventoryModule({
     if (!file) return;
 
     try {
-      setIsImporting(true);
       const parsedRows = await parseProductsFromExcelFile(file);
-
-      const res = await fetch('/api/products/bulk', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: parsedRows }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'خطا در ثبت داده‌های اکسل در پایگاه داده');
-      }
+      const res = await bulkImportMutation.mutateAsync(parsedRows);
 
       if (onRefresh) {
         await onRefresh();
-      } else {
-        const newImported: Product[] = parsedRows.map((row, idx) => ({
-          id: 'p-imp-' + Date.now() + '-' + idx,
-          sku: row.sku,
-          name: row.name,
-          category: row.category || 'دسته‌بندی نشده',
-          unit: row.unit,
-          unitPrice: row.unitPrice,
-          stockQuantity: row.stockQuantity,
-          minStockAlert: row.minStockAlert || 5,
-          isActive: true,
-        }));
-        setProducts((prev) => [...newImported, ...prev]);
       }
 
-      notify.success(data.message || `تعداد ${parsedRows.length} کالا در دیتابیس ثبت شد`);
+      notify.success(res.message || `تعداد ${parsedRows.length} کالا در دیتابیس ثبت شد`);
     } catch (err: any) {
       notify.error(err.message || 'خطا در بارگذاری فایل اکسل');
     } finally {
-      setIsImporting(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
@@ -123,22 +105,9 @@ export default function InventoryModule({
     }
 
     try {
-      setIsSubmitting(true);
       setAddError(null);
+      const created = await createProductMutation.mutateAsync(validation.data);
 
-      const res = await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(validation.data),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setAddError(data.message || data.error || 'خطا در ثبت کالا در پایگاه داده');
-        return;
-      }
-
-      setProducts((prev) => [data, ...prev]);
       setIsAddProductOpen(false);
       setNewProduct({
         sku: '',
@@ -150,11 +119,13 @@ export default function InventoryModule({
         minStockAlert: 5,
       });
 
-      notify.success(`کالای «${data.name}» با موفقیت در دیتابیس ثبت شد`);
+      if (onRefresh) {
+        await onRefresh();
+      }
+
+      notify.success(`کالای «${created.name}» با موفقیت در دیتابیس ثبت شد`);
     } catch (err: any) {
       setAddError(err.message || 'خطای برقراری ارتباط با سرور');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -170,15 +141,13 @@ export default function InventoryModule({
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setProducts((prev) => prev.filter((p) => p.id !== id));
-        notify.success(`کالای «${name}» حذف گردید`);
-      } else {
-        notify.error('خطا در حذف کالا از دیتابیس');
+      await deleteProductMutation.mutateAsync(id);
+      if (onRefresh) {
+        await onRefresh();
       }
-    } catch (_) {
-      notify.error('خطا در ارتباط با سرور');
+      notify.success(`کالای «${name}» حذف گردید`);
+    } catch (err: any) {
+      notify.error(err.message || 'خطا در حذف کالا از دیتابیس');
     }
   };
 

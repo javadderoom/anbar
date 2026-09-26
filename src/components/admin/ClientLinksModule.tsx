@@ -6,6 +6,7 @@ import { Plus, Copy, Check, ExternalLink, Link2, Loader2 } from 'lucide-react';
 import { formatNumber } from '@/lib/utils';
 import { notify } from '@/lib/notify';
 import { CreateClientLinkSchema } from '@/lib/validations';
+import { useCreateClientLink } from '@/hooks';
 
 export interface ClientLinkItem {
   id: string;
@@ -19,7 +20,7 @@ export interface ClientLinkItem {
 
 interface ClientLinksModuleProps {
   links: ClientLinkItem[];
-  setLinks: React.Dispatch<React.SetStateAction<ClientLinkItem[]>>;
+  setLinks?: React.Dispatch<React.SetStateAction<ClientLinkItem[]>>;
   isLoading?: boolean;
 }
 
@@ -32,8 +33,10 @@ export default function ClientLinksModule({
   const [newClientName, setNewClientName] = useState('');
   const [newClientPhone, setNewClientPhone] = useState('');
   const [customToken, setCustomToken] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
+
+  const createLinkMutation = useCreateClientLink();
+  const isSubmitting = createLinkMutation.isPending;
 
   const handleCopyLink = (token: string) => {
     const fullUrl = `${window.location.origin}/c/${token}`;
@@ -57,19 +60,11 @@ export default function ClientLinksModule({
     }
 
     try {
-      setIsSubmitting(true);
-      const res = await fetch('/api/links', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(validation.data),
-      });
+      const data = await createLinkMutation.mutateAsync(validation.data);
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || data.error || 'خطا در ثبت لینک');
+      if (setLinks) {
+        setLinks((prev) => [data, ...prev]);
       }
-
-      setLinks((prev) => [data, ...prev]);
       setNewClientName('');
       setNewClientPhone('');
       setCustomToken('');
@@ -77,8 +72,6 @@ export default function ClientLinksModule({
       notify.success(`لینک اختصاصی برای «${data.clientName}» با موفقیت ایجاد شد`);
     } catch (err: any) {
       notify.error(err.message || 'خطا در ساخت لینک اختصاصی');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

@@ -19,7 +19,9 @@ import {
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { notify } from '@/lib/notify';
 import { CreateOrderRequestSchema } from '@/lib/validations';
+import { useProducts, useSubmitOrderRequest } from '@/hooks';
 import type { Product } from '@/types';
 
 export default function ClientCatalogPage({
@@ -32,15 +34,18 @@ export default function ClientCatalogPage({
     params.then(setUnwrappedParams);
   }, [params]);
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // TanStack Query v5 state management
+  const { data: products = [], isLoading } = useProducts();
+  const submitOrderMutation = useSubmitOrderRequest();
+
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [cart, setCart] = useState<Record<string, number>>({});
   const [expandedSpecs, setExpandedSpecs] = useState<Record<string, boolean>>({});
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedOrderNumber, setSubmittedOrderNumber] = useState<string | null>(null);
+
+  const isSubmitting = submitOrderMutation.isPending;
 
   // Form states for frictionless order submission
   const [clientName, setClientName] = useState('');
@@ -49,25 +54,6 @@ export default function ClientCatalogPage({
 
   const token = unwrappedParams?.token ?? 'demo';
   const isDemo = token === 'demo';
-
-  // Fetch live products from database
-  useEffect(() => {
-    async function loadProducts() {
-      try {
-        setIsLoading(true);
-        const res = await fetch('/api/products');
-        if (res.ok) {
-          const data = await res.json();
-          setProducts(data);
-        }
-      } catch (err) {
-        console.error('Failed to load products for catalog:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadProducts();
-  }, []);
 
   const updateQuantity = (productId: string, delta: number, maxStock: number) => {
     setCart((prev) => {
@@ -145,31 +131,19 @@ export default function ClientCatalogPage({
     });
 
     if (!validation.success) {
-      alert(validation.error.issues[0].message);
+      notify.error(validation.error.issues[0].message);
       return;
     }
 
     try {
-      setIsSubmitting(true);
-      const res = await fetch('/api/requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(validation.data),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.message || data.error || 'خطا در ثبت سفارش');
-        return;
-      }
+      const data = await submitOrderMutation.mutateAsync(validation.data);
 
       setSubmittedOrderNumber(data.orderNumber || 'REQ-' + Date.now().toString().slice(-4));
       setIsCheckoutModalOpen(false);
       setCart({});
+      notify.success(`درخواست سفارش شما با شماره ${data.orderNumber} با موفقیت ثبت شد`);
     } catch (err: any) {
-      alert(err.message || 'خطا در ثبت درخواست');
-    } finally {
-      setIsSubmitting(false);
+      notify.error(err.message || 'خطا در ثبت درخواست');
     }
   };
 
