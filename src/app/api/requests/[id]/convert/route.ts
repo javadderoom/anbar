@@ -2,12 +2,26 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { ConvertOrderRequestSchema } from '@/lib/validations';
 import { handleApiError, apiSuccess } from '@/lib/api-response';
+import { getCurrentUser } from '@/lib/auth';
+import { hasPermission, Permission } from '@/lib/permissions';
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user || !hasPermission(user.role, Permission.CONVERT_ORDERS)) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: 'FORBIDDEN',
+          message: 'شما مجوز دسترسی برای تبدیل سفارش به فاکتور را ندارید',
+        },
+        { status: 403 }
+      );
+    }
+
     const { id } = await params;
     const body = await request.json().catch(() => ({}));
     const validated = ConvertOrderRequestSchema.parse(body);

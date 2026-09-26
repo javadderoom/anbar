@@ -18,6 +18,8 @@ import { exportProductsToExcelFile, parseProductsFromExcelFile } from '@/lib/exc
 import { notify } from '@/lib/notify';
 import { CreateProductSchema } from '@/lib/validations';
 import { useCreateProduct, useDeleteProduct, useBulkImportProducts } from '@/hooks';
+import { useAuth } from '@/context/AuthContext';
+import { Permission } from '@/lib/permissions';
 import type { Product } from '@/types';
 
 interface InventoryModuleProps {
@@ -33,6 +35,10 @@ export default function InventoryModule({
   isLoading = false,
   onRefresh,
 }: InventoryModuleProps) {
+  const { can } = useAuth();
+  const canAddProduct = can(Permission.ADD_PRODUCT);
+  const canDeleteProduct = can(Permission.DELETE_PRODUCT);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
@@ -165,29 +171,33 @@ export default function InventoryModule({
       {/* Action Toolbar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => {
-              setAddError(null);
-              setIsAddProductOpen(true);
-            }}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 hover:bg-amber-400 active:scale-95 transition-all"
-          >
-            <Plus className="w-4 h-4" />
-            <span>ثبت کالای جدید</span>
-          </button>
+          {canAddProduct && (
+            <>
+              <button
+                onClick={() => {
+                  setAddError(null);
+                  setIsAddProductOpen(true);
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 hover:bg-amber-400 active:scale-95 transition-all"
+              >
+                <Plus className="w-4 h-4" />
+                <span>ثبت کالای جدید</span>
+              </button>
 
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isImporting}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs active:scale-95 transition-all disabled:opacity-50"
-          >
-            {isImporting ? (
-              <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
-            ) : (
-              <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
-            )}
-            <span>ورود از اکسل (Excel)</span>
-          </button>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isImporting}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs active:scale-95 transition-all disabled:opacity-50"
+              >
+                {isImporting ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
+                ) : (
+                  <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
+                )}
+                <span>ورود از اکسل (Excel)</span>
+              </button>
+            </>
+          )}
 
           <button
             onClick={handleExportExcel}
@@ -278,13 +288,15 @@ export default function InventoryModule({
                     </span>
                   )}
 
-                  <button
-                    onClick={() => handleDeleteProduct(p.id, p.name)}
-                    className="p-1 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
-                    title="حذف کالا"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  {canDeleteProduct && (
+                    <button
+                      onClick={() => handleDeleteProduct(p.id, p.name)}
+                      className="p-1 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+                      title="حذف کالا"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -373,13 +385,15 @@ export default function InventoryModule({
                         )}
                       </td>
                       <td className="p-3.5 text-center">
-                        <button
-                          onClick={() => handleDeleteProduct(p.id, p.name)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-                          title="حذف کالا"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        {canDeleteProduct && (
+                          <button
+                            onClick={() => handleDeleteProduct(p.id, p.name)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                            title="حذف کالا"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );

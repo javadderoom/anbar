@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { CreateProductSchema } from '@/lib/validations';
 import { handleApiError, apiSuccess } from '@/lib/api-response';
+import { getCurrentUser } from '@/lib/auth';
+import { hasPermission, Permission } from '@/lib/permissions';
 
 // GET /api/products - list all active products
 export async function GET(request: Request) {
@@ -47,6 +49,14 @@ export async function GET(request: Request) {
 // POST /api/products - create a new product with Zod validation
 export async function POST(request: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user || !hasPermission(user.role, Permission.ADD_PRODUCT)) {
+      return NextResponse.json(
+        { success: false, code: 'FORBIDDEN', message: 'شما دسترسی ثبت کالای جدید را ندارید' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const validated = CreateProductSchema.parse(body);
 

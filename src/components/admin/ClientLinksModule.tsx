@@ -7,6 +7,8 @@ import { formatNumber } from '@/lib/utils';
 import { notify } from '@/lib/notify';
 import { CreateClientLinkSchema } from '@/lib/validations';
 import { useCreateClientLink } from '@/hooks';
+import { useAuth } from '@/context/AuthContext';
+import { Permission } from '@/lib/permissions';
 
 export interface ClientLinkItem {
   id: string;
@@ -29,6 +31,9 @@ export default function ClientLinksModule({
   setLinks,
   isLoading = false,
 }: ClientLinksModuleProps) {
+  const { can } = useAuth();
+  const canManageLinks = can(Permission.MANAGE_LINKS);
+
   const [isCreatingLink, setIsCreatingLink] = useState(false);
   const [newClientName, setNewClientName] = useState('');
   const [newClientPhone, setNewClientPhone] = useState('');
@@ -85,13 +90,15 @@ export default function ClientLinksModule({
           </p>
         </div>
 
-        <button
-          onClick={() => setIsCreatingLink(!isCreatingLink)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 hover:bg-amber-400 active:scale-95 transition-all self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>تولید لینک جدید</span>
-        </button>
+        {canManageLinks && (
+          <button
+            onClick={() => setIsCreatingLink(!isCreatingLink)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 hover:bg-amber-400 active:scale-95 transition-all self-start sm:self-auto"
+          >
+            <Plus className="w-4 h-4" />
+            <span>تولید لینک جدید</span>
+          </button>
+        )}
       </div>
 
       {/* Create Link Form */}

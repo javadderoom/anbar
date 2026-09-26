@@ -2,9 +2,19 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { BulkImportSchema } from '@/lib/validations';
 import { handleApiError, apiSuccess } from '@/lib/api-response';
+import { getCurrentUser } from '@/lib/auth';
+import { hasPermission, Permission } from '@/lib/permissions';
 
 export async function POST(request: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user || !hasPermission(user.role, Permission.ADD_PRODUCT)) {
+      return NextResponse.json(
+        { success: false, code: 'FORBIDDEN', message: 'شما دسترسی ورود اطلاعات از اکسل را ندارید' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const validated = BulkImportSchema.parse(body);
 

@@ -5,6 +5,8 @@ import { Printer, Check, Inbox, Loader2 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { notify } from '@/lib/notify';
 import { useConvertOrder } from '@/hooks';
+import { useAuth } from '@/context/AuthContext';
+import { Permission } from '@/lib/permissions';
 import type { Product, Invoice } from '@/types';
 
 export interface OrderRequestItem {
@@ -45,6 +47,9 @@ export default function OrderRequestsModule({
   isLoading = false,
   onRefresh,
 }: OrderRequestsModuleProps) {
+  const { can } = useAuth();
+  const canConvertOrders = can(Permission.CONVERT_ORDERS);
+
   const [convertingId, setConvertingId] = useState<string | null>(null);
   const convertOrderMutation = useConvertOrder();
 
@@ -200,18 +205,20 @@ export default function OrderRequestsModule({
                 </button>
 
                 {req.status === 'PENDING' ? (
-                  <button
-                    onClick={() => handleConvertToInvoice(req)}
-                    disabled={convertingId === req.id}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20 active:scale-95 disabled:opacity-50 transition-all"
-                  >
-                    {convertingId === req.id ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <Check className="w-3.5 h-3.5" />
-                    )}
-                    <span>تایید و صدور فاکتور قطعی</span>
-                  </button>
+                  canConvertOrders ? (
+                    <button
+                      onClick={() => handleConvertToInvoice(req)}
+                      disabled={convertingId === req.id}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20 active:scale-95 disabled:opacity-50 transition-all"
+                    >
+                      {convertingId === req.id ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Check className="w-3.5 h-3.5" />
+                      )}
+                      <span>تایید و صدور فاکتور قطعی</span>
+                    </button>
+                  ) : null
                 ) : (
                   <button
                     onClick={() => onOpenPrintPreview(req, 'SALES')}

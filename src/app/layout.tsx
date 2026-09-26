@@ -3,6 +3,7 @@ import { Vazirmatn } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { QueryProvider } from '@/components/QueryProvider';
+import { AuthProvider } from '@/context/AuthContext';
 import { Toaster } from '@/components/Toaster';
 
 const vazir = Vazirmatn({
@@ -42,10 +43,12 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 selection:bg-amber-500/20 selection:text-amber-600 dark:selection:text-amber-300">
         <QueryProvider>
-          <ThemeProvider>
-            {children}
-            <Toaster />
-          </ThemeProvider>
+          <AuthProvider>
+            <ThemeProvider>
+              {children}
+              <Toaster />
+            </ThemeProvider>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

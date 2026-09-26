@@ -1,9 +1,14 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { Warehouse, ArrowRight } from 'lucide-react';
+import { Warehouse, ArrowRight, LogOut, Shield } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
+import { useAuth } from '@/context/AuthContext';
 
 export default function AdminHeader() {
+  const { user, role, roleName, logout } = useAuth();
+
   return (
     <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -22,7 +27,37 @@ export default function AdminHeader() {
         </div>
 
         <div className="flex items-center gap-2.5">
+          {/* User & Bitmask Role Badge */}
+          {user && (
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60">
+              <div className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                <Shield className="w-3.5 h-3.5" />
+              </div>
+              <div className="text-right">
+                <div className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
+                  {user.name || user.email.split('@')[0]}
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <span>{roleName}</span>
+                  <span className="font-mono text-amber-600 dark:text-amber-400" dir="ltr">({role})</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           <ThemeToggle />
+
+          {/* Logout Button */}
+          {user && (
+            <button
+              onClick={() => logout()}
+              title="خروج از حساب کاربری"
+              className="text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-all active:scale-95"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">خروج</span>
+            </button>
+          )}
 
           <Link
             href="/"

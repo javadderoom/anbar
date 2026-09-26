@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { CreateClientLinkSchema } from '@/lib/validations';
 import { handleApiError, apiSuccess } from '@/lib/api-response';
+import { getCurrentUser } from '@/lib/auth';
+import { hasPermission, Permission } from '@/lib/permissions';
 
 // GET /api/links - list all client links with order counts
 export async function GET() {
@@ -36,6 +38,14 @@ export async function GET() {
 // POST /api/links - create a new client link with Zod validation
 export async function POST(request: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user || !hasPermission(user.role, Permission.MANAGE_LINKS)) {
+      return NextResponse.json(
+        { success: false, code: 'FORBIDDEN', message: 'شما دسترسی ایجاد لینک اختصاصی کاتالوگ را ندارید' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const validated = CreateClientLinkSchema.parse(body);
 

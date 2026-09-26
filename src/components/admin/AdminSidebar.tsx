@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { Warehouse, Boxes, Link2, Clock, Settings, ArrowRight, ShieldCheck } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { Permission } from '@/lib/permissions';
 
 export type AdminTab = 'inventory' | 'links' | 'requests' | 'settings';
 
@@ -15,6 +17,8 @@ export default function AdminSidebar({
   setActiveTab,
   pendingRequestsCount,
 }: AdminSidebarProps) {
+  const { can } = useAuth();
+
   return (
     <aside className="hidden md:flex flex-col w-64 border-l border-slate-200 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl h-screen sticky top-0 p-5 shrink-0 z-30 select-none transition-colors">
       {/* Brand & Logo */}
@@ -95,20 +99,22 @@ export default function AdminSidebar({
           )}
         </button>
 
-        {/* Tab 4: Settings */}
-        <button
-          onClick={() => setActiveTab('settings')}
-          className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-semibold transition-all ${
-            activeTab === 'settings'
-              ? 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-850/60'
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <Settings className="w-4 h-4" />
-            <span>تنظیمات سامانه</span>
-          </div>
-        </button>
+        {/* Tab 4: Settings (Gated by Permission.MANAGE_SETTINGS) */}
+        {can(Permission.MANAGE_SETTINGS) && (
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-semibold transition-all ${
+              activeTab === 'settings'
+                ? 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-850/60'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <Settings className="w-4 h-4" />
+              <span>تنظیمات سامانه</span>
+            </div>
+          </button>
+        )}
       </nav>
 
       {/* Footer / System Status */}

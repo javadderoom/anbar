@@ -10,11 +10,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role {
-  ADMIN
-  STAFF
-}
-
 enum OrderStatus {
   PENDING
   REVIEWED
@@ -39,7 +34,7 @@ model User {
   email        String   @unique
   passwordHash String
   name         String?
-  role         Role     @default(ADMIN)
+  role         Int      @default(255) // Bitmask permission integer (default: 255 = ADMIN)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

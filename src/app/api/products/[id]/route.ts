@@ -2,12 +2,22 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { UpdateProductSchema } from '@/lib/validations';
 import { handleApiError, apiSuccess } from '@/lib/api-response';
+import { getCurrentUser } from '@/lib/auth';
+import { hasPermission, Permission } from '@/lib/permissions';
 
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user || !hasPermission(user.role, Permission.EDIT_STOCK)) {
+      return NextResponse.json(
+        { success: false, code: 'FORBIDDEN', message: 'شما دسترسی ویرایش اطلاعات کالا را ندارید' },
+        { status: 403 }
+      );
+    }
+
     const { id } = await params;
     const body = await request.json();
     const validated = UpdateProductSchema.parse(body);
@@ -44,6 +54,14 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user || !hasPermission(user.role, Permission.DELETE_PRODUCT)) {
+      return NextResponse.json(
+        { success: false, code: 'FORBIDDEN', message: 'شما دسترسی حذف کالا از انبار را ندارید' },
+        { status: 403 }
+      );
+    }
+
     const { id } = await params;
 
     // Soft delete product so historical invoice relations remain intact

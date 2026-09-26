@@ -157,9 +157,5 @@
   "155": "@tailwindcss/postcss",
   "156": "@prisma/adapter-pg",
   "157": "tailwind-merge",
-  "158": "tailwindcss",
-  "159": "pg",
-  "160": "react",
-  "161": "@tanstack/react-query",
-  "162": "@tailwindcss/postcss"
+  "158": "tailwindcss"
 }
