@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ShoppingBag,
@@ -14,63 +14,12 @@ import {
   Info,
   Clock,
   Sparkles,
+  Loader2,
+  PackageOpen,
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
-
-// Sample inventory items for demo & client preview
-const initialProducts = [
-  {
-    id: 'prod-1',
-    sku: 'ANB-101',
-    name: 'لوله فولادی گالوانیزه ۲ اینچ',
-    category: 'لوله‌ها',
-    unit: 'شاخه ۶ متری',
-    unitPrice: 1850000,
-    stockQuantity: 45,
-    specifications: { 'ضخامت': '۲.۵ میلی‌متر', 'استاندارد': 'DIN 2440', 'پوشش': 'گالوانیزه گرم' },
-  },
-  {
-    id: 'prod-2',
-    sku: 'ANB-102',
-    name: 'شیر فلکه کشویی برنجی ۱ اینچ',
-    category: 'اتصالات و شیرآلات',
-    unit: 'عدد',
-    unitPrice: 420000,
-    stockQuantity: 120,
-    specifications: { 'جنس بدنه': 'برنج فورج', 'فشار کاری': 'PN16', 'نوع اتصال': 'دنده‌ای' },
-  },
-  {
-    id: 'prod-3',
-    sku: 'ANB-103',
-    name: 'فلنج جوشی گلودار کلاس ۱۵۰',
-    category: 'فلنج‌ها',
-    unit: 'عدد',
-    unitPrice: 950000,
-    stockQuantity: 18,
-    specifications: { 'سایز': '۳ اینچ', 'متریال': 'ASTM A105', 'کلاس': 'Class 150' },
-  },
-  {
-    id: 'prod-4',
-    sku: 'ANB-104',
-    name: 'واشر لاستیکی منجیددار فشار قوی',
-    category: 'آب‌بندی و اتصالات',
-    unit: 'بسته ۵۰ عددی',
-    unitPrice: 320000,
-    stockQuantity: 65,
-    specifications: { 'ضخامت': '۳ میلی‌متر', 'مقاومت حرارتی': 'تا ۱۲۰ درجه', 'جنس': 'EPDM' },
-  },
-  {
-    id: 'prod-5',
-    sku: 'ANB-105',
-    name: 'الکترود جوشکاری ۶۰۱۳ سایز ۳.۲',
-    category: 'ابزار و جوشکاری',
-    unit: 'بسته ۵ کیلوگرمی',
-    unitPrice: 680000,
-    stockQuantity: 80,
-    specifications: { 'استاندارد': 'AWS E6013', 'برند': 'آما', 'نوع جریان': 'AC / DC' },
-  },
-];
+import type { Product } from '@/types';
 
 export default function ClientCatalogPage({
   params,
@@ -82,12 +31,15 @@ export default function ClientCatalogPage({
     params.then(setUnwrappedParams);
   }, [params]);
 
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [cart, setCart] = useState<Record<string, number>>({});
   const [expandedSpecs, setExpandedSpecs] = useState<Record<string, boolean>>({});
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedOrderNumber, setSubmittedOrderNumber] = useState<string | null>(null);
 
   // Form states for frictionless order submission
   const [clientName, setClientName] = useState('');
@@ -96,6 +48,25 @@ export default function ClientCatalogPage({
 
   const token = unwrappedParams?.token ?? 'demo';
   const isDemo = token === 'demo';
+
+  // Fetch live products from database
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        setIsLoading(true);
+        const res = await fetch('/api/products');
+        if (res.ok) {
+          const data = await res.json();
+          setProducts(data);
+        }
+      } catch (err) {
+        console.error('Failed to load products for catalog:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadProducts();
+  }, []);
 
   const updateQuantity = (productId: string, delta: number, maxStock: number) => {
     setCart((prev) => {
@@ -127,7 +98,7 @@ export default function ClientCatalogPage({
   };
 
   // Filter products
-  const filteredProducts = initialProducts.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     const matchesSearch =
       product.name.toLowerCase().includes(search.toLowerCase()) ||
       product.sku.toLowerCase().includes(search.toLowerCase());
@@ -136,40 +107,83 @@ export default function ClientCatalogPage({
     return matchesSearch && matchesCategory;
   });
 
-  const categories = ['all', ...Array.from(new Set(initialProducts.map((p) => p.category)))];
+  const categories = [
+    'all',
+    ...Array.from(new Set(products.map((p) => p.category).filter(Boolean))),
+  ];
 
   // Cart summary calculations
   const totalItemsCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
   const totalAmount = Object.entries(cart).reduce((sum, [id, qty]) => {
-    const prod = initialProducts.find((p) => p.id === id);
+    const prod = products.find((p) => p.id === id);
     return sum + (prod ? prod.unitPrice * qty : 0);
   }, 0);
 
-  const handleSubmitRequest = (e: React.FormEvent) => {
+  const handleSubmitRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setIsCheckoutModalOpen(false);
+    if (totalItemsCount === 0) return;
+
+    try {
+      setIsSubmitting(true);
+      const items = Object.entries(cart).map(([productId, quantity]) => {
+        const prod = products.find((p) => p.id === productId);
+        return {
+          productId,
+          name: prod?.name || '',
+          sku: prod?.sku || '',
+          unit: prod?.unit || 'عدد',
+          unitPrice: prod?.unitPrice || 0,
+          quantity,
+        };
+      });
+
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token,
+          clientName: clientName.trim(),
+          clientPhone: clientPhone.trim(),
+          notes: clientNotes.trim(),
+          items,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'خطا در ثبت سفارش');
+        return;
+      }
+
+      setSubmittedOrderNumber(data.orderNumber || 'REQ-' + Date.now().toString().slice(-4));
+      setIsCheckoutModalOpen(false);
+      setCart({});
+    } catch (err: any) {
+      alert(err.message || 'خطا در ثبت درخواست');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col pb-28">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col pb-28 transition-colors">
       {/* Mobile-Friendly Top Bar */}
-      <header className="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+      <header className="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-slate-950 shadow-md">
               <Warehouse className="w-4 h-4" />
             </div>
             <div>
-              <h1 className="text-sm font-bold text-white flex items-center gap-1.5">
+              <h1 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <span>کاتالوگ موجودی انبار</span>
                 {isDemo && (
-                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 font-normal">
+                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-600 dark:text-amber-300 font-normal">
                     نسخه آزمایشی
                   </span>
                 )}
               </h1>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 لینک اختصاصی سفارش‌گذاری آنلاین
               </p>
             </div>
@@ -179,7 +193,7 @@ export default function ClientCatalogPage({
             <ThemeToggle />
             <Link
               href="/"
-              className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-700/60"
+              className="text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 flex items-center gap-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700/60 transition-colors"
             >
               <span>صفحه اصلی</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -190,32 +204,34 @@ export default function ClientCatalogPage({
         {/* Search & Category Filter */}
         <div className="max-w-2xl mx-auto px-4 pb-3 space-y-2.5">
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="جستجوی نام کالا یا کد فنی..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-3 pr-9 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs placeholder:text-slate-500 focus:outline-none focus:border-amber-500 transition-colors"
+              className="w-full pl-3 pr-9 py-2 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-amber-500 transition-colors"
             />
           </div>
 
           {/* Categories Horizontal Scroll */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-lg whitespace-nowrap font-medium transition-all ${
-                  selectedCategory === cat
-                    ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
-                    : 'bg-slate-800/70 text-slate-400 hover:text-slate-200 border border-slate-750'
-                }`}
-              >
-                {cat === 'all' ? 'همه دسته‌ها' : cat}
-              </button>
-            ))}
-          </div>
+          {categories.length > 1 && (
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat as string)}
+                  className={`px-3 py-1.5 rounded-lg whitespace-nowrap font-medium transition-all ${
+                    selectedCategory === cat
+                      ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                      : 'bg-slate-100 dark:bg-slate-800/70 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-750'
+                  }`}
+                >
+                  {cat === 'all' ? 'همه دسته‌ها' : cat}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </header>
 
@@ -223,11 +239,29 @@ export default function ClientCatalogPage({
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 pt-4 space-y-3.5">
         {/* Banner Notice */}
         <div className="p-3.5 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/20 flex items-start gap-2.5">
-          <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-          <div className="text-xs text-slate-300 leading-relaxed">
-            <strong className="text-amber-300">سفارش مستقیم بدون نیاز به ثبت‌نام:</strong> اقلام و تعداد مدنظرتان را انتخاب کنید و دکمه «ثبت پیش‌فاکتور» را بزنید.
+          <Info className="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
+          <div className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+            <strong className="text-amber-600 dark:text-amber-300">سفارش مستقیم بدون نیاز به ثبت‌نام:</strong> اقلام و تعداد مدنظرتان را انتخاب کنید و دکمه «ثبت پیش‌فاکتور» را بزنید.
           </div>
         </div>
+
+        {/* Loading State */}
+        {isLoading && (
+          <div className="p-12 text-center text-slate-400 text-xs rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 flex flex-col items-center justify-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
+            <span>در حال بارگذاری کاتالوگ موجودی انبار...</span>
+          </div>
+        )}
+
+        {/* Empty Catalog State */}
+        {!isLoading && filteredProducts.length === 0 && (
+          <div className="p-12 text-center text-slate-500 dark:text-slate-400 text-xs rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 space-y-3">
+            <PackageOpen className="w-8 h-8 text-slate-400 mx-auto opacity-60" />
+            <p className="font-semibold text-sm text-slate-700 dark:text-slate-300">
+              {search ? 'کالایی مطابق با جستجوی شما یافت نشد' : 'در حال حاضر کالایی در این کاتالوگ درج نشده است'}
+            </p>
+          </div>
+        )}
 
         {/* Product Cards List */}
         <div className="space-y-3">
@@ -242,14 +276,14 @@ export default function ClientCatalogPage({
                 key={product.id}
                 className={`p-4 rounded-2xl border transition-all ${
                   qty > 0
-                    ? 'bg-slate-900/90 border-amber-500/50 shadow-md shadow-amber-500/5'
-                    : 'bg-slate-900/50 border-slate-800/80 hover:border-slate-700'
+                    ? 'bg-white dark:bg-slate-900/90 border-amber-500/50 shadow-md shadow-amber-500/5'
+                    : 'bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-slate-800 text-slate-400">
+                      <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                         {product.sku}
                       </span>
                       <span className="text-[11px] text-slate-500">
@@ -257,17 +291,17 @@ export default function ClientCatalogPage({
                       </span>
                     </div>
 
-                    <h2 className="text-sm sm:text-base font-bold text-white leading-snug">
+                    <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
                       {product.name}
                     </h2>
 
                     <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-                      <div className="text-amber-400 font-bold">
+                      <div className="text-amber-600 dark:text-amber-400 font-bold">
                         {formatCurrency(product.unitPrice)}
                       </div>
-                      <div className="text-slate-400">
+                      <div className="text-slate-500 dark:text-slate-400">
                         موجودی انبار:{' '}
-                        <span className={product.stockQuantity < 10 ? 'text-amber-400 font-semibold' : 'text-slate-300 font-medium'}>
+                        <span className={product.stockQuantity < 10 ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-slate-700 dark:text-slate-300 font-medium'}>
                           {formatNumber(product.stockQuantity)} {product.unit}
                         </span>
                       </div>
@@ -275,12 +309,12 @@ export default function ClientCatalogPage({
                   </div>
 
                   {/* Quantity Stepper (Mobile Optimized) */}
-                  <div className="flex items-center bg-slate-950 border border-slate-800 rounded-xl p-1 shrink-0">
+                  <div className="flex items-center bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-1 shrink-0">
                     <button
                       onClick={() => updateQuantity(product.id, -1, product.stockQuantity)}
                       disabled={qty <= 0 || isOutOfStock}
                       aria-label="کاهش تعداد"
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors active:scale-95"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors active:scale-95"
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
@@ -294,41 +328,41 @@ export default function ClientCatalogPage({
                       onChange={(e) =>
                         setDirectQuantity(product.id, parseInt(e.target.value) || 0, product.stockQuantity)
                       }
-                      className="w-10 text-center font-bold text-amber-400 text-sm bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-10 text-center font-bold text-amber-600 dark:text-amber-400 text-sm bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
 
                     <button
                       onClick={() => updateQuantity(product.id, 1, product.stockQuantity)}
                       disabled={qty >= product.stockQuantity || isOutOfStock}
                       aria-label="افزایش تعداد"
-                      className="w-8 h-8 rounded-lg flex items-center justify-center bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 disabled:opacity-30 disabled:bg-slate-800 disabled:text-slate-400 transition-colors active:scale-95"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 disabled:opacity-30 disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 transition-colors active:scale-95"
                     >
                       <Plus className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
 
-                {/* Expandable Specifications Button */}
+                {/* Collapsible Technical Specifications */}
                 {hasSpecs && (
-                  <div className="mt-3 pt-2.5 border-t border-slate-800/60">
+                  <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/60">
                     <button
                       onClick={() => toggleSpecs(product.id)}
-                      className="w-full flex items-center justify-between text-[11px] text-slate-400 hover:text-slate-200 transition-colors"
+                      className="w-full flex items-center justify-between text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 transition-colors py-1"
                     >
-                      <span>مشخصات فنی و استانداردهای محصول</span>
+                      <span>مشخصات فنی و استانداردهای کالا</span>
                       <ChevronDown
                         className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                          isSpecsOpen ? 'rotate-180 text-amber-400' : ''
+                          isSpecsOpen ? 'rotate-180 text-amber-500' : ''
                         }`}
                       />
                     </button>
 
                     {isSpecsOpen && (
-                      <div className="mt-2.5 grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-[11px]">
-                        {Object.entries(product.specifications).map(([key, val]) => (
-                          <div key={key} className="flex flex-col">
-                            <span className="text-slate-500">{key}:</span>
-                            <span className="text-slate-300 font-medium">{String(val)}</span>
+                      <div className="mt-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800/80 grid grid-cols-2 gap-2 text-xs">
+                        {Object.entries(product.specifications!).map(([key, val]) => (
+                          <div key={key} className="space-y-0.5">
+                            <span className="text-[11px] text-slate-400 block">{key}:</span>
+                            <span className="font-semibold text-slate-700 dark:text-slate-200 block">{val}</span>
                           </div>
                         ))}
                       </div>
@@ -343,13 +377,13 @@ export default function ClientCatalogPage({
 
       {/* Sticky Bottom Floating Action Bar */}
       {totalItemsCount > 0 && (
-        <div className="fixed bottom-0 inset-x-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 p-4 shadow-2xl">
+        <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 p-4 shadow-2xl">
           <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
             <div className="flex flex-col">
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-slate-500 dark:text-slate-400">
                 {formatNumber(totalItemsCount)} قلم انتخاب شده
               </span>
-              <span className="text-base font-extrabold text-amber-400">
+              <span className="text-base font-extrabold text-amber-600 dark:text-amber-400">
                 {formatCurrency(totalAmount)}
               </span>
             </div>
@@ -368,15 +402,15 @@ export default function ClientCatalogPage({
       {/* Checkout / Submit Request Modal */}
       {isCheckoutModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-t-3xl sm:rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                <span>تایید و ارسال درخواست پیش‌فاکتور</span>
+          <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-t-3xl sm:rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <span>تأیید و ارسال درخواست پیش‌فاکتور</span>
               </h3>
               <button
                 onClick={() => setIsCheckoutModalOpen(false)}
-                className="text-slate-400 hover:text-white text-xs px-2 py-1 rounded-lg bg-slate-800"
+                className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800"
               >
                 انصراف
               </button>
@@ -385,20 +419,20 @@ export default function ClientCatalogPage({
             {/* Selected Items Summary List */}
             <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
               {Object.entries(cart).map(([id, qty]) => {
-                const item = initialProducts.find((p) => p.id === id);
+                const item = products.find((p) => p.id === id);
                 if (!item) return null;
                 return (
                   <div
                     key={id}
-                    className="flex items-center justify-between text-xs p-2 rounded-lg bg-slate-950 border border-slate-800/80"
+                    className="flex items-center justify-between text-xs p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80"
                   >
                     <div>
-                      <span className="font-semibold text-slate-200 block">{item.name}</span>
-                      <span className="text-slate-400 text-[11px]">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200 block">{item.name}</span>
+                      <span className="text-slate-500 dark:text-slate-400 text-[11px]">
                         {formatNumber(qty)} {item.unit} × {formatCurrency(item.unitPrice)}
                       </span>
                     </div>
-                    <span className="font-bold text-amber-400">
+                    <span className="font-bold text-amber-600 dark:text-amber-400">
                       {formatCurrency(item.unitPrice * qty)}
                     </span>
                   </div>
@@ -406,9 +440,9 @@ export default function ClientCatalogPage({
               })}
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-950 flex items-center justify-between text-sm">
-              <span className="text-slate-400">مجموع برآورد تقریبی:</span>
-              <span className="text-base font-bold text-amber-400">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 flex items-center justify-between text-sm">
+              <span className="text-slate-600 dark:text-slate-400">مجموع برآورد تقریبی:</span>
+              <span className="text-base font-bold text-amber-600 dark:text-amber-400">
                 {formatCurrency(totalAmount)}
               </span>
             </div>
@@ -416,7 +450,7 @@ export default function ClientCatalogPage({
             {/* Quick Contact Form */}
             <form onSubmit={handleSubmitRequest} className="space-y-3 pt-2">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                   نام و نام خانوادگی / نام شرکت
                 </label>
                 <input
@@ -425,12 +459,12 @@ export default function ClientCatalogPage({
                   placeholder="مثال: حاج رضا کریمی"
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs placeholder:text-slate-500 focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                   شماره تماس جهت هماهنگی
                 </label>
                 <input
@@ -439,13 +473,13 @@ export default function ClientCatalogPage({
                   placeholder="۰۹۱۲۳۴۵۶۷۸۹"
                   value={clientPhone}
                   onChange={(e) => setClientPhone(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs placeholder:text-slate-500 focus:outline-none focus:border-amber-500 text-left font-mono"
+                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-amber-500 text-left font-mono"
                   dir="ltr"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                   توضیحات و نحوه تحویل (اختیاری)
                 </label>
                 <textarea
@@ -453,15 +487,23 @@ export default function ClientCatalogPage({
                   placeholder="آدرس، زمان ترجیحی بارگیری یا هرگونه نکته تکمیلی..."
                   value={clientNotes}
                   onChange={(e) => setClientNotes(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs placeholder:text-slate-500 focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 active:scale-98 transition-all"
+                disabled={isSubmitting}
+                className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 active:scale-98 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                ارسال نهایی درخواست پیش‌فاکتور
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>در حال ارسال درخواست...</span>
+                  </>
+                ) : (
+                  <span>ارسال نهایی درخواست پیش‌فاکتور</span>
+                )}
               </button>
             </form>
           </div>
@@ -469,32 +511,32 @@ export default function ClientCatalogPage({
       )}
 
       {/* Submission Success Dialog */}
-      {isSubmitted && (
+      {submittedOrderNumber && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-slate-900 border border-emerald-500/40 rounded-2xl p-6 text-center space-y-4 shadow-2xl">
-            <div className="w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
+          <div className="w-full max-w-sm bg-white dark:bg-slate-900 border border-emerald-500/40 rounded-2xl p-6 text-center space-y-4 shadow-2xl">
+            <div className="w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 mx-auto">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 درخواست شما با موفقیت ثبت گردید
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 پیش‌فاکتور برای شما صادر و توسط مسئول انبار در اسرع وقت بررسی خواهد شد.
               </p>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 flex items-center justify-between">
               <span>کد پیگیری درخواست:</span>
-              <span className="font-mono font-bold text-amber-400">
-                REQ-8491
+              <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
+                {submittedOrderNumber}
               </span>
             </div>
 
             <button
               onClick={() => {
-                setIsSubmitted(false);
+                setSubmittedOrderNumber(null);
                 setCart({});
               }}
               className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition-colors"

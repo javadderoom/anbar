@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AdminSidebar, { type AdminTab } from '@/components/admin/AdminSidebar';
 import AdminBottomNav from '@/components/admin/AdminBottomNav';
 import AdminHeader from '@/components/admin/AdminHeader';
@@ -15,52 +15,44 @@ import type { Product, Invoice } from '@/types';
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>('inventory');
 
-  // Initial Sample Inventory
-  const [products, setProducts] = useState<Product[]>([
-    { id: 'p1', sku: 'ANB-101', name: 'لوله فولادی گالوانیزه ۲ اینچ', category: 'لوله‌ها', unit: 'شاخه ۶ متری', unitPrice: 1850000, stockQuantity: 45, minStockAlert: 10, isActive: true },
-    { id: 'p2', sku: 'ANB-102', name: 'شیر فلکه کشویی برنجی ۱ اینچ', category: 'اتصالات', unit: 'عدد', unitPrice: 420000, stockQuantity: 120, minStockAlert: 20, isActive: true },
-    { id: 'p3', sku: 'ANB-103', name: 'فلنج جوشی گلودار کلاس ۱۵۰', category: 'فلنج‌ها', unit: 'عدد', unitPrice: 950000, stockQuantity: 8, minStockAlert: 15, isActive: true },
-    { id: 'p4', sku: 'ANB-104', name: 'واشر لاستیکی منجیددار فشار قوی', category: 'اتصالات', unit: 'بسته ۵۰ تایی', unitPrice: 320000, stockQuantity: 65, minStockAlert: 15, isActive: true },
-    { id: 'p5', sku: 'ANB-105', name: 'الکترود جوشکاری ۶۰۱۳ سایز ۳.۲', category: 'ابزار', unit: 'بسته ۵ کیلویی', unitPrice: 680000, stockQuantity: 4, minStockAlert: 10, isActive: true },
-  ]);
+  // Real data state from Neon PostgreSQL
+  const [products, setProducts] = useState<Product[]>([]);
+  const [links, setLinks] = useState<ClientLinkItem[]>([]);
+  const [requests, setRequests] = useState<OrderRequestItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Initial Sample Client Links
-  const [links, setLinks] = useState<ClientLinkItem[]>([
-    { id: 'l1', token: 'reza-steel', clientName: 'حاج رضا کریمی (فولاد غرب)', phone: '۰۹۱۲۳۴۵۶۷۸۹', createdDate: '۱۴۰۳/۰۷/۰۱', requestCount: 3, isActive: true },
-    { id: 'l2', token: 'pars-oil-99', clientName: 'شرکت نفت و گاز پارس', phone: '۰۹۱۸۱۱۱۲۲۳۳', createdDate: '۱۴۰۳/۰۷/۰۳', requestCount: 1, isActive: true },
-    { id: 'l3', token: 'guest-open-01', clientName: 'لینک عمومی خریداران استعلامی', phone: 'عمومی / مهمان', createdDate: '۱۴۰۳/۰۷/۰۴', requestCount: 7, isActive: true },
-  ]);
+  // Fetch all database records
+  const fetchAllData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const [prodRes, linkRes, reqRes] = await Promise.all([
+        fetch('/api/products'),
+        fetch('/api/links'),
+        fetch('/api/requests'),
+      ]);
 
-  // Initial Sample Requests
-  const [requests, setRequests] = useState<OrderRequestItem[]>([
-    {
-      id: 'r1',
-      orderNumber: 'REQ-1042',
-      clientName: 'حاج رضا کریمی (فولاد غرب)',
-      phone: '۰۹۱۲۳۴۵۶۷۸۹',
-      itemsCount: 2,
-      totalEstimate: 14750000,
-      status: 'PENDING',
-      date: 'امروز، ۱۰:۴۵',
-      items: [
-        { id: 'ri1', productId: 'p1', description: 'لوله فولادی گالوانیزه ۲ اینچ', quantity: 5, unit: 'شاخه ۶ متری', unitPrice: 1850000, totalPrice: 9250000 },
-        { id: 'ri2', productId: 'p3', description: 'فلنج جوشی گلودار کلاس ۱۵۰', quantity: 6, unit: 'عدد', unitPrice: 950000, totalPrice: 5700000 },
-      ],
-    },
-    {
-      id: 'r2',
-      orderNumber: 'REQ-1041',
-      clientName: 'پیمانکاری سپهر',
-      phone: '۰۹۳۵۰۰۰۱۱۲۲',
-      itemsCount: 1,
-      totalEstimate: 3360000,
-      status: 'CONVERTED',
-      date: 'دیروز، ۱۶:۲۰',
-      items: [
-        { id: 'ri3', productId: 'p2', description: 'شیر فلکه کشویی برنجی ۱ اینچ', quantity: 8, unit: 'عدد', unitPrice: 420000, totalPrice: 3360000 },
-      ],
-    },
-  ]);
+      if (prodRes.ok) {
+        const prodData = await prodRes.json();
+        setProducts(prodData);
+      }
+      if (linkRes.ok) {
+        const linkData = await linkRes.json();
+        setLinks(linkData);
+      }
+      if (reqRes.ok) {
+        const reqData = await reqRes.json();
+        setRequests(reqData);
+      }
+    } catch (error) {
+      console.error('Error fetching admin data from Neon DB:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAllData();
+  }, [fetchAllData]);
 
   // Invoice Print Preview Modal State
   const [selectedInvoiceForPrint, setSelectedInvoiceForPrint] = useState<Invoice | null>(null);
@@ -84,8 +76,8 @@ export default function AdminDashboardPage() {
       discount: 0,
       tax: 0,
       total: req.totalEstimate,
-      issuedDate: '۱۴۰۳/۰۷/۰۵',
-      dueDate: '۱۴۰۳/۰۷/۰۸',
+      issuedDate: req.date,
+      notes: req.notes,
       items: req.items.map((i) => ({
         id: i.id,
         productId: i.productId,
@@ -134,6 +126,8 @@ export default function AdminDashboardPage() {
             <InventoryModule
               products={products}
               setProducts={setProducts}
+              isLoading={isLoading}
+              onRefresh={fetchAllData}
             />
           )}
 
@@ -141,6 +135,7 @@ export default function AdminDashboardPage() {
             <ClientLinksModule
               links={links}
               setLinks={setLinks}
+              isLoading={isLoading}
             />
           )}
 
@@ -150,6 +145,8 @@ export default function AdminDashboardPage() {
               setRequests={setRequests}
               setProducts={setProducts}
               onOpenPrintPreview={handleOpenPrintPreview}
+              isLoading={isLoading}
+              onRefresh={fetchAllData}
             />
           )}
 
