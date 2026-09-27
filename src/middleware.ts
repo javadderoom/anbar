@@ -9,8 +9,17 @@ import {
 } from '@/lib/rate-limit';
 
 const SESSION_COOKIE_NAME = 'anbar_session';
-const JWT_SECRET_STRING = process.env.JWT_SECRET || 'anbar_default_secure_key_32_characters_long_min!';
-const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_STRING);
+
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'test') {
+      return new TextEncoder().encode('test_jwt_secret_must_be_at_least_32_characters_long');
+    }
+    throw new Error('FATAL: JWT_SECRET environment variable is missing.');
+  }
+  return new TextEncoder().encode(secret);
+}
 
 // Paths accessible to the public without authentication
 const PUBLIC_PATHS = ['/login', '/c'];
@@ -34,7 +43,7 @@ export async function middleware(request: NextRequest) {
 
   if (sessionCookie) {
     try {
-      const { payload } = await jwtVerify(sessionCookie, JWT_SECRET);
+      const { payload } = await jwtVerify(sessionCookie, getJwtSecret());
       if (payload.id && typeof payload.role === 'number') {
         isAuthenticated = true;
       }

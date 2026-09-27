@@ -33,14 +33,14 @@ export interface WarehouseSettings {
 }
 
 const DEFAULT_SETTINGS: WarehouseSettings = {
-  businessName: 'بازرگانی و انبار مرکزی',
-  phone: '۰۲۱-۸۸۸۸۸۸۸۸',
-  mobile: '۰۹۱۲۰۰۰۰۰۰۰',
+  businessName: '',
+  phone: '',
+  mobile: '',
   nationalId: '',
   economicCode: '',
   postalCode: '',
-  address: 'تهران، بازار بزرگ، مجتمع صنعتی انبار',
-  bankAccount: 'IR000000000000000000000000',
+  address: '',
+  bankAccount: '',
   taxPercent: 0,
   proformaValidityHours: 48,
   defaultTerms: '۱. اعتبار قیمت‌های مندرج در پیش‌فاکتور حداکثر ۴۸ ساعت پس از صدور می‌باشد.\n۲. بارگیری و تحویل اقلام پس از تسویه حساب نهایی انجام خواهد شد.',
@@ -209,7 +209,7 @@ export default function SettingsModule() {
             </label>
             <input
               type="text"
-              required
+              placeholder="مثال: بازرگانی و انبار مرکزی"
               value={settings.businessName}
               onChange={(e) => setSettings({ ...settings, businessName: e.target.value })}
               className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
@@ -222,6 +222,7 @@ export default function SettingsModule() {
             </label>
             <input
               type="text"
+              placeholder="مثال: ۰۲۱-۸۸۸۸۸۸۸۸"
               value={settings.phone}
               onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
               className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 font-mono text-left"
@@ -235,6 +236,7 @@ export default function SettingsModule() {
             </label>
             <input
               type="tel"
+              placeholder="مثال: ۰۹۱۲۰۰۰۰۰۰۰"
               value={settings.mobile}
               onChange={(e) => setSettings({ ...settings, mobile: e.target.value })}
               className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 font-mono text-left"
@@ -248,6 +250,7 @@ export default function SettingsModule() {
             </label>
             <input
               type="text"
+              placeholder="مثال: IR000000000000000000000000"
               value={settings.bankAccount}
               onChange={(e) => setSettings({ ...settings, bankAccount: e.target.value })}
               className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 font-mono text-left"
@@ -303,6 +306,7 @@ export default function SettingsModule() {
             </label>
             <input
               type="text"
+              placeholder="مثال: تهران، بازار بزرگ، مجتمع صنعتی انبار"
               value={settings.address}
               onChange={(e) => setSettings({ ...settings, address: e.target.value })}
               className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"

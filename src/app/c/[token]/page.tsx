@@ -54,7 +54,7 @@ export default function ClientCatalogPage({
   const [clientNotes, setClientNotes] = useState('');
   const [honeypot, setHoneypot] = useState('');
 
-  const token = unwrappedParams?.token ?? 'demo';
+  const token = unwrappedParams?.token ?? '';
   const isDemo = token === 'demo';
 
   const updateQuantity = (productId: string, delta: number, maxStock: number) => {
@@ -150,7 +150,7 @@ export default function ClientCatalogPage({
     try {
       const data = await submitOrderMutation.mutateAsync(validation.data);
 
-      setSubmittedOrderNumber(data.orderNumber || 'REQ-' + Date.now().toString().slice(-4));
+      setSubmittedOrderNumber(data.orderNumber);
       setIsCheckoutModalOpen(false);
       setCart({});
       notify.success(`درخواست سفارش شما با شماره ${data.orderNumber} با موفقیت ثبت شد`);

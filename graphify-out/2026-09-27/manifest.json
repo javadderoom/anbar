@@ -345,8 +345,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1790510932.5503697,
-    "ast_hash": "8125012e477f111bd25a8038d12d4b41",
+    "mtime": 1790519569.2977617,
+    "ast_hash": "1e4229d41992c7d276418c2551c9040b",
     "semantic_hash": ""
   },
   "postcss.config.mjs": {
@@ -892,6 +892,36 @@
   "src/lib/number-to-words.ts": {
     "mtime": 1790512612.677799,
     "ast_hash": "58d3a8ec9931f576abe99e5a99ea7afe",
+    "semantic_hash": ""
+  },
+  "tests/calculations.test.ts": {
+    "mtime": 1790519672.1104598,
+    "ast_hash": "bfe01e7cd2453675e28694b9028d6f53",
+    "semantic_hash": ""
+  },
+  "tests/excel.test.ts": {
+    "mtime": 1790519805.5057495,
+    "ast_hash": "511df4e86b9768ac33e3aa3fb5d1f4c2",
+    "semantic_hash": ""
+  },
+  "tests/permissions.test.ts": {
+    "mtime": 1790519724.9206161,
+    "ast_hash": "a24e3329b2357c8098d39dad9f2be248",
+    "semantic_hash": ""
+  },
+  "tests/rate-limit.test.ts": {
+    "mtime": 1790519509.5152357,
+    "ast_hash": "ca162eda2d329ef3168107b2b3c465e7",
+    "semantic_hash": ""
+  },
+  "tests/validations.test.ts": {
+    "mtime": 1790519484.6168933,
+    "ast_hash": "5b4f7f753fd1e5680e7698f812ea9da8",
+    "semantic_hash": ""
+  },
+  "vitest.config.ts": {
+    "mtime": 1790519360.0072887,
+    "ast_hash": "638aa8592361bdd78da6cc29be843be4",
     "semantic_hash": ""
   }
 }

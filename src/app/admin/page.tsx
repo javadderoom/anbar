@@ -51,7 +51,7 @@ export default function AdminDashboardPage() {
       type,
       status: type === 'PROFORMA' ? 'ISSUED' : 'PAID',
       client: {
-        id: 'c-req',
+        id: req.id,
         name: req.clientName,
         phone: req.phone,
         isGuest: true,

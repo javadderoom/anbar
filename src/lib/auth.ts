@@ -4,8 +4,20 @@ import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 
 export const SESSION_COOKIE_NAME = 'anbar_session';
-const JWT_SECRET_STRING = process.env.JWT_SECRET || 'anbar_default_secure_key_32_characters_long_min!';
-const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_STRING);
+
+/**
+ * Retrieve JWT secret from environment or test fallback in test mode
+ */
+export function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'test') {
+      return new TextEncoder().encode('test_jwt_secret_must_be_at_least_32_characters_long');
+    }
+    throw new Error('FATAL: JWT_SECRET environment variable is missing.');
+  }
+  return new TextEncoder().encode(secret);
+}
 
 export interface AuthUser {
   id: string;
@@ -42,7 +54,7 @@ export async function signSessionToken(user: AuthUser): Promise<string> {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
 
 /**
@@ -50,7 +62,7 @@ export async function signSessionToken(user: AuthUser): Promise<string> {
  */
 export async function verifySessionToken(token: string): Promise<AuthUser | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     if (!payload.id || typeof payload.role !== 'number') {
       return null;
     }

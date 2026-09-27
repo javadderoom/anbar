@@ -27,14 +27,14 @@ interface BizSettings {
 }
 
 const DEFAULT_BIZ_SETTINGS: BizSettings = {
-  businessName: 'بازرگانی و انبار مرکزی',
-  phone: '۰۲۱-۸۸۸۸۸۸۸۸',
-  mobile: '۰۹۱۲۰۰۰۰۰۰۰',
+  businessName: '',
+  phone: '',
+  mobile: '',
   nationalId: '',
   economicCode: '',
   postalCode: '',
-  address: 'تهران، بازار بزرگ، مجتمع صنعتی انبار',
-  bankAccount: 'IR000000000000000000000000',
+  address: '',
+  bankAccount: '',
   taxPercent: 0,
   proformaValidityHours: 48,
   defaultTerms: '۱. اعتبار قیمت‌های مندرج در پیش‌فاکتور حداکثر ۴۸ ساعت پس از صدور می‌باشد.\n۲. بارگیری و تحویل اقلام پس از تسویه حساب نهایی انجام خواهد شد.',
@@ -131,7 +131,7 @@ export default function InvoicePrintModal({
             {/* National Crest / Company Identity */}
             <div className="text-right space-y-1">
               <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                {bizSettings.businessName}
+                {bizSettings.businessName || 'انبار و بازرگانی'}
               </h1>
               <p className="text-xs font-semibold text-slate-600">
                 مرکز تامین، توزیع و لجستیک اقلام و تجهیزات صنعتی
@@ -183,7 +183,7 @@ export default function InvoicePrintModal({
               <div className="grid grid-cols-2 gap-x-2 gap-y-1">
                 <div>
                   <span className="text-slate-500 text-[11px] block">نام شخص حقیقی/حقوقی:</span>
-                  <strong className="text-slate-900 font-bold block">{bizSettings.businessName}</strong>
+                  <strong className="text-slate-900 font-bold block">{bizSettings.businessName || '—'}</strong>
                 </div>
 
                 <div>
@@ -214,7 +214,7 @@ export default function InvoicePrintModal({
 
                 <div className="col-span-2">
                   <span className="text-slate-500 text-[11px] block">نشانی انبار و بارگیری:</span>
-                  <span className="text-slate-800 block leading-tight">{bizSettings.address || 'تهران'}</span>
+                  <span className="text-slate-800 block leading-tight">{bizSettings.address || '—'}</span>
                 </div>
               </div>
             </div>

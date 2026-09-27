@@ -360,13 +360,13 @@
     "semantic_hash": ""
   },
   "src/app/admin/page.tsx": {
-    "mtime": 1790452240.3949695,
-    "ast_hash": "628e151e9315212607e8adf46c6cfa44",
+    "mtime": 1790521482.9755964,
+    "ast_hash": "2a7d433a0d2961374618b331de1c588c",
     "semantic_hash": ""
   },
   "src/app/c/[token]/page.tsx": {
-    "mtime": 1790511852.8854592,
-    "ast_hash": "b412fae62defd2dd429508708bb093b8",
+    "mtime": 1790521538.7475328,
+    "ast_hash": "a10b837b8a62fe27543f61abab1d49e6",
     "semantic_hash": ""
   },
   "src/app/layout.tsx": {
@@ -380,8 +380,8 @@
     "semantic_hash": ""
   },
   "src/components/InvoicePrintModal.tsx": {
-    "mtime": 1790513088.7772431,
-    "ast_hash": "83525d6f86043495f293f137e41f753a",
+    "mtime": 1790521453.6204555,
+    "ast_hash": "8c44dd12cb340c173826829bdb274b9b",
     "semantic_hash": ""
   },
   "src/components/ThemeProvider.tsx": {
@@ -430,8 +430,8 @@
     "semantic_hash": ""
   },
   "src/components/admin/SettingsModule.tsx": {
-    "mtime": 1790513045.6145597,
-    "ast_hash": "282f5f5037f4c29a556162eab552b731",
+    "mtime": 1790521400.6670086,
+    "ast_hash": "6167d0c0de6b017fc3be82e63f764eb5",
     "semantic_hash": ""
   },
   "src/lib/excel.ts": {
@@ -835,8 +835,8 @@
     "semantic_hash": ""
   },
   "src/lib/auth.ts": {
-    "mtime": 1790453766.668196,
-    "ast_hash": "c67349b825b18e63c2f91982e586b2fb",
+    "mtime": 1790521313.204088,
+    "ast_hash": "eedd627a6a71b741748a5ddb87e32bbb",
     "semantic_hash": ""
   },
   "src/lib/permissions.ts": {
@@ -845,8 +845,8 @@
     "semantic_hash": ""
   },
   "src/middleware.ts": {
-    "mtime": 1790512041.2701457,
-    "ast_hash": "f51587f82765ecb9ccfff21e417ab0ed",
+    "mtime": 1790521337.8643403,
+    "ast_hash": "a6fcb8ae99b0ed17abe779393afa8bcb",
     "semantic_hash": ""
   },
   "prisma/migrations/20260927113500_add_stock_movement_ledger/migration.sql": {
@@ -922,6 +922,11 @@
   "vitest.config.ts": {
     "mtime": 1790519360.0072887,
     "ast_hash": "638aa8592361bdd78da6cc29be843be4",
+    "semantic_hash": ""
+  },
+  "tests/auth.test.ts": {
+    "mtime": 1790521587.4494464,
+    "ast_hash": "cda0dbf7d102de67a6688fd8787c18c4",
     "semantic_hash": ""
   }
 }
