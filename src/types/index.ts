@@ -94,3 +94,19 @@ export interface Invoice {
   notes?: string;
   items: InvoiceItem[];
 }
+
+export type StockMovementType = 'IN' | 'OUT' | 'ADJUSTMENT';
+
+export interface StockMovement {
+  id: string;
+  productId: string;
+  type: StockMovementType;
+  deltaQuantity: number;
+  previousStock: number;
+  newStock: number;
+  reason?: string;
+  referenceId?: string;
+  userName?: string;
+  createdAt: string;
+}
+

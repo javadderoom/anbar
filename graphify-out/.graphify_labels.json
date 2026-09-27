@@ -161,5 +161,7 @@
   "159": "pg",
   "160": "react",
   "161": "@tanstack/react-query",
-  "162": "@tailwindcss/postcss"
+  "162": "@tailwindcss/postcss",
+  "163": "$impeccable hooks",
+  "164": "eslint"
 }

@@ -41,26 +41,40 @@ export async function POST(
         throw new Error('این درخواست قبلاً به فاکتور تبدیل شده است');
       }
 
-      // Guarded atomic stock decrement (prevents race conditions & negative stock)
+      // Guarded atomic stock decrement with audit ledger tracking
       if (validated.deductStock) {
         for (const item of order.items) {
-          const updateResult = await tx.product.updateMany({
-            where: {
-              id: item.productId,
-              stockQuantity: { gte: item.quantity },
-            },
-            data: {
-              stockQuantity: {
-                decrement: item.quantity,
-              },
-            },
+          const currentProd = await tx.product.findUnique({
+            where: { id: item.productId },
+            select: { stockQuantity: true },
           });
 
-          if (updateResult.count === 0) {
+          if (!currentProd || currentProd.stockQuantity < item.quantity) {
             throw new Error(
               `موجودی کالای «${item.productName}» در انبار برای تحویل این تعداد کافی نمی‌باشد`
             );
           }
+
+          const previousStock = currentProd.stockQuantity;
+          const newStock = previousStock - item.quantity;
+
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stockQuantity: newStock },
+          });
+
+          await tx.stockMovement.create({
+            data: {
+              productId: item.productId,
+              type: 'OUT',
+              deltaQuantity: -item.quantity,
+              previousStock,
+              newStock,
+              reason: `کسر خودکار بابت سفارش ${order.orderNumber}`,
+              referenceId: order.id,
+              userName: user?.name || user?.email?.split('@')[0] || 'سیستم',
+            },
+          });
         }
       }
 

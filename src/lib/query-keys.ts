@@ -4,6 +4,7 @@ export const queryKeys = {
     list: (search?: string, category?: string) =>
       ['products', 'list', { search: search || '', category: category || '' }] as const,
     detail: (id: string) => ['products', 'detail', id] as const,
+    movements: (productId: string) => ['products', productId, 'movements'] as const,
   },
   orders: {
     all: ['orders'] as const,

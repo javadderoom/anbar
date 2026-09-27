@@ -2,8 +2,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/query-keys';
-import type { Product } from '@/types';
-import type { CreateProductInput, UpdateProductInput } from '@/lib/validations';
+import type { Product, StockMovement } from '@/types';
+import type { CreateProductInput, UpdateProductInput, AdjustStockInput } from '@/lib/validations';
 
 // Fetch products with optional search and category
 export function useProducts(search = '', category = '') {
@@ -117,3 +117,53 @@ export function useBulkImportProducts() {
     },
   });
 }
+
+// Quick stock adjustment mutation
+export function useAdjustStock() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      productId,
+      data,
+    }: {
+      productId: string;
+      data: AdjustStockInput;
+    }) => {
+      const res = await fetch(`/api/products/${productId}/stock`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const resData = await res.json();
+      if (!res.ok) {
+        throw new Error(resData.message || resData.error || 'خطا در اصلاح موجودی');
+      }
+      return resData as { product: Product; movement: StockMovement };
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.products.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.products.movements(variables.productId),
+      });
+    },
+  });
+}
+
+// Fetch stock movements ledger for a specific product
+export function useProductMovements(productId: string, enabled = true) {
+  return useQuery<StockMovement[]>({
+    queryKey: queryKeys.products.movements(productId),
+    queryFn: async () => {
+      const res = await fetch(`/api/products/${productId}/movements`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'خطا در دریافت تاریخچه انبارداری');
+      }
+      return res.json();
+    },
+    enabled: enabled && !!productId,
+  });
+}
+

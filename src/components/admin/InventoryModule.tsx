@@ -12,6 +12,8 @@ import {
   Trash2,
   Loader2,
   RefreshCw,
+  History,
+  Layers,
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { exportProductsToExcelFile, parseProductsFromExcelFile } from '@/lib/excel';
@@ -20,6 +22,8 @@ import { CreateProductSchema } from '@/lib/validations';
 import { useCreateProduct, useDeleteProduct, useBulkImportProducts } from '@/hooks';
 import { useAuth } from '@/context/AuthContext';
 import { Permission } from '@/lib/permissions';
+import StockAdjustModal from './StockAdjustModal';
+import StockHistoryModal from './StockHistoryModal';
 import type { Product } from '@/types';
 
 interface InventoryModuleProps {
@@ -38,8 +42,14 @@ export default function InventoryModule({
   const { can } = useAuth();
   const canAddProduct = can(Permission.ADD_PRODUCT);
   const canDeleteProduct = can(Permission.DELETE_PRODUCT);
+  const canEditStock = can(Permission.EDIT_STOCK);
+  const canViewInventory = can(Permission.VIEW_INVENTORY);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [stockFilter, setStockFilter] = useState<'all' | 'low_stock' | 'out_of_stock'>('all');
+  const [selectedProductForAdjust, setSelectedProductForAdjust] = useState<Product | null>(null);
+  const [selectedProductForHistory, setSelectedProductForHistory] = useState<Product | null>(null);
+
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -62,13 +72,26 @@ export default function InventoryModule({
     minStockAlert: 5,
   });
 
-  // Filtered products
-  const filteredProducts = products.filter(
-    (p) =>
+  // Filtered products by search and stock threshold
+  const filteredProducts = products.filter((p) => {
+    const matchesSearch =
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (p.category && p.category.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+      (p.category && p.category.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    if (!matchesSearch) return false;
+
+    if (stockFilter === 'out_of_stock') {
+      return p.stockQuantity === 0;
+    }
+    if (stockFilter === 'low_stock') {
+      return p.stockQuantity <= p.minStockAlert;
+    }
+    return true;
+  });
+
+  const lowStockTotal = products.filter((p) => p.stockQuantity <= p.minStockAlert).length;
+  const outOfStockTotal = products.filter((p) => p.stockQuantity === 0).length;
 
   // Excel Export Handler
   const handleExportExcel = () => {
@@ -232,6 +255,55 @@ export default function InventoryModule({
         </div>
       </div>
 
+      {/* Stock Status Filter Pills */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+        <button
+          onClick={() => setStockFilter('all')}
+          className={`px-3 py-1.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            stockFilter === 'all'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 font-bold shadow-sm'
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300'
+          }`}
+        >
+          <span>همه کالاها</span>
+          <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono">
+            {formatNumber(products.length)}
+          </span>
+        </button>
+
+        <button
+          onClick={() => setStockFilter('low_stock')}
+          className={`px-3 py-1.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            stockFilter === 'low_stock'
+              ? 'bg-amber-500 text-slate-950 font-bold shadow-sm shadow-amber-500/20'
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300'
+          }`}
+        >
+          <span>هشدار کسری موجودی</span>
+          {lowStockTotal > 0 && (
+            <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-amber-500/20 text-amber-800 dark:text-amber-300 font-mono font-bold">
+              {formatNumber(lowStockTotal)}
+            </span>
+          )}
+        </button>
+
+        <button
+          onClick={() => setStockFilter('out_of_stock')}
+          className={`px-3 py-1.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            stockFilter === 'out_of_stock'
+              ? 'bg-rose-500 text-white font-bold shadow-sm shadow-rose-500/20'
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300'
+          }`}
+        >
+          <span>اتمام موجودی</span>
+          {outOfStockTotal > 0 && (
+            <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-rose-500/20 text-rose-700 dark:text-rose-300 font-mono font-bold">
+              {formatNumber(outOfStockTotal)}
+            </span>
+          )}
+        </button>
+      </div>
+
       {/* Loading Skeleton Indicator */}
       {isLoading && products.length === 0 && (
         <div className="p-12 text-center text-slate-400 text-xs rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 flex flex-col items-center justify-center gap-3">
@@ -258,7 +330,9 @@ export default function InventoryModule({
       {/* Mobile View: Product Cards */}
       <div className="md:hidden space-y-3">
         {filteredProducts.map((p) => {
-          const isLow = p.stockQuantity <= p.minStockAlert;
+          const isOutOfStock = p.stockQuantity === 0;
+          const isLowStock = !isOutOfStock && p.stockQuantity <= p.minStockAlert;
+
           return (
             <div
               key={p.id}
@@ -276,16 +350,39 @@ export default function InventoryModule({
                   )}
                 </div>
 
-                <div className="flex items-center gap-2">
-                  {isLow ? (
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20 flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
+                  {isOutOfStock ? (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
-                      <span>هشدار موجودی</span>
+                      <span>اتمام موجودی</span>
+                    </span>
+                  ) : isLowStock ? (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1">
+                      <AlertTriangle className="w-3 h-3" />
+                      <span>کسری موجودی</span>
                     </span>
                   ) : (
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                       موجودی کافی
                     </span>
+                  )}
+
+                  <button
+                    onClick={() => setSelectedProductForHistory(p)}
+                    className="p-1 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+                    title="تاریخچه گردش انبار"
+                  >
+                    <History className="w-3.5 h-3.5" />
+                  </button>
+
+                  {canEditStock && (
+                    <button
+                      onClick={() => setSelectedProductForAdjust(p)}
+                      className="p-1 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-colors"
+                      title="اصلاح و ورود/خروج موجودی"
+                    >
+                      <Layers className="w-3.5 h-3.5" />
+                    </button>
                   )}
 
                   {canDeleteProduct && (
@@ -316,7 +413,11 @@ export default function InventoryModule({
                   <span className="text-slate-500 dark:text-slate-400 text-[11px] block">موجودی انبار:</span>
                   <span
                     className={`inline-flex items-center gap-1 font-bold ${
-                      isLow ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'
+                      isOutOfStock
+                        ? 'text-rose-600 dark:text-rose-400'
+                        : isLowStock
+                        ? 'text-amber-600 dark:text-amber-400'
+                        : 'text-emerald-600 dark:text-emerald-400'
                     }`}
                   >
                     {formatNumber(p.stockQuantity)} {p.unit}
@@ -342,12 +443,14 @@ export default function InventoryModule({
                   <th className="p-3.5">قیمت واحد</th>
                   <th className="p-3.5">موجودی انبار</th>
                   <th className="p-3.5 text-center">وضعیت</th>
-                  <th className="p-3.5 text-center w-12">عملیات</th>
+                  <th className="p-3.5 text-center w-20">عملیات</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 {filteredProducts.map((p) => {
-                  const isLow = p.stockQuantity <= p.minStockAlert;
+                  const isOutOfStock = p.stockQuantity === 0;
+                  const isLowStock = !isOutOfStock && p.stockQuantity <= p.minStockAlert;
+
                   return (
                     <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors">
                       <td className="p-3.5 font-mono text-slate-700 dark:text-slate-300 font-medium" dir="ltr">
@@ -362,21 +465,39 @@ export default function InventoryModule({
                         {formatCurrency(p.unitPrice)}
                       </td>
                       <td className="p-3.5">
-                        <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold ${
-                            isLow
-                              ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
-                              : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                          }`}
-                        >
-                          {formatNumber(p.stockQuantity)} {p.unit}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold ${
+                              isOutOfStock
+                                ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+                                : isLowStock
+                                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                            }`}
+                          >
+                            {formatNumber(p.stockQuantity)} {p.unit}
+                          </span>
+                          {canEditStock && (
+                            <button
+                              onClick={() => setSelectedProductForAdjust(p)}
+                              title="ورود، خروج یا انبارگردانی"
+                              className="p-1 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-colors"
+                            >
+                              <Layers className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                       <td className="p-3.5 text-center">
-                        {isLow ? (
-                          <span className="text-[11px] text-rose-600 dark:text-rose-400 font-medium flex items-center justify-center gap-1">
+                        {isOutOfStock ? (
+                          <span className="text-[11px] text-rose-600 dark:text-rose-400 font-semibold flex items-center justify-center gap-1">
                             <AlertTriangle className="w-3.5 h-3.5" />
-                            <span>نیازمند تامین</span>
+                            <span>اتمام موجودی</span>
+                          </span>
+                        ) : isLowStock ? (
+                          <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium flex items-center justify-center gap-1">
+                            <AlertTriangle className="w-3.5 h-3.5" />
+                            <span>کسری موجودی</span>
                           </span>
                         ) : (
                           <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
@@ -385,15 +506,24 @@ export default function InventoryModule({
                         )}
                       </td>
                       <td className="p-3.5 text-center">
-                        {canDeleteProduct && (
+                        <div className="flex items-center justify-center gap-1">
                           <button
-                            onClick={() => handleDeleteProduct(p.id, p.name)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-                            title="حذف کالا"
+                            onClick={() => setSelectedProductForHistory(p)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-colors"
+                            title="تاریخچه گردش انبار"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <History className="w-4 h-4" />
                           </button>
-                        )}
+                          {canDeleteProduct && (
+                            <button
+                              onClick={() => handleDeleteProduct(p.id, p.name)}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                              title="حذف کالا"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -545,6 +675,29 @@ export default function InventoryModule({
             </form>
           </div>
         </div>
+      )}
+
+      {/* Stock Adjustment Modal (In / Out / Direct Count) */}
+      {selectedProductForAdjust && (
+        <StockAdjustModal
+          product={selectedProductForAdjust}
+          isOpen={!!selectedProductForAdjust}
+          onClose={() => setSelectedProductForAdjust(null)}
+          onSuccess={async () => {
+            if (onRefresh) {
+              await onRefresh();
+            }
+          }}
+        />
+      )}
+
+      {/* Stock Movement History Ledger Modal */}
+      {selectedProductForHistory && (
+        <StockHistoryModal
+          product={selectedProductForHistory}
+          isOpen={!!selectedProductForHistory}
+          onClose={() => setSelectedProductForHistory(null)}
+        />
       )}
     </div>
   );

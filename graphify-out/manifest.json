@@ -420,8 +420,8 @@
     "semantic_hash": ""
   },
   "src/components/admin/InventoryModule.tsx": {
-    "mtime": 1790454230.8061173,
-    "ast_hash": "8a071177730d2c808c8945676be042cb",
+    "mtime": 1790510114.1676154,
+    "ast_hash": "f588a8a6e857a060ba02399da55a72b6",
     "semantic_hash": ""
   },
   "src/components/admin/OrderRequestsModule.tsx": {
@@ -450,8 +450,8 @@
     "semantic_hash": ""
   },
   "src/types/index.ts": {
-    "mtime": 1790366485.331162,
-    "ast_hash": "dc1f6f98b19dd8b71d2e71275a0be3dc",
+    "mtime": 1790509128.174502,
+    "ast_hash": "2e30c29e85655b54ba69bb0b90d27344",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -720,8 +720,8 @@
     "semantic_hash": ""
   },
   "src/app/api/requests/[id]/convert/route.ts": {
-    "mtime": 1790454446.1295578,
-    "ast_hash": "d58297c7f99c5fd50398c3119ff82b20",
+    "mtime": 1790509240.7676206,
+    "ast_hash": "7a5a848ff388e4688a4f4224454a5979",
     "semantic_hash": ""
   },
   "src/app/api/requests/route.ts": {
@@ -750,8 +750,8 @@
     "semantic_hash": ""
   },
   "src/lib/validations/index.ts": {
-    "mtime": 1790450878.8498096,
-    "ast_hash": "371b7310eec4b139d1a39925fcb17034",
+    "mtime": 1790509057.1971505,
+    "ast_hash": "1582e219dc5bd0f47c0010dd4f708917",
     "semantic_hash": ""
   },
   "src/lib/validations/link.schema.ts": {
@@ -795,23 +795,18 @@
     "semantic_hash": ""
   },
   "src/hooks/useProducts.ts": {
-    "mtime": 1790451983.639876,
-    "ast_hash": "5c788564232245f9a424b71d901d07d1",
+    "mtime": 1790509412.4492638,
+    "ast_hash": "a6cc8e9d9d285a02c6c5fde11ba51a17",
     "semantic_hash": ""
   },
   "src/lib/query-keys.ts": {
-    "mtime": 1790451957.5067756,
-    "ast_hash": "f1f6729eec29ae2eefff3255c1deb8d0",
+    "mtime": 1790509291.1865084,
+    "ast_hash": "ff937f4611380e0ba1698d8db8466552",
     "semantic_hash": ""
   },
   "prisma/migrations/20260926200923_change_user_role_to_bitmask/migration.sql": {
     "mtime": 1790453363.9575741,
     "ast_hash": "8050392d73c18758073051dc8e4e9ba7",
-    "semantic_hash": ""
-  },
-  "prisma/migrations/20260926201500_change_user_role_to_bitmask/migration.sql": {
-    "mtime": 1790453702.5629807,
-    "ast_hash": "dd40995808065c1962f2a5216fc58197",
     "semantic_hash": ""
   },
   "src/app/api/auth/login/route.ts": {
@@ -852,6 +847,36 @@
   "src/middleware.ts": {
     "mtime": 1790453880.3607068,
     "ast_hash": "694a9668b9acc72453a86d1387131160",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260927113500_add_stock_movement_ledger/migration.sql": {
+    "mtime": 1790508915.9053483,
+    "ast_hash": "8a246ef98b7a30a7536af595a39e9662",
+    "semantic_hash": ""
+  },
+  "src/app/api/products/[id]/movements/route.ts": {
+    "mtime": 1790509184.3639233,
+    "ast_hash": "180709e02e172c1e7dd9cca7f91afd39",
+    "semantic_hash": ""
+  },
+  "src/app/api/products/[id]/stock/route.ts": {
+    "mtime": 1790509156.0450397,
+    "ast_hash": "477ac8c49af3ae8638d5f4d0996dcb51",
+    "semantic_hash": ""
+  },
+  "src/components/admin/StockAdjustModal.tsx": {
+    "mtime": 1790510044.761739,
+    "ast_hash": "882ebfe35da6b6c4e8f2ef5ffef4ffc9",
+    "semantic_hash": ""
+  },
+  "src/components/admin/StockHistoryModal.tsx": {
+    "mtime": 1790509488.4004624,
+    "ast_hash": "8e97138ab1758ba36b317fd1cc77090e",
+    "semantic_hash": ""
+  },
+  "src/lib/validations/stock.schema.ts": {
+    "mtime": 1790509006.2987504,
+    "ast_hash": "b2a60e161ae6cf019aed7b1a7e37ce89",
     "semantic_hash": ""
   }
 }
