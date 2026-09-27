@@ -380,8 +380,8 @@
     "semantic_hash": ""
   },
   "src/components/InvoicePrintModal.tsx": {
-    "mtime": 1790448535.2703533,
-    "ast_hash": "e15e00e27657d475510b6462619a90c2",
+    "mtime": 1790513088.7772431,
+    "ast_hash": "83525d6f86043495f293f137e41f753a",
     "semantic_hash": ""
   },
   "src/components/ThemeProvider.tsx": {
@@ -430,8 +430,8 @@
     "semantic_hash": ""
   },
   "src/components/admin/SettingsModule.tsx": {
-    "mtime": 1790451188.4717338,
-    "ast_hash": "57f9c8110843798eb2871f74d5fc351d",
+    "mtime": 1790513045.6145597,
+    "ast_hash": "282f5f5037f4c29a556162eab552b731",
     "semantic_hash": ""
   },
   "src/lib/excel.ts": {
@@ -770,8 +770,8 @@
     "semantic_hash": ""
   },
   "src/lib/validations/settings.schema.ts": {
-    "mtime": 1790451578.3899457,
-    "ast_hash": "604ad617f94679a8fad7a44feef1d19d",
+    "mtime": 1790512829.5090625,
+    "ast_hash": "11a561a807ded0654dea8581e41ca3c1",
     "semantic_hash": ""
   },
   "src/components/QueryProvider.tsx": {
@@ -887,6 +887,11 @@
   "src/lib/rate-limit.ts": {
     "mtime": 1790511536.0154333,
     "ast_hash": "d2b95bd199e0d2263fd796ac7177ff41",
+    "semantic_hash": ""
+  },
+  "src/lib/number-to-words.ts": {
+    "mtime": 1790512612.677799,
+    "ast_hash": "58d3a8ec9931f576abe99e5a99ea7afe",
     "semantic_hash": ""
   }
 }

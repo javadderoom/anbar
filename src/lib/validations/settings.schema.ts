@@ -9,6 +9,9 @@ export const WarehouseSettingsSchema = z.object({
     .max(200, 'نام کسب‌وکار حداکثر ۲۰۰ کاراکتر است'),
   phone: z.string().trim().max(30).optional().default(''),
   mobile: z.string().trim().max(30).optional().default(''),
+  nationalId: z.string().trim().max(20).optional().default(''),
+  economicCode: z.string().trim().max(20).optional().default(''),
+  postalCode: z.string().trim().max(20).optional().default(''),
   address: z.string().trim().max(300).optional().default(''),
   bankAccount: z.string().trim().max(50).optional().default(''),
   taxPercent: z.coerce

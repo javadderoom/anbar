@@ -22,6 +22,9 @@ export interface WarehouseSettings {
   businessName: string;
   phone: string;
   mobile: string;
+  nationalId: string;
+  economicCode: string;
+  postalCode: string;
   address: string;
   bankAccount: string;
   taxPercent: number;
@@ -33,6 +36,9 @@ const DEFAULT_SETTINGS: WarehouseSettings = {
   businessName: 'بازرگانی و انبار مرکزی',
   phone: '۰۲۱-۸۸۸۸۸۸۸۸',
   mobile: '۰۹۱۲۰۰۰۰۰۰۰',
+  nationalId: '',
+  economicCode: '',
+  postalCode: '',
   address: 'تهران، بازار بزرگ، مجتمع صنعتی انبار',
   bankAccount: 'IR000000000000000000000000',
   taxPercent: 0,
@@ -244,6 +250,48 @@ export default function SettingsModule() {
               type="text"
               value={settings.bankAccount}
               onChange={(e) => setSettings({ ...settings, bankAccount: e.target.value })}
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 font-mono text-left"
+              dir="ltr"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              شناسه ملی / کد ملی (فروشنده)
+            </label>
+            <input
+              type="text"
+              placeholder="مثال: ۱۰۱۰۳۰۰۰۰۰۰"
+              value={settings.nationalId || ''}
+              onChange={(e) => setSettings({ ...settings, nationalId: e.target.value })}
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 font-mono text-left"
+              dir="ltr"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              شماره اقتصادی (ماده ۱۶۹)
+            </label>
+            <input
+              type="text"
+              placeholder="مثال: ۴۱۱۱۰۰۰۰۰۰۰۰"
+              value={settings.economicCode || ''}
+              onChange={(e) => setSettings({ ...settings, economicCode: e.target.value })}
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 font-mono text-left"
+              dir="ltr"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              کد پستی ۱۰ رقمی انبار
+            </label>
+            <input
+              type="text"
+              placeholder="مثال: ۱۱۵۱۰۰۰۰۰۰"
+              value={settings.postalCode || ''}
+              onChange={(e) => setSettings({ ...settings, postalCode: e.target.value })}
               className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 font-mono text-left"
               dir="ltr"
             />
