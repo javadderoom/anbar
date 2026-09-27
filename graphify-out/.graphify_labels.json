@@ -92,6 +92,7 @@
   "90": "palette.mjs",
   "91": "pin.mjs",
   "92": "General rules",
+  "93": "checkRepeatedSectionKickersFromDoc",
   "94": "Generate Combined Critique Report",
   "95": "Product register",
   "96": "inline-ignores.mjs",

@@ -430,8 +430,8 @@
     "semantic_hash": ""
   },
   "src/components/admin/SettingsModule.tsx": {
-    "mtime": 1790526888.4853077,
-    "ast_hash": "9a5a5f0b59c0ed0f3206bd110fd58f9c",
+    "mtime": 1790540160.7407422,
+    "ast_hash": "c2d205e04aa7176abfd16e3b02830346",
     "semantic_hash": ""
   },
   "src/lib/excel.ts": {
@@ -655,8 +655,8 @@
     "semantic_hash": ""
   },
   "docs/README.md": {
-    "mtime": 1790450560.9924889,
-    "ast_hash": "30e600e7fae8ecd6bb0f49e922c47b16",
+    "mtime": 1790539790.5459385,
+    "ast_hash": "701f7a5497a965abebf63afdb36b96c3",
     "semantic_hash": ""
   },
   "docs/architecture.md": {
@@ -962,6 +962,21 @@
   "public/docs/user-guide.html": {
     "mtime": 1790525673.1605673,
     "ast_hash": "027d91caac4239cebdd7bc5ccb7fbd3f",
+    "semantic_hash": ""
+  },
+  "src/app/dev/page.tsx": {
+    "mtime": 1790539960.3816178,
+    "ast_hash": "a90e1e8ea91e48196bd98deb97c1b8e4",
+    "semantic_hash": ""
+  },
+  "docs/technical-architecture.html": {
+    "mtime": 1790539535.3039658,
+    "ast_hash": "2b8717e193bf6931c3b930afd934c526",
+    "semantic_hash": ""
+  },
+  "public/docs/technical-architecture.html": {
+    "mtime": 1790539535.3039658,
+    "ast_hash": "2b8717e193bf6931c3b930afd934c526",
     "semantic_hash": ""
   }
 }
