@@ -15,6 +15,7 @@ import {
   Download,
   BookOpen,
   ExternalLink,
+  Cpu,
 } from 'lucide-react';
 import { useTheme } from '@/components/ThemeProvider';
 import { WarehouseSettingsSchema } from '@/lib/validations';
@@ -387,7 +388,7 @@ export default function SettingsModule() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <a
             href="/docs/user-guide.html"
             target="_blank"
@@ -426,6 +427,26 @@ export default function SettingsModule() {
               </div>
             </div>
             <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition-colors" />
+          </a>
+
+          <a
+            href="/dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 hover:bg-blue-500/5 transition-all group sm:col-span-2 lg:col-span-1"
+          >
+            <div className="flex items-center gap-2.5">
+              <Cpu className="w-4 h-4 text-blue-500" />
+              <div>
+                <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  معماری فنی و تصمیمات مهندسی
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                  تحلیل زیرساخت، بیت‌ماسک و مقایسه آلترناتیوها
+                </div>
+              </div>
+            </div>
+            <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-500 transition-colors" />
           </a>
         </div>
       </div>

@@ -157,10 +157,9 @@
   "155": "@tailwindcss/postcss",
   "156": "@prisma/adapter-pg",
   "157": "tailwind-merge",
+  "158": "Phase 6: Edge Security, Abuse Prevention & Rate Limiting",
   "159": "pg",
-  "160": "resolveWorkspaceProjectRoot",
   "161": "@tanstack/react-query",
   "162": "Phase 2: Client State Management & Cache Synchronization (TanStack Query v5)",
-  "163": "checkHeroEyebrow",
   "164": "tailwind-merge"
 }

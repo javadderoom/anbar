@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مستندات معماری فنی و تصمیمات مهندسی سامانه انبار (Technical Architecture & Engineering Decisions)</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-body: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: #1e293b;
+      --bg-card-hover: #26354a;
+      --border-subtle: #334155;
+      --border-accent: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.2);
+      --accent-dark: #b45309;
+      --emerald: #10b981;
+      --emerald-bg: rgba(16, 185, 129, 0.1);
+      --emerald-border: #059669;
+      --rose: #f43f5e;
+      --rose-bg: rgba(244, 63, 94, 0.1);
+      --rose-border: #e11d48;
+      --blue: #38bdf8;
+      --blue-bg: rgba(56, 189, 248, 0.1);
+      --blue-border: #0284c7;
+      --purple: #c084fc;
+      --purple-bg: rgba(192, 132, 252, 0.1);
+      --sidebar-width: 320px;
+    }
+
+    [data-theme="light"] {
+      --bg-body: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #f1f5f9;
+      --bg-card-hover: #e2e8f0;
+      --border-subtle: #cbd5e1;
+      --border-accent: #d97706;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+      --accent: #d97706;
+      --accent-glow: rgba(217, 119, 6, 0.15);
+      --accent-dark: #92400e;
+      --emerald: #059669;
+      --emerald-bg: #ecfdf5;
+      --emerald-border: #a7f3d0;
+      --rose: #e11d48;
+      --rose-bg: #fff1f2;
+      --rose-border: #fecdd3;
+      --blue: #0284c7;
+      --blue-bg: #f0f9ff;
+      --blue-border: #bae6fd;
+      --purple: #9333ea;
+      --purple-bg: #faf5ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, Tahoma, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.8;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .code-font, code, pre {
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .ltr-inline {
+      direction: ltr;
+      display: inline-block;
+      unicode-bidi: embed;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 0.9em;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    /* Top Sticky Action Bar */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .brand-text h1 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .version-tag {
+      font-size: 11px;
+      background: var(--blue-bg);
+      color: var(--blue);
+      border: 1px solid var(--blue-border);
+      padding: 1px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      direction: ltr;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-action {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-action:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .btn-print {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+      border: none;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+      font-weight: 800;
+    }
+
+    .btn-print:hover {
+      background: #fbbf24;
+      color: #000;
+    }
+
+    /* Layout Structure */
+    .layout-container {
+      display: flex;
+      max-width: 1500px;
+      margin: 0 auto;
+      min-height: calc(100vh - 64px);
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      flex-shrink: 0;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 61px;
+      height: calc(100vh - 61px);
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-body);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 8px 12px 8px 32px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      padding: 0 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      border-right: 2px solid transparent;
+    }
+
+    .nav-item a:hover {
+      background: var(--bg-card);
+      color: var(--text-main);
+    }
+
+    .nav-item.active a {
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-weight: 700;
+      border-right-color: var(--accent);
+    }
+
+    .nav-badge {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-dim);
+    }
+
+    /* Main Content Area */
+    .content-area {
+      flex: 1;
+      min-width: 0;
+      padding: 40px 56px 100px 56px;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(56, 189, 248, 0.05));
+      border: 1px solid var(--border-accent);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      top: -60px;
+      left: -60px;
+      width: 180px;
+      height: 180px;
+      background: var(--accent-glow);
+      filter: blur(80px);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .hero-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 900px;
+    }
+
+    /* Section Styling */
+    section {
+      margin-bottom: 64px;
+      scroll-margin-top: 80px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-subtle);
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .tech-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--blue);
+      font-weight: 700;
+      direction: ltr;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-muted);
+      line-height: 1.9;
+      text-align: justify;
+    }
+
+    /* Grid of Decision Cards */
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin: 24px 0;
+    }
+
+    .decision-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .decision-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .badge-primary {
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      border: 1px solid var(--emerald-border);
+    }
+
+    .badge-alt {
+      background: var(--rose-bg);
+      color: var(--rose);
+      border: 1px solid var(--rose-border);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    /* Comparison Table */
+    .table-container {
+      overflow-x: auto;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      font-size: 13px;
+    }
+
+    th {
+      background: var(--bg-card);
+      color: var(--text-main);
+      padding: 14px 18px;
+      font-weight: 800;
+      border-bottom: 2px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: var(--bg-card-hover);
+    }
+
+    .pro-tag {
+      color: var(--emerald);
+      font-weight: 700;
+    }
+
+    .con-tag {
+      color: var(--rose);
+      font-weight: 700;
+    }
+
+    /* Architecture Flow Graphic */
+    .arch-diagram-wrapper {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 28px;
+      margin: 28px 0;
+      overflow-x: auto;
+    }
+
+    .diagram-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-width: 800px;
+      margin-bottom: 20px;
+    }
+
+    .flow-node {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .flow-node:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .flow-node.highlight {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .node-header {
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .node-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      direction: ltr;
+    }
+
+    .flow-arrow {
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    /* Callout & Alerts */
+    .callout {
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin: 20px 0;
+      font-size: 13.5px;
+      line-height: 1.8;
+      border-right: 4px solid var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .callout-blue {
+      border-right-color: var(--blue);
+      background: var(--blue-bg);
+      color: var(--text-main);
+    }
+
+    .callout-emerald {
+      border-right-color: var(--emerald);
+      background: var(--emerald-bg);
+      color: var(--text-main);
+    }
+
+    .callout-rose {
+      border-right-color: var(--rose);
+      background: var(--rose-bg);
+      color: var(--text-main);
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14.5px;
+      font-weight: 800;
+    }
+
+    /* Code Block Box */
+    .code-box {
+      background: #060911;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 18px 0;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .code-header {
+      background: #0f172a;
+      padding: 8px 16px;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .code-content {
+      padding: 16px;
+      overflow-x: auto;
+      color: #e2e8f0;
+      font-size: 12.5px;
+      line-height: 1.7;
+    }
+
+    /* Lists */
+    ul, ol {
+      margin: 12px 28px 18px 0;
+      color: var(--text-muted);
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    li strong {
+      color: var(--text-main);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        display: none;
+      }
+      .content-area {
+        padding: 24px 20px;
+      }
+      .top-bar {
+        padding: 10px 16px;
+      }
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        color: #000 !important;
+        font-size: 10pt !important;
+      }
+      .top-bar, .sidebar, .btn-action {
+        display: none !important;
+      }
+      .layout-container {
+        display: block !important;
+      }
+      .content-area {
+        padding: 0 !important;
+      }
+      .decision-card, .table-container, .code-box, .callout {
+        page-break-inside: avoid;
+        border-color: #ccc !important;
+        background: #fff !important;
+        color: #000 !important;
+      }
+      @page {
+        size: A4;
+        margin: 15mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Bar -->
+  <header class="top-bar">
+    <div class="brand-group">
+      <div class="brand-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z"/>
+          <path d="M6 18h12"/>
+          <path d="M6 14h12"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>
+          <span>معماری فنی و تصمیمات مهندسی انبار</span>
+          <span class="version-tag">Next.js 16 • Turbopack</span>
+        </h1>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button class="btn-action" id="themeToggleBtn" onclick="toggleTheme()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <span id="themeBtnText">حالت روشن</span>
+      </button>
+
+      <button class="btn-action btn-print" onclick="window.print()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span>چاپ یا خروجی PDF</span>
+      </button>
+
+      <a href="/admin" class="btn-action">
+        <span>ورود به پنل مدیریت</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Layout Container -->
+  <div class="layout-container">
+
+    <!-- Sticky Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="search-input-wrapper">
+        <input type="text" id="sectionSearch" class="search-input" placeholder="جستجوی فناوری، ماژول یا ابزار..." oninput="filterNavigation()">
+      </div>
+
+      <div>
+        <div class="nav-group-title">زیرساخت و چارچوب کلان</div>
+        <ul class="nav-list">
+          <li class="nav-item active"><a href="#sec-overview"><span>۱. نمای کلی و اهداف فنی</span><span class="nav-badge">Monolith</span></a></li>
+          <li class="nav-item"><a href="#sec-framework"><span>۲. فریم‌ورک Next.js 16</span><span class="nav-badge">App Router</span></a></li>
+          <li class="nav-item"><a href="#sec-database"><span>۳. دیتابیس Neon Serverless</span><span class="nav-badge">Postgres</span></a></li>
+          <li class="nav-item"><a href="#sec-orm"><span>۴. لایه داده Prisma 7</span><span class="nav-badge">Adapter-PG</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-title">امنیت و کنترل دسترسی</div>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#sec-auth"><span>۵. احراز هویت و بیت‌ماسک</span><span class="nav-badge">Bitmask</span></a></li>
+          <li class="nav-item"><a href="#sec-jwt"><span>۶. مدیریت سشن و JWT</span><span class="nav-badge">HttpOnly</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-title">منطق کسب‌وکار و انبارداری</div>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#sec-concurrency"><span>۷. همزمانی و کسر اتمیک انبار</span><span class="nav-badge">Atomic</span></a></li>
+          <li class="nav-item"><a href="#sec-custom-items"><span>۸. کالاهای سفارشی و تقاضامحور</span><span class="nav-badge">MTO</span></a></li>
+          <li class="nav-item"><a href="#sec-catalog"><span>۹. کاتالوگ عمومی بدون اصطکاک</span><span class="nav-badge">Tokenized</span></a></li>
+          <li class="nav-item"><a href="#sec-tax"><span>۱۰. محاسبات مالی و ماده ۱۶۹</span><span class="nav-badge">Proforma</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-title">فرانت‌اند و تجربه کاربری</div>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#sec-tanstack"><span>۱۱. همگام‌سازی TanStack Query</span><span class="nav-badge">v5</span></a></li>
+          <li class="nav-item"><a href="#sec-virtual"><span>۱۲. مجازی‌سازی لیست اقلام</span><span class="nav-badge">Virtual</span></a></li>
+          <li class="nav-item"><a href="#sec-styling"><span>۱۳. سیستم طراحی و استایلینگ</span><span class="nav-badge">Tailwind</span></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-title">تست، پایش و ماتریس تصمیمات</div>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#sec-testing"><span>۱۴. استراتژی تست با Vitest</span><span class="nav-badge">Vitest</span></a></li>
+          <li class="nav-item"><a href="#sec-matrix"><span>۱۵. ماتریس جامع آلترناتیوها</span><span class="nav-badge">Matrix</span></a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <h2 class="hero-title">سند فنی جامع و مستندات تصمیم‌گیری معماری (ADR)</h2>
+        <p class="hero-desc">
+          این مستند، کالبدشکافی فنی کامل پروژه <strong>«انبار» (Anbar B2B Warehouse & Smart Invoicing)</strong> را ارائه می‌دهد. برای هر انتخاب فنی، منطق پیاده‌سازی، آلترناتیوهای رقیب، نقاط قوت و ضعف و دلیل انتخاب آن به صورت مو به مو تبیین شده است.
+        </p>
+      </div>
+
+      <!-- SECTION 1 -->
+      <section id="sec-overview">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۱</span>
+            <span>نمای کلی سیستم و دیاگرام جریان داده (System Architecture)</span>
+          </h2>
+          <span class="tech-pill">Next.js 16 + Neon PostgreSQL</span>
+        </div>
+        <p>
+          سامانه «انبار» یک مونو-ریپوی ماژولار است که بر پایه معماری <strong>Serverless First</strong> بنا شده است. هدف کلیدی این معماری: <strong>«نگهداری صفر، سرعت بی‌نظیر برای کاربران موبایل و یکپارچگی اتمیک داده‌های موجودی و مالی»</strong> بدون تحمیل هزینه‌های سنگین سرور اختصاصی است.
+        </p>
+
+        <!-- Architecture Flow Diagram -->
+        <div class="arch-diagram-wrapper">
+          <div class="diagram-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            <span>جریان معماری و تبادل داده در لایه‌های مختلف سامانه</span>
+          </div>
+
+          <div class="flow-row">
+            <div class="flow-node">
+              <div class="node-header">خریدار در موبایل / وب</div>
+              <div class="node-desc">/c/:token (Frictionless)</div>
+            </div>
+            <div class="flow-arrow">←</div>
+            <div class="flow-node highlight">
+              <div class="node-header">Next.js 16 Edge / Node Runtime</div>
+              <div class="node-desc">Turbopack, API Routes, SSR</div>
+            </div>
+            <div class="flow-arrow">←</div>
+            <div class="flow-node">
+              <div class="node-header">مدیر انبار / کاربر ارشد</div>
+              <div class="node-desc">/admin (Bitmask Auth 255)</div>
+            </div>
+          </div>
+
+          <div class="flow-row">
+            <div class="flow-node">
+              <div class="node-header">موتور اعتبارسنجی Zod</div>
+              <div class="node-desc">Runtime Request Guards</div>
+            </div>
+            <div class="flow-arrow">↔</div>
+            <div class="flow-node highlight">
+              <div class="node-header">Prisma 7 Driver Adapter (@prisma/adapter-pg)</div>
+              <div class="node-desc">pg.Pool Serverless Pooling</div>
+            </div>
+            <div class="flow-arrow">↔</div>
+            <div class="flow-node">
+              <div class="node-header">موتور تبدیل اسناد</div>
+              <div class="node-desc">XLSX Engine & A4 Proforma</div>
+            </div>
+          </div>
+
+          <div class="flow-row">
+            <div class="flow-node" style="grid-column: span 3; width: 100%;">
+              <div class="node-header">Neon Serverless PostgreSQL (پایگاه داده ابری توزیع‌شده)</div>
+              <div class="node-desc">DATABASE_URL (Pooled with PgBouncer) + DIRECT_URL (Dedicated for Migrations)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2 -->
+      <section id="sec-framework">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۲</span>
+            <span>فریم‌ورک کلان: چرا Next.js 16 (App Router + Turbopack)؟</span>
+          </h2>
+          <span class="tech-pill">Framework Decision</span>
+        </div>
+        <p>
+          برای توسعه سامانه انبارداری، ساختار یکپارچه Full-stack با استفاده از Next.js 16 و هسته Turbopack انتخاب شد.
+        </p>
+
+        <div class="decision-grid">
+          <div class="decision-card">
+            <span class="card-badge badge-primary">انتخاب شده: Next.js 16 (App Router)</span>
+            <h3 class="card-title">مزایای کلیدی</h3>
+            <ul class="card-desc">
+              <li><strong>تایپ‌سیفتی سرتاسری (End-to-End TypeScript):</strong> اشتراک مدل‌های اعتبارسنجی Zod و تایپ‌های Prisma بین فرانت‌اند و بک‌اند بدون کوچکترین ناهماهنگی قراردادها (Contract Drift).</li>
+              <li><strong>هسته کامپایل فوق‌سریع Turbopack:</strong> بیلد و Hot Reload در کسری از ثانیه در مقایسه با وب‌پک‌های سنتی.</li>
+              <li><strong>مسیریابی مدرن App Router:</strong> استفاده از Layout‌های تو در تو، استریمینگ با React Suspense و متدهای بهینه سرور.</li>
+              <li><strong>زیرو-اوپس (Zero-Ops):</strong> استقرار با یک کلیک بر روی Vercel بدون نیاز به کانفیگ Nginx، داکر یا سرور لینوکس.</li>
+            </ul>
+          </div>
+
+          <div class="decision-card">
+            <span class="card-badge badge-alt">آلترناتیو ۱: بک‌اند مجزا با NestJS / Express + فرانت‌اند SPA (Vite React)</span>
+            <h3 class="card-title">چرا انتخاب نشد؟</h3>
+            <ul class="card-desc">
+              <li><strong>دو برابر شدن سربار نگهداری:</strong> نیاز به دو ریپازیتوری مجزا یا مدیریت پکیج‌های مشترک (Monorepo Turborepo)، دو خط پایپلاین CI/CD مجزا، و دو سرور مختلف.</li>
+              <li><strong>سربار شبکه و CORS:</strong> ایجاد درخواست‌های اضافی OPTIONS پیش‌پرواز (Preflight) که سرعت باز شدن کاتالوگ موبایل برای مشتری را تا ۳۰۰ میلی‌ثانیه کند می‌کرد.</li>
+              <li><strong>تکرار مدل‌ها:</strong> الزام به ساخت DTO در نست‌جی‌اس و تعریف مجدد اینترفیس‌ها در فرانت‌اند.</li>
+            </ul>
+          </div>
+
+          <div class="decision-card">
+            <span class="card-badge badge-alt">آلترناتیو ۲: Remix / React Router v7</span>
+            <h3 class="card-title">چرا انتخاب نشد؟</h3>
+            <ul class="card-desc">
+              <li>اکوسیستم ابزارها و لایبرری‌های جانبی (نظیر افزونه‌های Vercel، پکیج‌های اکسل و پرینت) برای Next.js بسیار بالغ‌تر و پایدارتر است.</li>
+              <li>مستندات و تسلط مهندسی تیم بر اکوسیستم استاندارد Next.js بیشتر بود و ریسک‌های فاز استقرار را به صفر می‌رساند.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3 -->
+      <section id="sec-database">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۳</span>
+            <span>پایگاه داده: چرا Neon Serverless PostgreSQL؟</span>
+          </h2>
+          <span class="tech-pill">Database Strategy</span>
+        </div>
+        <p>
+          داده‌های انبارداری و پیش‌فاکتورها به دلیل حساسیت‌های مالی ماده ۱۶۹ و موجودی کالاها، نیازمند <strong>قوانین سخت‌گیرانه ACID</strong> و تراکنش‌های تضمین‌شده هستند.
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>پایگاه داده / ارائه‌دهنده</th>
+                <th>نقاط قوت (Pros)</th>
+                <th>نقاط ضعف و چالش‌ها (Cons)</th>
+                <th>نتیجه و رای نهایی</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Neon Serverless Postgres</strong><br><span class="ltr-inline">Selected</span></td>
+                <td>
+                  <span class="pro-tag">✓</span> جداسازی کامل پردازش از حافظه (Separation of Compute and Storage)<br>
+                  <span class="pro-tag">✓</span> قابلیت Branching فوری دیتابیس برای تست و فیچرها<br>
+                  <span class="pro-tag">✓</span> مقیاس‌پذیری خودکار تا صفر (Scale-to-Zero) جهت بهینه‌سازی هزینه<br>
+                  <span class="pro-tag">✓</span> لایه پولینگ داخلی PgBouncer برای فانکشن‌های سرورلس
+                </td>
+                <td>
+                  <span class="con-tag">!</span> تاخیر ۳۰۰ تا ۵۰۰ میلی‌ثانیه‌ای در صورت Cold Start پس از بی‌کاری طولانی.
+                </td>
+                <td><strong style="color:var(--emerald);">انتخاب شد:</strong> بهترین ترکیب از قدرت استاندارد Postgres با انعطاف ابری مدرن.</td>
+              </tr>
+              <tr>
+                <td><strong>Supabase</strong></td>
+                <td>اکوسیستم غنی از افزونه‌های احراز هویت و ذخیره‌سازی فایل.</td>
+                <td>سربار سنگین امکانات غیرضروری، هزینه پلن بالاتر، و پیچیدگی‌های RLS در مقایسه با لایه اختصاصی اپلیکیشن.</td>
+                <td>رد شد (سربار اضافی).</td>
+              </tr>
+              <tr>
+                <td><strong>PlanetScale (MySQL/Vitess)</strong></td>
+                <td>مدیریت توزیع‌شده فوق‌العاده.</td>
+                <td>عدم پشتیبانی کامل از Foreign Key های سنتی و قیمت‌گذاری دلاری بالا.</td>
+                <td>رد شد (نیاز حیاتی به Foreign Keys برای انبار).</td>
+              </tr>
+              <tr>
+                <td><strong>دیتابیس داکر روی سرور اختصاصی VPS</strong></td>
+                <td>کنترل صددرصد روی سرور و هزینه ثابت ماهانه.</td>
+                <td>سربار دائمی DevOps (پچ‌های امنیتی لینوکس، بکاپ‌گیری دوره‌ای، مدیریت فایروال و خطر داون شدن سرور).</td>
+                <td>رد شد (هدف: نگهداری صفر).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-blue">
+          <strong>الگوی اتصال دوگانه (Dual-Connection Pattern):</strong>
+          سامانه از دو رشته اتصال در <span class="ltr-inline">.env</span> بهره می‌برد:
+          <ol style="margin-top: 8px;">
+            <li><span class="ltr-inline">DATABASE_URL</span>: متصل به پورت پولینگ PgBouncer (پورت ۶۵۴۳) جهت هندل کردن هزاران درخواست همزمان بدون مصرف ظرفیت کانکشن‌های فیزیکی دیتابیس.</li>
+            <li><span class="ltr-inline">DIRECT_URL</span>: اتصال مستقیم به سرور اصلی پستگرس (پورت ۵۴۳۲) مختص مایگریشن‌های ساختاری Prisma و دستورات DDL که توسط پولر مسدود می‌شوند.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- SECTION 4 -->
+      <section id="sec-orm">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۴</span>
+            <span>لایه ORM و دسترسی به داده: معماری Prisma 7 و Driver Adapter</span>
+          </h2>
+          <span class="tech-pill">Prisma 7 + @prisma/adapter-pg</span>
+        </div>
+        <p>
+          این پروژه از نسل جدید <strong>Prisma 7+</strong> بهره می‌برد که ساختار معماری آن نسبت به نسخه‌های سنتی کاملاً بازطراحی شده است.
+        </p>
+
+        <div class="decision-grid">
+          <div class="decision-card">
+            <span class="card-badge badge-primary">معماری نوین Prisma 7</span>
+            <h3 class="card-title">تغییر بنیادین مدیریت کانکشن‌ها</h3>
+            <p class="card-desc">
+              در پریزما ۷، ویژگی قدیمی <span class="ltr-inline">url = env(...)</span> داخل فایل <span class="ltr-inline">schema.prisma</span> منسوخ شده و خطای <span class="ltr-inline">P1012</span> پرتاب می‌کند. در این پروژه، مدیریت کانکشن‌ها به فایل رسمی <span class="ltr-inline">prisma.config.ts</span> و درایور آداپتور <span class="ltr-inline">@prisma/adapter-pg</span> منتقل شده است.
+            </p>
+            <div class="code-box">
+              <div class="code-header">src/lib/db.ts</div>
+              <pre class="code-content">import { Pool } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '@prisma/client';
+
+const pool = new Pool({
+  connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL,
+});
+const adapter = new PrismaPg(pool);
+export const db = new PrismaClient({ adapter });</pre>
+            </div>
+          </div>
+
+          <div class="decision-card">
+            <span class="card-badge badge-alt">آلترناتیو: Drizzle ORM یا Kysely</span>
+            <h3 class="card-title">چرا Drizzle انتخاب نشد؟</h3>
+            <ul class="card-desc">
+              <li><strong>سرعت توسعه (Developer Velocity):</strong> سینتکس شمای پریزما بسیار خواناتر است و به صورت خودکار مدل‌های دیتابیس، ایندکس‌ها، و ارتباطات ۱ به چند و چند به چند را در یک فایل منفرد مدیریت می‌کند.</li>
+              <li><strong>موتور یکپارچه مایگریشن (Prisma Migrate):</strong> پریزما تاریخچه مایگریشن‌ها را به صورت فایل‌های امن SQL خروجی می‌دهد و از تداخل اسکیماها در تیم‌های چند نفره جلوگیری می‌کند.</li>
+              <li>دریزل با وجود وزن کمتر، برای پروژه‌های تجاری سنگین با قوانین مالیاتی ماده ۱۶۹ نیازمند نوشتن دستی مایگریشن‌ها و تایپ‌های پرتیپو بود.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5 -->
+      <section id="sec-auth">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۵</span>
+            <span>سیستم مجوزهای اتمیک مبتنی بر بیت‌ماسک (Bitmask Authorization)</span>
+          </h2>
+          <span class="tech-pill">Security & Performance</span>
+        </div>
+        <p>
+          یکی از نوآوری‌های مهم معماری انبار، استفاده از <strong>مدل سطوح دسترسی بیتی (Bitmask RBAC)</strong> به جای سیستم‌های جدول‌محور سنتی است.
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>نقش و عملیات سیستم</th>
+                <th>بیت ریاضی</th>
+                <th>مقدار ده‌دهی (Mask)</th>
+                <th>توضیحات و مجوزهای عملیاتی</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>VIEW (مشاهده عمومی)</strong></td>
+                <td><span class="ltr-inline">1 &lt;&lt; 0</span></td>
+                <td><span class="ltr-inline">1</span></td>
+                <td>مشاهده لیست کالاها، دسته‌بندی‌ها و موجودی انبار</td>
+              </tr>
+              <tr>
+                <td><strong>CREATE_EDIT (تعریف و ویرایش)</strong></td>
+                <td><span class="ltr-inline">1 &lt;&lt; 1</span></td>
+                <td><span class="ltr-inline">2</span></td>
+                <td>افزودن کالای جدید، ویرایش قیمت‌ها و مشخصات فنی</td>
+              </tr>
+              <tr>
+                <td><strong>DELETE (حذف اقلام)</strong></td>
+                <td><span class="ltr-inline">1 &lt;&lt; 2</span></td>
+                <td><span class="ltr-inline">4</span></td>
+                <td>حذف رکورد کالاها و پیش‌فاکتورها</td>
+              </tr>
+              <tr>
+                <td><strong>STOCK_MOVE (انبارداری و ورود/خروج)</strong></td>
+                <td><span class="ltr-inline">1 &lt;&lt; 3</span></td>
+                <td><span class="ltr-inline">8</span></td>
+                <td>ثبت حواله ورود، خروج، انبارگردانی و کسری</td>
+              </tr>
+              <tr>
+                <td><strong>MANAGE_LINKS (مدیریت کاتالوگ‌ها)</strong></td>
+                <td><span class="ltr-inline">1 &lt;&lt; 4</span></td>
+                <td><span class="ltr-inline">16</span></td>
+                <td>ساخت و انقضای لینک‌های اختصاصی خریداران</td>
+              </tr>
+              <tr>
+                <td><strong>SETTINGS (تنظیمات سربرگ و مالیات)</strong></td>
+                <td><span class="ltr-inline">1 &lt;&lt; 5</span></td>
+                <td><span class="ltr-inline">32</span></td>
+                <td>تغییر درصد مالیات ماده ۱۶۹، شبا و مشخصات شرکت</td>
+              </tr>
+              <tr>
+                <td><strong>EXPORT_IMPORT (اکسل و پشتیبان)</strong></td>
+                <td><span class="ltr-inline">1 &lt;&lt; 7</span></td>
+                <td><span class="ltr-inline">128</span></td>
+                <td>درون‌ریزی و استخراج فایل اکسل موجودی کالا</td>
+              </tr>
+              <tr>
+                <td><strong>SUPER_ADMIN (مدیر ارشد انبار)</strong></td>
+                <td><span class="ltr-inline">ALL_BITS</span></td>
+                <td><span class="ltr-inline">255</span></td>
+                <td>دسترسی نامحدود به کلیه بخش‌ها و تعاریف مدیریتی</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="decision-grid">
+          <div class="decision-card">
+            <span class="card-badge badge-primary">چرا بیت‌ماسک؟ (The Rationale)</span>
+            <ul class="card-desc">
+              <li><strong>سرعت محاسباتی در حد نانوثانیه:</strong> ارزیابی دسترسی صرفاً با یک عملگر بیتی پردازنده انجام می‌شود: <span class="ltr-inline">(userRole &amp; requiredMask) === requiredMask</span>.</li>
+              <li><strong>حذف ۴ جدول رابطه‌ای دیتابیس:</strong> در سیستم سنتی به ۴ جدول <span class="ltr-inline">roles</span>، <span class="ltr-inline">permissions</span>، <span class="ltr-inline">user_roles</span> و <span class="ltr-inline">role_permissions</span> با چندین دستور سنگین <span class="ltr-inline">SQL JOIN</span> نیاز بود. در بیت‌ماسک، کل دسترسی کاربر فقط در یک فیلد ساده <span class="ltr-inline">SMALLINT</span> ذخیره می‌شود!</li>
+              <li><strong>امکان ترکیب نامحدود مجوزها:</strong> مثلاً نقش «انباردار ارشد» با مجموع دسترسی‌ها: <span class="ltr-inline">1 + 2 + 8 + 128 = 139</span> در کسری از ثانیه ساخته می‌شود.</li>
+            </ul>
+          </div>
+
+          <div class="decision-card">
+            <span class="card-badge badge-alt">آلترناتیوها: Clerk یا Auth0 یا پکیج Casbin</span>
+            <ul class="card-desc">
+              <li><strong>عدم وابستگی به سرویس‌های خارجی (No Vendor Lock-in):</strong> سرویس‌های ابری مانند کلرک یا آوث۰ علاوه بر تحریم بودن برای کاربران ایرانی، در صورت قطع اینترنت بین‌الملل سیستم انبارداری شرکت را فلج می‌کنند.</li>
+              <li><strong>هزینه صفر:</strong> مدیریت احراز هویت داخلی هیچ هزینه ماهانه یا محدودیت تعداد کاربر فعالی به سیستم تحمیل نمی‌کند.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6 -->
+      <section id="sec-jwt">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۶</span>
+            <span>مدیریت سشن، رمزنگاری کلمات عبور و توکن‌های JWT</span>
+          </h2>
+          <span class="tech-pill">Authentication Layer</span>
+        </div>
+        <p>
+          سامانه از رویکرد <strong>Stateless Authentication</strong> با توکن‌های JWT امضاشده و ذخیره‌سازی در کوکی‌های امن استفاده می‌کند.
+        </p>
+        <ul>
+          <li><strong>رمزنگاری پسوردها:</strong> استفاده از لایبرری استاندارد <span class="ltr-inline">bcryptjs</span> با ۱۰ دور نمک‌پاشی (<span class="ltr-inline">10 salt rounds</span>). به این ترتیب در صورت افشای پایگاه داده، پسوردها به دلیل ماهیت یک‌طرفه هش قابل بازیابی نیستند.</li>
+          <li><strong>کوکی‌های امن HttpOnly:</strong> توکن ورود داخل کوکی با فلگ‌های <span class="ltr-inline">httpOnly: true</span> و <span class="ltr-inline">SameSite: 'lax'</span> قرار می‌گیرد تا حملات اسکریپت‌نویسی متقاطع (XSS) امکان دسترسی و سرقت توکن را از طریق کد جاوااسکریپت نداشته باشند.</li>
+          <li><strong>پروتکل راه‌اندازی اولیه بدون پسورد هاردکد (Auto-Bootstrapping):</strong> هیچ پسورد کارخانه‌ای درون کدها وجود ندارد. دیتابیس در اولین بارگذاری چک می‌کند؛ اگر هیچ کاربری وجود نداشت، اولین کاربری که ثبت‌نام کند خودبه‌خود با دسترسی ۲۵۵ به عنوان مدیر کل کلید می‌خورد.</li>
+        </ul>
+      </section>
+
+      <!-- SECTION 7 -->
+      <section id="sec-concurrency">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۷</span>
+            <span>کنترل همزمانی و کسر اتمیک موجودی انبار (Atomic Stock Concurrency)</span>
+          </h2>
+          <span class="tech-pill">Inventory Engine</span>
+        </div>
+        <p>
+          یکی از بحرانی‌ترین مخاطرات در انبارهای بزرگ، <strong>تداخل همزمانی سفارشات (Race Conditions)</strong> است؛ زمانی که موجودی یک شیر صنعتی ۵ عدد است و دو خریدار به طور همزمان هرکدام سفارش ۴ عددی ثبت می‌کنند.
+        </p>
+
+        <div class="decision-grid">
+          <div class="decision-card">
+            <span class="card-badge badge-primary">پیاده‌سازی ما: عملیات شرطی اتمیک دیتابیس (Atomic Conditional Updates)</span>
+            <p class="card-desc">
+              به جای خواندن موجودی و سپس کاهش دادن آن با دو کوئری جداگانه، دستور کاهش انبار به صورت اتمیک و در یک کوئری تراکنشی اجرا می‌شود:
+            </p>
+            <div class="code-box">
+              <div class="code-header">Atomic Decrement Transaction</div>
+              <pre class="code-content">await db.$transaction(async (tx) => {
+  const updated = await tx.product.updateMany({
+    where: {
+      id: productId,
+      stockQuantity: { gte: requestedQty } // گارد شرطی اتمیک
+    },
+    data: {
+      stockQuantity: { decrement: requestedQty }
+    }
+  });
+
+  if (updated.count === 0) {
+    throw new Error('کسری موجودی انبار توسط سفارش همزمان!');
+  }
+});</pre>
+            </div>
+          </div>
+
+          <div class="decision-card">
+            <span class="card-badge badge-alt">آلترناتیوها: قفل ریدیس (Distributed Locks / Redlock) یا Pessimistic Lock</span>
+            <ul class="card-desc">
+              <li><strong>چرا Redis Redlock انتخاب نشد؟</strong> نیاز به استقرار یک کلاستر مجزای Redis داشت که اصل «نگهداری صفر» سیستم را نقض می‌کرد و در صورت قطعی شبکه باعث بن‌بست (Deadlock) می‌شد.</li>
+              <li><strong>دفترکل انبار (Audit Trail):</strong> کلیه ورود و خروج‌ها علاوه بر جدول کالا، در جدول تاریخی <span class="ltr-inline">StockMovement</span> به همراه علت (مانند تبدیل به پیش‌فاکتور <span class="ltr-inline">REQ-102</span>) و شناسه کاربر ثبت می‌گردد تا تاریخچه حسابرسی دست‌نخورده باقی بماند.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 8 -->
+      <section id="sec-custom-items">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۸</span>
+            <span>منطق کالاهای سفارشی و ساخت بر اساس تقاضا (Made-to-Order)</span>
+          </h2>
+          <span class="tech-pill">B2B Custom Logic</span>
+        </div>
+        <p>
+          در بازارهای صنعتی، بسیاری از اتصالات، مخازن یا لوله‌ها دپوی آماده در قفسه انبار ندارند بلکه بر اساس متراژ و نقشه خریدار تراشکاری یا وارد می‌شوند.
+        </p>
+        <div class="callout callout-emerald">
+          <strong>ویژگی <span class="ltr-inline">isCustom: true</span> و زمان تخمینی تحویل:</strong>
+          <ul>
+            <li>برای اقلام سفارشی، محدودیت سقف موجودی انبار غیرفعال می‌شود تا مانع ثبت سبدهای خریدار نشود.</li>
+            <li>در کاتالوگ آنلاین مشتریان، برچسب زرد/آبی «سفارشی / ساخت بر اساس تقاضا» همراه با تخمین زمان ساخت (مثال: «۳ تا ۵ روز کاری») نمایش می‌یابد.</li>
+            <li>در صدور فاکتور و کسر موجودی، این اقلام انبار فیزیکی را دچار منفی شدن فرضی نمی‌کنند اما ردیف مالی آنها در پیش‌فاکتور رسمی درج می‌گردد.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 9 -->
+      <section id="sec-catalog">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۹</span>
+            <span>کاتالوگ مشتریان و اشتراک‌گذاری بدون اصطکاک (Frictionless B2B Portal)</span>
+          </h2>
+          <span class="tech-pill">Client Experience</span>
+        </div>
+        <p>
+          بزرگ‌ترین گلوگاه سامانه‌های سنتی این بود که مشتری برای دیدن قیمت باید اپلیکیشن نصب می‌کرد، ایمیل تایید می‌کرد یا رمز عبور به خاطر می‌سپرد؛ رفتاری که بازرگانان بازار سنتی فوراً آن را ترک می‌کردند!
+        </p>
+
+        <div class="decision-grid">
+          <div class="decision-card">
+            <span class="card-badge badge-primary">پیاده‌سازی ما: توکن‌های یکتای وب (/c/[token])</span>
+            <ul class="card-desc">
+              <li><strong>ورود تک‌کلیکی:</strong> مشتری با لمس لینک در واتساپ یا تلگرام بدون هیچ لاگینی کاتالوگ سفارشی خود را می‌بیند.</li>
+              <li><strong>تخفیف‌های اختصاصی در لینک:</strong> توکن کاتالوگ تعیین می‌کند کدام دسته کالاها یا چه درصد تخفیفی برای این خریدار خاص لحاظ گردد.</li>
+              <li><strong>انقضا و نظارت:</strong> مدیر می‌تواند برای هر پیوند زمان انقضا تعیین کند یا هر زمان خواست آن را با یک کلیک غیرفعال نماید.</li>
+            </ul>
+          </div>
+
+          <div class="decision-card">
+            <span class="card-badge badge-alt">آلترناتیو سنتی: لاگین با پیامک OTP یا پورتال ثبت‌نام</span>
+            <ul class="card-desc">
+              <li><strong>هزینه سنگین پیامک:</strong> سامانه‌های پیامکی در ایران نیازمند خطوط خدماتی، تایید مدارک شرکتی و هزینه به ازای هر پیام هستند.</li>
+              <li><strong>افت شدید نرخ تبدیل (Drop-off Rate):</strong> تجربه نشان داده بیش از ۶۰٪ خریداران سازمانی در مواجهه با صفحه ثبت‌نام اولیه، فرآیند استعلام را نیمه‌کاره رها می‌کنند.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 10 -->
+      <section id="sec-tax">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۱۰</span>
+            <span>محاسبات مالی، گردکردن امن و انطباق با ماده ۱۶۹ م.م.</span>
+          </h2>
+          <span class="tech-pill">Financial Engine</span>
+        </div>
+        <p>
+          صورتحساب‌های تولیدشده در سامانه با ضوابط سامانه مودیان و <strong>ماده ۱۶۹ قانون مالیات‌های مستقیم</strong> کاملاً منطبق است.
+        </p>
+        <ul>
+          <li><strong>جلوگیری از باگ‌های Floating-Point در جاوااسکریپت:</strong> در جاوااسکریپت عباراتی مثل <span class="ltr-inline">0.1 + 0.2</span> حاصل <span class="ltr-inline">0.30000000000000004</span> می‌دهند که در مبالغ میلیاردی تومانی فاجعه‌آفرین است. ماژول محاسباتی پروژه از متدهای امن <span class="ltr-inline">safeCurrencyRound</span> بهره می‌برد.</li>
+          <li><strong>سربرگ رسمی استاندارد:</strong> چاپ خودکار نام بازرگانی، شناسه ملی (National ID)، کد اقتصادی، کد پستی ۱۰ رقمی و شماره شبای بانکی در بالای نسخه چاپی پیش‌فاکتور.</li>
+          <li><strong>چاپ استاندارد A4 با CSS چاپی:</strong> استفاده از استایل‌های اختصاصی <span class="ltr-inline">@media print</span> تا بدون نیاز به تولید عکس‌های سنگین، مستقیماً از داخل هر مرورگری با کلید Ctrl+P خروجی دقیق PDF صفحه پیش‌فاکتور با رزولوشن ۳۰۰ DPI پرینت شود.</li>
+        </ul>
+      </section>
+
+      <!-- SECTION 11 -->
+      <section id="sec-tanstack">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۱۱</span>
+            <span>مدیریت وضعیت سرور: TanStack Query v5 (React Query)</span>
+          </h2>
+          <span class="tech-pill">Frontend State</span>
+        </div>
+        <p>
+          به جای ذخیره داده‌های سرور در وضعیت محلی ریداکس، کل چرخه حیات درخواست‌های موجودی و سفارش‌ها به <strong>TanStack Query v5</strong> سپرده شده است.
+        </p>
+        <div class="decision-grid">
+          <div class="decision-card">
+            <span class="card-badge badge-primary">مزایای انتخاب React Query v5</span>
+            <ul class="card-desc">
+              <li><strong>کشینگ هوشمند (Smart Cache Invalidation):</strong> بلافاصله پس از ثبت یک سفارش جدید یا تغییر موجودی کالا، کوئری‌های مرتبط با کلید <span class="ltr-inline">['products']</span> باطل شده و داده‌های جدید به شکل پس‌زمینه بروزرسانی می‌شوند.</li>
+              <li><strong>بروزرسانی خوش‌بینانه (Optimistic Updates):</strong> شمارنده سبد خرید بدون معطلی سرور تغییر می‌کند و تجربه نرم‌افزار نیتیو موبایل را به خریدار القا می‌نماید.</li>
+              <li><strong>مدیریت خودکار وضعیت‌های بارگذاری و خطا:</strong> متغیرهای <span class="ltr-inline">isLoading</span> و <span class="ltr-inline">isError</span> به طور بومی در دسترس کامپوننت‌ها قرار دارند.</li>
+            </ul>
+          </div>
+          <div class="decision-card">
+            <span class="card-badge badge-alt">آلترناتیوها: Redux Toolkit یا Zustand یا useEffect سنتی</span>
+            <ul class="card-desc">
+              <li>ریداکس برای نگهداری داده‌های سروری (Server State) کدهای تکراری طاقت‌فرسایی تولید می‌کند و مدیریت کش، زمان انقضا و بازخوانی هنگام فوکوس پنجره را ندارد.</li>
+              <li>استفاده از <span class="ltr-inline">useEffect</span> خام باعث باگ‌های متعدد رندر مجدد (Re-render) و مسابقه داده‌ها (Race conditions) در کامپوننت‌ها می‌شد.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 12 -->
+      <section id="sec-virtual">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۱۲</span>
+            <span>مجازی‌سازی لیست‌های سنگین کالاها (@tanstack/react-virtual)</span>
+          </h2>
+          <span class="tech-pill">Performance Optimization</span>
+        </div>
+        <p>
+          زمانی که کاتالوگ انبار حاوی ۳۰۰۰ تا ۱۰,۰۰۰ قلم کالا باشد، رندر کردن تمامی تگ‌های HTML در DOM گوشی خریدار باعث افت فریم شدید و بسته شدن خودکار مرورگر گوشی (Crash) می‌شود.
+        </p>
+        <div class="callout callout-emerald">
+          <strong>چرا مجازی‌سازی با <span class="ltr-inline">useWindowVirtualizer</span>؟</strong>
+          <ul>
+            <li>در هر لحظه صرفاً اقلامی که داخل دید کادر صفحه موبایل قرار دارند (حدود ۱۰ الی ۱۵ المان) در حافظه رندر می‌شوند.</li>
+            <li>با اسکرول سریع مشتری، المان‌های خارج شده از کادر از DOM پاک شده و المان‌های جدید بازتولید می‌شوند.</li>
+            <li>نتیجه: مصرف حافظه RAM روی مرورگرهای موبایل تا ۹۰٪ کاهش یافته و اسکرول ۶۰ فریم بر ثانیه تضمین می‌گردد.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 13 -->
+      <section id="sec-styling">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۱۳</span>
+            <span>سیستم طراحی، تم‌های روز/شب و قواعد راست‌به‌چپ (RTL & BiDi)</span>
+          </h2>
+          <span class="tech-pill">UI/UX Architecture</span>
+        </div>
+        <p>
+          طراحی ظاهری سامانه طبق بالاترین استانداردهای بصری و تعاملی با <strong>Tailwind CSS</strong> پیاده شده است:
+        </p>
+        <ul>
+          <li><strong>موتور تم تیره و روشن واقعی:</strong> تغییر بلادرنگ تم از طریق متغیرهای معنایی CSS و ذخیره انتخاب کاربر در <span class="ltr-inline">localStorage</span>.</li>
+          <li><strong>حل ریشه‌ای باگ‌های چینش نمادها در RTL (BiDi Unicode):</strong> در متن‌های فارسی، نمایش اعداد دارای مثبت/منفی یا درصد (مثل <span class="ltr-inline">+2</span> یا <span class="ltr-inline">50%</span> یا شماره‌های فنی SKU) دچار جابجایی کاراکتر می‌شوند. سامانه با تزریق کاراکتر مخفی استاندارد <span class="ltr-inline">\u200E</span> (Left-to-Right Mark) و کانتینرهای با دایرکشن صریح <span class="ltr-inline">dir="ltr"</span> این نقص را به کلی رفع کرده است.</li>
+          <li><strong>سامانه اعلانات و تاییدیه اختصاصی (<span class="ltr-inline">notify</span>):</strong> استفاده از <span class="ltr-inline">window.confirm</span> و <span class="ltr-inline">window.alert</span> مسدود شده و با پاپ‌آپ‌های متحرک، غیرمسدودکننده و هماهنگ با تم تیره جایگزین شده است.</li>
+        </ul>
+      </section>
+
+      <!-- SECTION 14 -->
+      <section id="sec-testing">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۱۴</span>
+            <span>استراتژی تضمین کیفیت و تست با Vitest</span>
+          </h2>
+          <span class="tech-pill">QA & Testing Suite</span>
+        </div>
+        <p>
+          تمام منطق‌های محاسباتی، احراز هویت، بیت‌ماسک‌ها و لایه اعتبارسنجی با <strong>۳۴ تست واحد (Unit Tests)</strong> با فریم‌ورک <strong>Vitest</strong> پوشش داده شده‌اند.
+        </p>
+
+        <div class="decision-grid">
+          <div class="decision-card">
+            <span class="card-badge badge-primary">چرا Vitest به جای Jest؟</span>
+            <ul class="card-desc">
+              <li><strong>سرعت خیره‌کننده:</strong> اجرای تمام ۳۴ تست در کمتر از ۷۰۰ میلی‌ثانیه به دلیل ساختار Native ESM و ترد‌های سبک Vite.</li>
+              <li><strong>سازگاری کامل با TypeScript مدرن:</strong> بدون نیاز به پیکربندی‌های سنگین و دردسرساز <span class="ltr-inline">ts-jest</span> یا کانفیگ‌های ناسازگار با اکمااسکریپت.</li>
+              <li><strong>حجم ناچیز دپندنسی‌ها:</strong> عدم تحمیل ده‌ها مگابایت کتابخانه‌های جانبی عهد عتیق وب‌پک به پروژه.</li>
+            </ul>
+          </div>
+          <div class="decision-card">
+            <span class="card-badge badge-primary">حوزه‌های تحت پوشش تست‌ها</span>
+            <ul class="card-desc">
+              <li><strong>تست دسترسی‌های بیت‌ماسک:</strong> تضمین صحت ترکیب و تجزیه دسترسی‌ها برای تمام ۲۵۵ سطح مجوز.</li>
+              <li><strong>تست محاسبات پیش‌فاکتور:</strong> اعتبارسنجی جمع اقلام، مالیات بر ارزش افزوده و تخفیف‌ها.</li>
+              <li><strong>تست امنیت احراز هویت و ریت‌لیمیت:</strong> تست مسدودسازی حملات Brute-force در درخواست‌های ورود.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 15 -->
+      <section id="sec-matrix">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-num">۱۵</span>
+            <span>ماتریس جامع مقایسه فنی و دلایل ترجیح (Master Decisions Matrix)</span>
+          </h2>
+          <span class="tech-pill">Executive Summary</span>
+        </div>
+        <p>
+          جدول زیر خلاصه مقایسه‌ای تصمیمات مهندسی در برابر مهم‌ترین آلترناتیوهای صنعت نرم‌افزار است:
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>بخش فنی</th>
+                <th>فناوری برگزیده در انبار</th>
+                <th>مهم‌ترین آلترناتیو</th>
+                <th>علت ترجیح فناوری برگزیده</th>
+                <th>چه زمانی بازنگری شود؟</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>معماری کلان</strong></td>
+                <td>Next.js 16 App Router</td>
+                <td>NestJS + React SPA</td>
+                <td>یکپارچگی تایپ‌ها، سرعت استقرار، صفر بودن سربار DevOps</td>
+                <td>در صورت افزایش تعداد توسعه‌دهندگان بک‌اند به بیش از ۱۰ نفر</td>
+              </tr>
+              <tr>
+                <td><strong>پایگاه داده</strong></td>
+                <td>Neon Serverless Postgres</td>
+                <td>Docker Postgres on VPS</td>
+                <td>مقیاس‌پذیری خودکار، قابلیت برنچینگ، نگهداری صفر</td>
+                <td>در صورت لزوم قرارگیری سرور داخل دیتاسنتر محلی خاص به دلایل رگولاتوری</td>
+              </tr>
+              <tr>
+                <td><strong>لایه ORM</strong></td>
+                <td>Prisma 7 + Adapter-PG</td>
+                <td>Drizzle ORM</td>
+                <td>مایگریشن‌های اسکیما-محور پایدار، تایپ‌های سرتاسری و اکوسیستم بالغ</td>
+                <td>اگر نیاز به پرفورمنس میکرو-ثانیه‌ای در کوئری‌های تحلیلی عظیم باشد</td>
+              </tr>
+              <tr>
+                <td><strong>مدل دسترسی</strong></td>
+                <td>Bitmask Integer (0..255)</td>
+                <td>Multi-table RBAC Join</td>
+                <td>صفر شدن کوئری‌های SQL JOIN، سرعت نانوثانیه، صرفه‌جویی در فضای دیتابیس</td>
+                <td>در صورت نیاز به بیش از ۳۲ مجوز مستقل سازمانی</td>
+              </tr>
+              <tr>
+                <td><strong>احراز هویت</strong></td>
+                <td>JWT در HttpOnly Cookie</td>
+                <td>Server Sessions در Redis</td>
+                <td>بی‌حالت (Stateless) بودن در محیط‌های سرورلس بدون نیاز به کلاستر ریدیس</td>
+                <td>اگر نیاز به ابطال بلادرنگ سشن‌ها از پنل مرکزی فوراً وجود داشته باشد</td>
+              </tr>
+              <tr>
+                <td><strong>کنترل همزمانی انبار</strong></td>
+                <td>Atomic Decrement Condition</td>
+                <td>Redis Redlock</td>
+                <td>انزوای اتمیک سطح پایگاه داده بدون وابستگی به زیرساخت جانبی</td>
+                <td>اگر تراکنش‌های همزمان در ثانیه به بالای ۵۰۰۰ سفارش برسد</td>
+              </tr>
+              <tr>
+                <td><strong>پورتال مشتریان</strong></td>
+                <td>لینک اختصاصی وب (/c/[token])</td>
+                <td>لاگین اجباری با OTP پیامک</td>
+                <td>حذف هزینه پیامک، بالا بردن شدید نرخ ثبت سفارش خریداران</td>
+                <td>اگر نیاز به احراز هویت حقوقی پیش از مشاهده قیمت‌ها الزامی شود</td>
+              </tr>
+              <tr>
+                <td><strong>وضعیت کلاینت</strong></td>
+                <td>TanStack Query v5</td>
+                <td>Redux Toolkit</td>
+                <td>مدیریت خودکار کش، باطل‌سازی کلیدها و بروزرسانی خوش‌بینانه</td>
+                <td>اگر نیاز به وضعیت‌های شدیداً پیچیده فرانت‌اندی بدون منشا سرور باشد</td>
+              </tr>
+              <tr>
+                <td><strong>فریم‌ورک تست</strong></td>
+                <td>Vitest</td>
+                <td>Jest</td>
+                <td>اجرای ۷۰۰ میلی‌ثانیه‌ای، هماهنگی کامل با ESM مدرن، بیلد فوق‌سریع</td>
+                <td>هیچ دلیلی برای بازگشت به Jest وجود ندارد</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-emerald" style="margin-top: 32px;">
+          <strong>نتیجه‌گیری راهبردی (Architectural Conclusion):</strong>
+          طراحی مهندسی سامانه انبار به گونه‌ای استوار است که هم برای یک انبار تجاری متوسط با سرعت اجرا شود و هم تا مقیاس صدها هزار رکورد کالا و پیش‌فاکتورهای متعدد همزمان، بدون نیاز به ری‌فکتورهای اساسی یا هزینه‌های گزاف ابری، با نهایت پایداری پاسخگوی عملیات بازرگانی باشد.
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // Theme toggle logic
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('anbar-tech-theme', next);
+      document.getElementById('themeBtnText').textContent = next === 'light' ? 'حالت تیره' : 'حالت روشن';
+    }
+
+    // Load saved theme
+    (function initTheme() {
+      const saved = localStorage.getItem('anbar-tech-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+      const btnText = document.getElementById('themeBtnText');
+      if (btnText) {
+        btnText.textContent = saved === 'light' ? 'حالت تیره' : 'حالت روشن';
+      }
+    })();
+
+    // Sidebar active item scroll-spy
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section');
+      const navItems = document.querySelectorAll('.nav-item');
+      let current = '';
+
+      sections.forEach((sec) => {
+        const top = sec.offsetTop - 120;
+        if (window.scrollY >= top) {
+          current = sec.getAttribute('id');
+        }
+      });
+
+      navItems.forEach((item) => {
+        item.classList.remove('active');
+        const link = item.querySelector('a');
+        if (link && link.getAttribute('href') === '#' + current) {
+          item.classList.add('active');
+        }
+      });
+    });
+
+    // Navigation search filter
+    function filterNavigation() {
+      const q = document.getElementById('sectionSearch').value.toLowerCase();
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach((item) => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(q)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

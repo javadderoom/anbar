@@ -365,8 +365,8 @@
     "semantic_hash": ""
   },
   "src/app/c/[token]/page.tsx": {
-    "mtime": 1790524331.9145522,
-    "ast_hash": "93d67057c15108151ec5e0989ce36899",
+    "mtime": 1790526820.643899,
+    "ast_hash": "2adcbfb48ccdb6ab9ba1cade53961cfc",
     "semantic_hash": ""
   },
   "src/app/layout.tsx": {
@@ -400,8 +400,8 @@
     "semantic_hash": ""
   },
   "src/components/admin/AdminHeader.tsx": {
-    "mtime": 1790453945.433602,
-    "ast_hash": "b60bbf3513e2b5c20f08f57ed4cc1117",
+    "mtime": 1790539172.376163,
+    "ast_hash": "9936eef37557125e99b5c1847734570a",
     "semantic_hash": ""
   },
   "src/components/admin/AdminKpiCards.tsx": {
@@ -430,8 +430,8 @@
     "semantic_hash": ""
   },
   "src/components/admin/SettingsModule.tsx": {
-    "mtime": 1790521400.6670086,
-    "ast_hash": "6167d0c0de6b017fc3be82e63f764eb5",
+    "mtime": 1790526888.4853077,
+    "ast_hash": "9a5a5f0b59c0ed0f3206bd110fd58f9c",
     "semantic_hash": ""
   },
   "src/lib/excel.ts": {
@@ -942,6 +942,26 @@
   "prisma/migrations/20260927154453_add_made_to_order_fields_to_product/migration.sql": {
     "mtime": 1790523893.773352,
     "ast_hash": "67bc29850195dcb33d08cfa6863f8dc8",
+    "semantic_hash": ""
+  },
+  "docs/client-guide.html": {
+    "mtime": 1790526619.008427,
+    "ast_hash": "b1fa99aabdfc7034db0ece3b8c814f4a",
+    "semantic_hash": ""
+  },
+  "docs/client-guide.md": {
+    "mtime": 1790526711.384563,
+    "ast_hash": "b99a960dd44d4a4c29fa804159e96b20",
+    "semantic_hash": ""
+  },
+  "public/docs/client-guide.html": {
+    "mtime": 1790526619.008427,
+    "ast_hash": "b1fa99aabdfc7034db0ece3b8c814f4a",
+    "semantic_hash": ""
+  },
+  "public/docs/user-guide.html": {
+    "mtime": 1790525673.1605673,
+    "ast_hash": "027d91caac4239cebdd7bc5ccb7fbd3f",
     "semantic_hash": ""
   }
 }
