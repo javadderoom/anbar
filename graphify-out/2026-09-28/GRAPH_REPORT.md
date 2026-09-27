@@ -1,16 +1,16 @@
-# Graph Report - anbar  (2026-09-28)
+# Graph Report - anbar  (2026-09-27)
 
 ## Corpus Check
 - 184 files · ~302,926 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3122 nodes · 7005 edges · 159 communities (144 shown, 15 thin omitted)
+- 3122 nodes · 7005 edges · 160 communities (145 shown, 15 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 131 edges (avg confidence: 0.69)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c81f6bc6`
+- Built from commit: `3ffb2f78`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -156,6 +156,7 @@
 - prisma.ts
 - Classic Typography Principles
 - Modern Web Typography
+- Phase 2: Client State Management & Cache Synchronization (TanStack Query v5)
 - Phase 4: Concurrency, Inventory Race Conditions & Atomic Transactions
 - Phase 5: Scalability, Virtualization & Database Performance
 - Phase 6: Edge Security, Abuse Prevention & Rate Limiting
@@ -200,31 +201,31 @@
 ## Import Cycles
 - None detected.
 
-## Communities (159 total, 15 thin omitted)
+## Communities (160 total, 15 thin omitted)
 
 ### Community 0 - "live-browser.js"
 Cohesion: 0.03
-Nodes (131): acceptedDomAlreadyClean(), addManualContextText(), applyPlaceholderSizingStyles(), applySvelteComponentVariantStyle(), averageRgb01(), bindEditBadgeProxy(), bufferToBase64(), buildColorModels() (+123 more)
+Nodes (122): acceptedDomAlreadyClean(), addManualContextText(), applyPlaceholderSizingStyles(), applySvelteComponentVariantStyle(), bindEditBadgeProxy(), bufferToBase64(), buildCollapsible(), buildColorModels() (+114 more)
 
 ### Community 1 - "checks.mjs"
 Cohesion: 0.05
 Nodes (88): borderColorsFromStyle(), borderWidthsFromStyle(), checkClippedOverflow(), checkColors(), checkCreamPalette(), checkElementAIPaletteDOM(), checkElementClippedOverflow(), checkElementClippedOverflowDOM() (+80 more)
 
 ### Community 2 - "detect-antipatterns.mjs"
-Cohesion: 0.09
-Nodes (36): buildCollapsible(), buildDesignHeader(), buildListHtml(), buildRadiiModels(), copyToClipboard(), cssSafe(), designPanelCss(), escapeHtml() (+28 more)
+Cohesion: 0.10
+Nodes (26): canRestoreManualEditElement(), copyEditContainerContext(), copyEditLeafContext(), cssIdent(), directMixedTextRestoreNodes(), documentRefClassSuffix(), documentRefForElement(), documentRefIdSuffix() (+18 more)
 
 ### Community 3 - "index.mjs"
 Cohesion: 0.06
 Nodes (68): addBrowserFindings(), addVisualContrastFindings(), addVisualContrastResult(), analyzeVisualContrast(), analyzeVisualContrastCandidate(), blendRgba(), browserColorsClose(), browserDesignSystemConfig() (+60 more)
 
 ### Community 4 - "setLiveState"
-Cohesion: 0.09
-Nodes (69): abortSvelteComponentInjection(), applyEditing(), buildLocatorForLeaf(), buildPickedAnchorSnapshot(), cancelEditing(), cancelEditingToPicking(), cancelInsertConfigure(), cleanup() (+61 more)
+Cohesion: 0.08
+Nodes (73): abortSvelteComponentInjection(), applyEditing(), buildInsertPlaceholderSnapshotFromDom(), buildLocatorForLeaf(), buildPickedAnchorSnapshot(), cancelEditing(), cancelEditingToPicking(), cancelInsertConfigure() (+65 more)
 
 ### Community 5 - "resumeSession"
-Cohesion: 0.07
-Nodes (62): applyOriginalAttrsToSvelteAnchor(), applySavedSessionMeta(), buildInsertPlaceholderSnapshotFromDom(), checkpointPayload(), clampVariantIndex(), clearHandled(), commitAcceptedSvelteComponentToDom(), elementMatchesOriginalMarkup() (+54 more)
+Cohesion: 0.08
+Nodes (56): applyOriginalAttrsToSvelteAnchor(), applySavedSessionMeta(), clampVariantIndex(), clearHandled(), commitAcceptedSvelteComponentToDom(), elementMatchesOriginalMarkup(), ensureInsertPlaceholder(), enterRecoveryWaitingForAnchor() (+48 more)
 
 ### Community 6 - "modern-screenshot.umd.js"
 Cohesion: 0.06
@@ -232,7 +233,7 @@ Nodes (75): extractRegister(), cli(), COMMON_DEV_PORTS, devServerSignals(), gath
 
 ### Community 7 - "initPageChat"
 Cohesion: 0.07
-Nodes (53): applyGlobalBarLabelState(), armPageChatForTyping(), attachSteerFocusDebug(), attachSteerFocusGuard(), buildSteerProcessingDots(), clearSteerAwaitTimer(), clearSteerFocusRecoverTimer(), collapsePageChat() (+45 more)
+Nodes (55): applyGlobalBarLabelState(), armPageChatForTyping(), attachSteerFocusDebug(), attachSteerFocusGuard(), buildSteerProcessingDots(), checkpointPayload(), clearSteerAwaitTimer(), clearSteerFocusRecoverTimer() (+47 more)
 
 ### Community 8 - "design-system.mjs"
 Cohesion: 0.09
@@ -312,7 +313,7 @@ Nodes (25): confirm(), detectCli(), formatFindings(), formatFindingSummary(), ha
 
 ### Community 27 - "devDependencies"
 Cohesion: 0.09
-Nodes (23): eslint, eslint-config-next, devDependencies, eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/bcryptjs (+15 more)
+Nodes (23): eslint, devDependencies, eslint, @prisma/config, tailwindcss, @tailwindcss/postcss, @types/bcryptjs, @types/node (+15 more)
 
 ### Community 28 - "compilerOptions"
 Cohesion: 0.07
@@ -379,8 +380,8 @@ Cohesion: 0.15
 Nodes (21): bumpEditCount(), clampGroupedToBudget(), clampToBudget(), dedupeAgainstCache(), depthIsSet(), directiveFooter(), ensureFile(), ensureSession() (+13 more)
 
 ### Community 44 - "onAnnotDown"
-Cohesion: 0.15
-Nodes (21): applyPlaceholderDimensions(), beginEditPin(), buildAnnotationsForCapture(), buildPinElement(), cancelEditingPin(), clampPlaceholderSize(), finalizeEditingPin(), initAnnotOverlay() (+13 more)
+Cohesion: 0.18
+Nodes (19): applyPlaceholderDimensions(), beginEditPin(), buildAnnotationsForCapture(), buildPinElement(), cancelEditingPin(), finalizeEditingPin(), initAnnotOverlay(), localCoords() (+11 more)
 
 ### Community 45 - "animate.md"
 Cohesion: 0.10
@@ -485,6 +486,10 @@ Nodes (13): Cleanup, Exit, Handle `accept`, Handle `discard`, Handle `manual_edi
 ### Community 71 - "optimize.md"
 Cohesion: 0.14
 Nodes (13): Animation Performance, Assess Performance Issues, Core Web Vitals Optimization, Cumulative Layout Shift (CLS < 0.1), First Input Delay (FID < 100ms) / INP (< 200ms), Largest Contentful Paint (LCP < 2.5s), Loading Performance, Network Optimization (+5 more)
+
+### Community 72 - "context-signals.mjs"
+Cohesion: 0.13
+Nodes (21): averageRgb01(), captureAndEmit(), captureChromeNodes(), captureElementFromRenderedAncestor(), captureElementToBlob(), compileShader(), cssColorToRgb01(), dominantRgb01() (+13 more)
 
 ### Community 73 - "live.mjs"
 Cohesion: 0.17
@@ -791,4 +796,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `COMMON_DEV_PORTS`, `SOURCE_DIRS`, `PRODUCT_NAMES` to the rest of the system?**
   _785 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `live-browser.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.029514083716754572 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.03238709677419355 - nodes in this community are weakly interconnected._

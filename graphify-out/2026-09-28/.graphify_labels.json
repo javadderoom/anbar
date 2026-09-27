@@ -141,6 +141,7 @@
   "141": "prisma.config.ts",
   "142": "Classic Typography Principles",
   "143": "Modern Web Typography",
+  "144": "Phase 2: Client State Management & Cache Synchronization (TanStack Query v5)",
   "145": "Phase 4: Concurrency, Inventory Race Conditions & Atomic Transactions",
   "146": "Phase 5: Scalability, Virtualization & Database Performance",
   "147": "Phase 6: Edge Security, Abuse Prevention & Rate Limiting",

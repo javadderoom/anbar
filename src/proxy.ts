@@ -24,7 +24,7 @@ function getJwtSecret(): Uint8Array {
 // Paths accessible to the public without authentication
 const PUBLIC_PATHS = ['/login', '/c'];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Static assets & Next.js internals

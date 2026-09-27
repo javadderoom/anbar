@@ -844,6 +844,11 @@
     "ast_hash": "962e370b5ca91a82ccdb3e413791c01b",
     "semantic_hash": ""
   },
+  "src/middleware.ts": {
+    "mtime": 1790521337.8643403,
+    "ast_hash": "a6fcb8ae99b0ed17abe779393afa8bcb",
+    "semantic_hash": ""
+  },
   "prisma/migrations/20260927113500_add_stock_movement_ledger/migration.sql": {
     "mtime": 1790508915.9053483,
     "ast_hash": "8a246ef98b7a30a7536af595a39e9662",
@@ -972,11 +977,6 @@
   "public/docs/technical-architecture.html": {
     "mtime": 1790539535.3039658,
     "ast_hash": "2b8717e193bf6931c3b930afd934c526",
-    "semantic_hash": ""
-  },
-  "src/proxy.ts": {
-    "mtime": 1790542096.2315857,
-    "ast_hash": "7fb3d6df9f824a0d009b80ac7b911568",
     "semantic_hash": ""
   }
 }
