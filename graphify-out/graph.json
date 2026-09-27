@@ -3189,8 +3189,8 @@
       "source_location": "L1825",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_resolvefontsizepx",
-      "community": 12,
-      "community_name": "detect-antipatterns-browser.js",
+      "community": 76,
+      "community_name": "resolveLengthPx",
       "norm_label": "resolvefontsizepx()"
     },
     {
@@ -3299,8 +3299,8 @@
       "source_location": "L2277",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_checkpagequalityfromdoc",
-      "community": 51,
-      "community_name": "collectBrowserFindings",
+      "community": 12,
+      "community_name": "detect-antipatterns-browser.js",
       "norm_label": "checkpagequalityfromdoc()"
     },
     {
@@ -3310,8 +3310,8 @@
       "source_location": "L2298",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_checkpagequalitydom",
-      "community": 51,
-      "community_name": "collectBrowserFindings",
+      "community": 12,
+      "community_name": "detect-antipatterns-browser.js",
       "norm_label": "checkpagequalitydom()"
     },
     {
@@ -3321,8 +3321,8 @@
       "source_location": "L2308",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_checkelementquality",
-      "community": 12,
-      "community_name": "detect-antipatterns-browser.js",
+      "community": 76,
+      "community_name": "resolveLengthPx",
       "norm_label": "checkelementquality()"
     },
     {
@@ -3486,8 +3486,8 @@
       "source_location": "L2761",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_iscreamcolor",
-      "community": 51,
-      "community_name": "collectBrowserFindings",
+      "community": 52,
+      "community_name": "parseAnyColor",
       "norm_label": "iscreamcolor()"
     },
     {
@@ -3497,8 +3497,8 @@
       "source_location": "L2783",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_creamfromclasslist",
-      "community": 51,
-      "community_name": "collectBrowserFindings",
+      "community": 52,
+      "community_name": "parseAnyColor",
       "norm_label": "creamfromclasslist()"
     },
     {
@@ -3508,8 +3508,8 @@
       "source_location": "L2795",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_checkcreampalette",
-      "community": 51,
-      "community_name": "collectBrowserFindings",
+      "community": 52,
+      "community_name": "parseAnyColor",
       "norm_label": "checkcreampalette()"
     },
     {
@@ -3519,8 +3519,8 @@
       "source_location": "L2834",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_checkoversizedh1",
-      "community": 12,
-      "community_name": "detect-antipatterns-browser.js",
+      "community": 76,
+      "community_name": "resolveLengthPx",
       "norm_label": "checkoversizedh1()"
     },
     {
@@ -3530,8 +3530,8 @@
       "source_location": "L2852",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_checkelementoversizedh1",
-      "community": 12,
-      "community_name": "detect-antipatterns-browser.js",
+      "community": 76,
+      "community_name": "resolveLengthPx",
       "norm_label": "checkelementoversizedh1()"
     },
     {
@@ -3541,8 +3541,8 @@
       "source_location": "L2859",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_checkelementoversizedh1dom",
-      "community": 12,
-      "community_name": "detect-antipatterns-browser.js",
+      "community": 76,
+      "community_name": "resolveLengthPx",
       "norm_label": "checkelementoversizedh1dom()"
     },
     {
@@ -3640,8 +3640,8 @@
       "source_location": "L2948",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_classselector",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 75,
+      "community_name": "analyzeVisualContrastCandidate",
       "norm_label": "classselector()"
     },
     {
@@ -3816,8 +3816,8 @@
       "source_location": "L3158",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_isrenderedforbrowserrule",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 75,
+      "community_name": "analyzeVisualContrastCandidate",
       "norm_label": "isrenderedforbrowserrule()"
     },
     {
@@ -3827,8 +3827,8 @@
       "source_location": "L3170",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_checkelementtextoverflowdom",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 75,
+      "community_name": "analyzeVisualContrastCandidate",
       "norm_label": "checkelementtextoverflowdom()"
     },
     {
@@ -3992,8 +3992,8 @@
       "source_location": "L3764",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_getdirecttext",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 32,
+      "community_name": "parseRgb",
       "norm_label": "getdirecttext()"
     },
     {
@@ -4003,8 +4003,8 @@
       "source_location": "L3771",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_getdirecttextrect",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 32,
+      "community_name": "parseRgb",
       "norm_label": "getdirecttextrect()"
     },
     {
@@ -4014,8 +4014,8 @@
       "source_location": "L3799",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_collectvisualcontrastreasons",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 32,
+      "community_name": "parseRgb",
       "norm_label": "collectvisualcontrastreasons()"
     },
     {
@@ -4025,8 +4025,8 @@
       "source_location": "L3854",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_collectvisualcontrastcandidates",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 32,
+      "community_name": "parseRgb",
       "norm_label": "collectvisualcontrastcandidates()"
     },
     {
@@ -4036,8 +4036,8 @@
       "source_location": "L3918",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_clampbyte",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 77,
+      "community_name": "sampleCssBackground",
       "norm_label": "clampbyte()"
     },
     {
@@ -4047,8 +4047,8 @@
       "source_location": "L3922",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_blendrgba",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 77,
+      "community_name": "sampleCssBackground",
       "norm_label": "blendrgba()"
     },
     {
@@ -4201,8 +4201,8 @@
       "source_location": "L4207",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_textsamplepoints",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 74,
+      "community_name": "scheduleLazyVisualContrast",
       "norm_label": "textsamplepoints()"
     },
     {
@@ -4223,8 +4223,8 @@
       "source_location": "L4286",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_analyzevisualcontrastcandidate",
-      "community": 84,
-      "community_name": "session-store.mjs",
+      "community": 74,
+      "community_name": "scheduleLazyVisualContrast",
       "norm_label": "analyzevisualcontrastcandidate()"
     },
     {
@@ -4333,8 +4333,8 @@
       "source_location": "L4506",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_browsercolorsclose",
-      "community": 154,
-      "community_name": "react-dom",
+      "community": 51,
+      "community_name": "collectBrowserFindings",
       "norm_label": "browsercolorsclose()"
     },
     {
@@ -4344,8 +4344,8 @@
       "source_location": "L4515",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_isbrowserdesigncolorallowed",
-      "community": 154,
-      "community_name": "react-dom",
+      "community": 51,
+      "community_name": "collectBrowserFindings",
       "norm_label": "isbrowserdesigncolorallowed()"
     },
     {
@@ -4377,8 +4377,8 @@
       "source_location": "L4544",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_browserradiustokens",
-      "community": 154,
-      "community_name": "react-dom",
+      "community": 51,
+      "community_name": "collectBrowserFindings",
       "norm_label": "browserradiustokens()"
     },
     {
@@ -4388,8 +4388,8 @@
       "source_location": "L4552",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_browserhasdirecttext",
-      "community": 154,
-      "community_name": "react-dom",
+      "community": 51,
+      "community_name": "collectBrowserFindings",
       "norm_label": "browserhasdirecttext()"
     },
     {
@@ -4399,8 +4399,8 @@
       "source_location": "L4556",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_browsersampletext",
-      "community": 154,
-      "community_name": "react-dom",
+      "community": 51,
+      "community_name": "collectBrowserFindings",
       "norm_label": "browsersampletext()"
     },
     {
@@ -4421,8 +4421,8 @@
       "source_location": "L4566",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_detect_antipatterns_browser_checkelementdesignsystemdom",
-      "community": 154,
-      "community_name": "react-dom",
+      "community": 51,
+      "community_name": "collectBrowserFindings",
       "norm_label": "checkelementdesignsystemdom()"
     },
     {
@@ -6016,8 +6016,8 @@
       "source_location": "L239",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_rules_checks_checkitalicserif",
-      "community": 53,
-      "community_name": "GENERIC_FONTS",
+      "community": 1,
+      "community_name": "checks.mjs",
       "norm_label": "checkitalicserif()"
     },
     {
@@ -6192,8 +6192,8 @@
       "source_location": "L832",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_rules_checks_checkelementitalicserifdom",
-      "community": 53,
-      "community_name": "GENERIC_FONTS",
+      "community": 1,
+      "community_name": "checks.mjs",
       "norm_label": "checkelementitalicserifdom()"
     },
     {
@@ -6511,8 +6511,8 @@
       "source_location": "L1678",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_rules_checks_checkpagequalityfromdoc",
-      "community": 59,
-      "community_name": "UX Writing",
+      "community": 1,
+      "community_name": "checks.mjs",
       "norm_label": "checkpagequalityfromdoc()"
     },
     {
@@ -6522,8 +6522,8 @@
       "source_location": "L1699",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_rules_checks_checkpagequalitydom",
-      "community": 59,
-      "community_name": "UX Writing",
+      "community": 1,
+      "community_name": "checks.mjs",
       "norm_label": "checkpagequalitydom()"
     },
     {
@@ -6577,8 +6577,8 @@
       "source_location": "L1839",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_detector_rules_checks_checkelementitalicserif",
-      "community": 53,
-      "community_name": "GENERIC_FONTS",
+      "community": 1,
+      "community_name": "checks.mjs",
       "norm_label": "checkelementitalicserif()"
     },
     {
@@ -11285,8 +11285,8 @@
       "source_location": "L868",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_stripmanualeditruntimestate",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "stripmanualeditruntimestate()"
     },
     {
@@ -11296,8 +11296,8 @@
       "source_location": "L891",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_sanitizedcontextouterhtml",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "sanitizedcontextouterhtml()"
     },
     {
@@ -11373,8 +11373,8 @@
       "source_location": "L1003",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_normalizemanualcontexttext",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "normalizemanualcontexttext()"
     },
     {
@@ -12528,8 +12528,8 @@
       "source_location": "L3267",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_unwrapmixedcontenttextnodes",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "unwrapmixedcontenttextnodes()"
     },
     {
@@ -12682,8 +12682,8 @@
       "source_location": "L3475",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_documentrefforelement",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "documentrefforelement()"
     },
     {
@@ -12693,8 +12693,8 @@
       "source_location": "L3492",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_documentrefsegment",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "documentrefsegment()"
     },
     {
@@ -12704,8 +12704,8 @@
       "source_location": "L3497",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_documentrefidsuffix",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "documentrefidsuffix()"
     },
     {
@@ -12715,8 +12715,8 @@
       "source_location": "L3501",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_documentrefclasssuffix",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "documentrefclasssuffix()"
     },
     {
@@ -12726,8 +12726,8 @@
       "source_location": "L3512",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_normalizedocumentreftoken",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "normalizedocumentreftoken()"
     },
     {
@@ -12737,8 +12737,8 @@
       "source_location": "L3516",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_indexamongsametag",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "indexamongsametag()"
     },
     {
@@ -12748,8 +12748,8 @@
       "source_location": "L3530",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_copyeditleafcontext",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "copyeditleafcontext()"
     },
     {
@@ -12759,8 +12759,8 @@
       "source_location": "L3544",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_nearbyeditabletextsformanualedit",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "nearbyeditabletextsformanualedit()"
     },
     {
@@ -12770,8 +12770,8 @@
       "source_location": "L3564",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_copyeditcontainercontext",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "copyeditcontainercontext()"
     },
     {
@@ -13056,8 +13056,8 @@
       "source_location": "L3996",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_onpendingtrashclick",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "onpendingtrashclick()"
     },
     {
@@ -13144,8 +13144,8 @@
       "source_location": "L4184",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_restorediscardedmanualedits",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "restorediscardedmanualedits()"
     },
     {
@@ -13155,8 +13155,8 @@
       "source_location": "L4203",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_canrestoremanualeditelement",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "canrestoremanualeditelement()"
     },
     {
@@ -13166,8 +13166,8 @@
       "source_location": "L4209",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_mixedtextwraprestorehint",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "mixedtextwraprestorehint()"
     },
     {
@@ -13177,8 +13177,8 @@
       "source_location": "L4220",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_restoremixedtextnodemanualedit",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "restoremixedtextnodemanualedit()"
     },
     {
@@ -13188,8 +13188,8 @@
       "source_location": "L4238",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_directmixedtextrestorenodes",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "directmixedtextrestorenodes()"
     },
     {
@@ -13199,8 +13199,8 @@
       "source_location": "L4248",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_findmanualeditrestoreelement",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "findmanualeditrestoreelement()"
     },
     {
@@ -13210,8 +13210,8 @@
       "source_location": "L4267",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_querymanualeditref",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "querymanualeditref()"
     },
     {
@@ -13221,8 +13221,8 @@
       "source_location": "L4287",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_parsemanualeditrefsegment",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "parsemanualeditrefsegment()"
     },
     {
@@ -13232,8 +13232,8 @@
       "source_location": "L4303",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_elementmatchesmanualrefsegment",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "elementmatchesmanualrefsegment()"
     },
     {
@@ -13243,8 +13243,8 @@
       "source_location": "L4314",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_cssident",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "cssident()"
     },
     {
@@ -13254,8 +13254,8 @@
       "source_location": "L4329",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_usesshadowchromeroot",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 84,
+      "community_name": "session-store.mjs",
       "norm_label": "usesshadowchromeroot()"
     },
     {
@@ -13265,8 +13265,8 @@
       "source_location": "L4334",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_setimportantstyle",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 84,
+      "community_name": "session-store.mjs",
       "norm_label": "setimportantstyle()"
     },
     {
@@ -13276,8 +13276,8 @@
       "source_location": "L4338",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_initeditbadgehitproxies",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 84,
+      "community_name": "session-store.mjs",
       "norm_label": "initeditbadgehitproxies()"
     },
     {
@@ -13287,8 +13287,8 @@
       "source_location": "L4360",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_styleeditbadgeproxy",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 84,
+      "community_name": "session-store.mjs",
       "norm_label": "styleeditbadgeproxy()"
     },
     {
@@ -13298,8 +13298,8 @@
       "source_location": "L4386",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_proxymouseevent",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 84,
+      "community_name": "session-store.mjs",
       "norm_label": "proxymouseevent()"
     },
     {
@@ -13309,8 +13309,8 @@
       "source_location": "L4408",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_bindeditbadgeproxy",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 84,
+      "community_name": "session-store.mjs",
       "norm_label": "bindeditbadgeproxy()"
     },
     {
@@ -13320,8 +13320,8 @@
       "source_location": "L4439",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_editbadgeproxytargets",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 84,
+      "community_name": "session-store.mjs",
       "norm_label": "editbadgeproxytargets()"
     },
     {
@@ -13331,8 +13331,8 @@
       "source_location": "L4450",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_synceditbadgehitproxies",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 84,
+      "community_name": "session-store.mjs",
       "norm_label": "synceditbadgehitproxies()"
     },
     {
@@ -13342,8 +13342,8 @@
       "source_location": "L4484",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_initeditbadge",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 84,
+      "community_name": "session-store.mjs",
       "norm_label": "initeditbadge()"
     },
     {
@@ -13353,8 +13353,8 @@
       "source_location": "L4512",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_positioneditbadge",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 84,
+      "community_name": "session-store.mjs",
       "norm_label": "positioneditbadge()"
     },
     {
@@ -14618,8 +14618,8 @@
       "source_location": "L7543",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_snapshotacceptedvariantdom",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "snapshotacceptedvariantdom()"
     },
     {
@@ -14629,8 +14629,8 @@
       "source_location": "L7556",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_selectorforacceptedroot",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 22,
+      "community_name": "renderDesignVisual",
       "norm_label": "selectorforacceptedroot()"
     },
     {
@@ -15069,8 +15069,8 @@
       "source_location": "L8321",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_pagechatcollapsedwidthpx",
-      "community": 7,
-      "community_name": "initPageChat",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "pagechatcollapsedwidthpx()"
     },
     {
@@ -15080,8 +15080,8 @@
       "source_location": "L8326",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_pagechatexpandedwidth",
-      "community": 7,
-      "community_name": "initPageChat",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "pagechatexpandedwidth()"
     },
     {
@@ -15091,8 +15091,8 @@
       "source_location": "L8336",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_syncpagechatexpandedwidth",
-      "community": 7,
-      "community_name": "initPageChat",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "syncpagechatexpandedwidth()"
     },
     {
@@ -15124,8 +15124,8 @@
       "source_location": "L8370",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_shouldfocussteerchat",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "shouldfocussteerchat()"
     },
     {
@@ -15135,8 +15135,8 @@
       "source_location": "L8376",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_ispageeditableelement",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "ispageeditableelement()"
     },
     {
@@ -15146,8 +15146,8 @@
       "source_location": "L8382",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_isinlineeditactive",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "isinlineeditactive()"
     },
     {
@@ -15157,8 +15157,8 @@
       "source_location": "L8386",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_ispageeditableactive",
-      "community": 0,
-      "community_name": "live-browser.js",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "ispageeditableactive()"
     },
     {
@@ -15168,8 +15168,8 @@
       "source_location": "L8391",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_pagehashosttextselection",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "pagehashosttextselection()"
     },
     {
@@ -15179,8 +15179,8 @@
       "source_location": "L8401",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_shouldsteerautofocus",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "shouldsteerautofocus()"
     },
     {
@@ -15190,8 +15190,8 @@
       "source_location": "L8408",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_clearsteerfocusrecovertimer",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "clearsteerfocusrecovertimer()"
     },
     {
@@ -15201,8 +15201,8 @@
       "source_location": "L8415",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_schedulesteerfocusrecover",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "schedulesteerfocusrecover()"
     },
     {
@@ -15212,8 +15212,8 @@
       "source_location": "L8436",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_notepagepointerdown",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "notepagepointerdown()"
     },
     {
@@ -15223,8 +15223,8 @@
       "source_location": "L8446",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_attachsteerfocusguard",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "attachsteerfocusguard()"
     },
     {
@@ -15234,8 +15234,8 @@
       "source_location": "L8483",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_steerfocustargetlabel",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "steerfocustargetlabel()"
     },
     {
@@ -15245,8 +15245,8 @@
       "source_location": "L8490",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_steerfocusdebugenabled",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "steerfocusdebugenabled()"
     },
     {
@@ -15256,8 +15256,8 @@
       "source_location": "L8494",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_steerfocuslog",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "steerfocuslog()"
     },
     {
@@ -15267,8 +15267,8 @@
       "source_location": "L8507",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_attachsteerfocusdebug",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "attachsteerfocusdebug()"
     },
     {
@@ -15278,8 +15278,8 @@
       "source_location": "L8517",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_focusconfigureinput",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "focusconfigureinput()"
     },
     {
@@ -15300,8 +15300,8 @@
       "source_location": "L8580",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_focussteerchat",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 7,
+      "community_name": "initPageChat",
       "norm_label": "focussteerchat()"
     },
     {
@@ -15311,8 +15311,8 @@
       "source_location": "L8606",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_syncpagechatfocus",
-      "community": 96,
-      "community_name": "inline-ignores.mjs",
+      "community": 4,
+      "community_name": "setLiveState",
       "norm_label": "syncpagechatfocus()"
     },
     {
@@ -15806,8 +15806,8 @@
       "source_location": "L10017",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_loaddesignprefs",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "loaddesignprefs()"
     },
     {
@@ -15817,8 +15817,8 @@
       "source_location": "L10031",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_savedesignprefs",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "savedesignprefs()"
     },
     {
@@ -15828,8 +15828,8 @@
       "source_location": "L10040",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_initdesignpanel",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "initdesignpanel()"
     },
     {
@@ -15839,8 +15839,8 @@
       "source_location": "L10090",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_designpanelcss",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "designpanelcss()"
     },
     {
@@ -15850,8 +15850,8 @@
       "source_location": "L10365",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_renderdesignchrome",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "renderdesignchrome()"
     },
     {
@@ -15861,8 +15861,8 @@
       "source_location": "L10384",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_builddesignheader",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "builddesignheader()"
     },
     {
@@ -15872,8 +15872,8 @@
       "source_location": "L10423",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_toggledesignpanel",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "toggledesignpanel()"
     },
     {
@@ -15883,8 +15883,8 @@
       "source_location": "L10433",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_fetchdesignsystem",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "fetchdesignsystem()"
     },
     {
@@ -15894,8 +15894,8 @@
       "source_location": "L10459",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_renderdesignbody",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "renderdesignbody()"
     },
     {
@@ -15905,8 +15905,8 @@
       "source_location": "L10493",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_msgdiv",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "msgdiv()"
     },
     {
@@ -15916,8 +15916,8 @@
       "source_location": "L10500",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_renderstalehint",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "renderstalehint()"
     },
     {
@@ -15927,8 +15927,8 @@
       "source_location": "L10510",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_renderparsedmdcta",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "renderparsedmdcta()"
     },
     {
@@ -15938,8 +15938,8 @@
       "source_location": "L10519",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_renderdesignvisual",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "renderdesignvisual()"
     },
     {
@@ -15971,8 +15971,8 @@
       "source_location": "L10594",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_buildradiimodels",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "buildradiimodels()"
     },
     {
@@ -16015,8 +16015,8 @@
       "source_location": "L10623",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_synthesizenarrative",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "synthesizenarrative()"
     },
     {
@@ -16026,8 +16026,8 @@
       "source_location": "L10640",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_rendercolortiles",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "rendercolortiles()"
     },
     {
@@ -16037,8 +16037,8 @@
       "source_location": "L10675",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_synthesizeramp",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "synthesizeramp()"
     },
     {
@@ -16048,8 +16048,8 @@
       "source_location": "L10685",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_rendertypetiles",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "rendertypetiles()"
     },
     {
@@ -16059,8 +16059,8 @@
       "source_location": "L10729",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_fontstack",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "fontstack()"
     },
     {
@@ -16070,8 +16070,8 @@
       "source_location": "L10738",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_renderradiitile",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "renderradiitile()"
     },
     {
@@ -16081,8 +16081,8 @@
       "source_location": "L10769",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_rendershadowtiles",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "rendershadowtiles()"
     },
     {
@@ -16092,8 +16092,8 @@
       "source_location": "L10799",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_rendercomponenttiles",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "rendercomponenttiles()"
     },
     {
@@ -16103,8 +16103,8 @@
       "source_location": "L10856",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_groupbykind",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "groupbykind()"
     },
     {
@@ -16114,8 +16114,8 @@
       "source_location": "L10869",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_titleforkind",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "titleforkind()"
     },
     {
@@ -16125,8 +16125,8 @@
       "source_location": "L10883",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_buildcollapsible",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "buildcollapsible()"
     },
     {
@@ -16136,8 +16136,8 @@
       "source_location": "L10908",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_renderrulescollapsible",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "renderrulescollapsible()"
     },
     {
@@ -16147,8 +16147,8 @@
       "source_location": "L10926",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_renderdosdontscollapsible",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "renderdosdontscollapsible()"
     },
     {
@@ -16158,8 +16158,8 @@
       "source_location": "L10947",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_renderoverviewcollapsible",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "renderoverviewcollapsible()"
     },
     {
@@ -16169,8 +16169,8 @@
       "source_location": "L10971",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_csssafe",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "csssafe()"
     },
     {
@@ -16191,8 +16191,8 @@
       "source_location": "L10991",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_renderrawtab",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "renderrawtab()"
     },
     {
@@ -16202,8 +16202,8 @@
       "source_location": "L10998",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_rendermarkdown",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "rendermarkdown()"
     },
     {
@@ -16213,8 +16213,8 @@
       "source_location": "L11073",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_buildlisthtml",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "buildlisthtml()"
     },
     {
@@ -16224,8 +16224,8 @@
       "source_location": "L11087",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_inlinemd",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "inlinemd()"
     },
     {
@@ -16235,8 +16235,8 @@
       "source_location": "L11101",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_highlightbold",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "highlightbold()"
     },
     {
@@ -16246,8 +16246,8 @@
       "source_location": "L11105",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_escapehtml",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "escapehtml()"
     },
     {
@@ -16257,8 +16257,8 @@
       "source_location": "L11114",
       "_origin": "ast",
       "id": "agents_skills_impeccable_scripts_live_browser_copytoclipboard",
-      "community": 22,
-      "community_name": "renderDesignVisual",
+      "community": 0,
+      "community_name": "live-browser.js",
       "norm_label": "copytoclipboard()"
     },
     {
@@ -33604,8 +33604,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "docs_engineering_roadmap_phase_1_end_to_end_type_safety_data_validation_zod",
-      "community": 132,
-      "community_name": "captureVisualContrastCandidate",
+      "community": 96,
+      "community_name": "inline-ignores.mjs",
       "norm_label": "phase 1: end-to-end type safety & data validation (zod)"
     },
     {
@@ -33615,8 +33615,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "docs_engineering_roadmap_objective",
-      "community": 132,
-      "community_name": "captureVisualContrastCandidate",
+      "community": 96,
+      "community_name": "inline-ignores.mjs",
       "norm_label": "objective"
     },
     {
@@ -33626,8 +33626,8 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "docs_engineering_roadmap_architecture_implementation",
-      "community": 132,
-      "community_name": "captureVisualContrastCandidate",
+      "community": 96,
+      "community_name": "inline-ignores.mjs",
       "norm_label": "architecture & implementation"
     },
     {
@@ -33769,8 +33769,8 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "docs_engineering_roadmap_phase_6_edge_security_abuse_prevention_rate_limiting",
-      "community": 158,
-      "community_name": "tailwindcss",
+      "community": 132,
+      "community_name": "captureVisualContrastCandidate",
       "norm_label": "phase 6: edge security, abuse prevention & rate limiting"
     },
     {
@@ -33780,8 +33780,8 @@
       "source_location": "L221",
       "_origin": "ast",
       "id": "docs_engineering_roadmap_objective_221",
-      "community": 158,
-      "community_name": "tailwindcss",
+      "community": 132,
+      "community_name": "captureVisualContrastCandidate",
       "norm_label": "objective"
     },
     {
@@ -33791,8 +33791,8 @@
       "source_location": "L224",
       "_origin": "ast",
       "id": "docs_engineering_roadmap_architecture_implementation_224",
-      "community": 158,
-      "community_name": "tailwindcss",
+      "community": 132,
+      "community_name": "captureVisualContrastCandidate",
       "norm_label": "architecture & implementation"
     },
     {
@@ -34173,7 +34173,7 @@
       "label": "\u06f4. \u062f\u0631\u0648\u0646\u200c\u0631\u06cc\u0632\u06cc \u0648 \u0627\u0633\u062a\u062e\u0631\u0627\u062c \u06af\u0631\u0648\u0647\u06cc \u0628\u0627 \u0627\u06a9\u0633\u0644 (Excel Bulk Import/Export)",
       "file_type": "document",
       "source_file": "docs/user-guide.md",
-      "source_location": "L61",
+      "source_location": "L63",
       "_origin": "ast",
       "id": "docs_user_guide_\u06f4_\u062f\u0631\u0648\u0646_\u0631\u06cc\u0632\u06cc_\u0648_\u0627\u0633\u062a\u062e\u0631\u0627\u062c_\u06af\u0631\u0648\u0647\u06cc_\u0628\u0627_\u0627\u06a9\u0633\u0644_excel_bulk_import_export",
       "community": 58,
@@ -34184,7 +34184,7 @@
       "label": "\u06f5. \u062b\u0628\u062a \u0648\u0631\u0648\u062f\u060c \u062e\u0631\u0648\u062c \u0648 \u0627\u0646\u0628\u0627\u0631\u06af\u0631\u062f\u0627\u0646\u06cc (Audit Trail)",
       "file_type": "document",
       "source_file": "docs/user-guide.md",
-      "source_location": "L79",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "docs_user_guide_\u06f5_\u062b\u0628\u062a_\u0648\u0631\u0648\u062f_\u062e\u0631\u0648\u062c_\u0648_\u0627\u0646\u0628\u0627\u0631\u06af\u0631\u062f\u0627\u0646\u06cc_audit_trail",
       "community": 58,
@@ -34195,7 +34195,7 @@
       "label": "\u06f6. \u0644\u06cc\u0646\u06a9\u200c\u0647\u0627\u06cc \u0627\u062e\u062a\u0635\u0627\u0635\u06cc \u06a9\u0627\u062a\u0627\u0644\u0648\u06af \u0645\u0634\u062a\u0631\u06cc\u0627\u0646 (Client Catalog Links)",
       "file_type": "document",
       "source_file": "docs/user-guide.md",
-      "source_location": "L90",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "docs_user_guide_\u06f6_\u0644\u06cc\u0646\u06a9_\u0647\u0627\u06cc_\u0627\u062e\u062a\u0635\u0627\u0635\u06cc_\u06a9\u0627\u062a\u0627\u0644\u0648\u06af_\u0645\u0634\u062a\u0631\u06cc\u0627\u0646_client_catalog_links",
       "community": 58,
@@ -34206,7 +34206,7 @@
       "label": "\u06f7. \u062a\u0628\u062f\u06cc\u0644 \u062f\u0631\u062e\u0648\u0627\u0633\u062a \u0628\u0647 \u0641\u0627\u06a9\u062a\u0648\u0631 \u0648 \u06a9\u0633\u0631 \u062e\u0648\u062f\u06a9\u0627\u0631 \u0627\u0646\u0628\u0627\u0631",
       "file_type": "document",
       "source_file": "docs/user-guide.md",
-      "source_location": "L101",
+      "source_location": "L105",
       "_origin": "ast",
       "id": "docs_user_guide_\u06f7_\u062a\u0628\u062f\u06cc\u0644_\u062f\u0631\u062e\u0648\u0627\u0633\u062a_\u0628\u0647_\u0641\u0627\u06a9\u062a\u0648\u0631_\u0648_\u06a9\u0633\u0631_\u062e\u0648\u062f\u06a9\u0627\u0631_\u0627\u0646\u0628\u0627\u0631",
       "community": 58,
@@ -34217,7 +34217,7 @@
       "label": "\u06f8. \u062a\u0646\u0638\u06cc\u0645\u0627\u062a \u0633\u0631\u0628\u0631\u06af \u0648 \u0642\u0648\u0627\u0646\u06cc\u0646 \u0645\u0627\u0644\u06cc\u0627\u062a\u06cc \u0645\u0627\u062f\u0647 \u06f1\u06f6\u06f9",
       "file_type": "document",
       "source_file": "docs/user-guide.md",
-      "source_location": "L114",
+      "source_location": "L117",
       "_origin": "ast",
       "id": "docs_user_guide_\u06f8_\u062a\u0646\u0638\u06cc\u0645\u0627\u062a_\u0633\u0631\u0628\u0631\u06af_\u0648_\u0642\u0648\u0627\u0646\u06cc\u0646_\u0645\u0627\u0644\u06cc\u0627\u062a\u06cc_\u0645\u0627\u062f\u0647_\u06f1\u06f6\u06f9",
       "community": 58,
@@ -34228,7 +34228,7 @@
       "label": "\u06f9. \u0631\u0627\u0647\u0646\u0645\u0627\u06cc \u0648\u06cc\u0698\u0647 \u062e\u0631\u06cc\u062f\u0627\u0631\u0627\u0646 \u0648 \u0645\u0634\u062a\u0631\u06cc\u0627\u0646 (\u06a9\u0627\u062a\u0627\u0644\u0648\u06af \u0645\u0648\u0628\u0627\u06cc\u0644)",
       "file_type": "document",
       "source_file": "docs/user-guide.md",
-      "source_location": "L125",
+      "source_location": "L128",
       "_origin": "ast",
       "id": "docs_user_guide_\u06f9_\u0631\u0627\u0647\u0646\u0645\u0627\u06cc_\u0648\u06cc\u0698\u0647_\u062e\u0631\u06cc\u062f\u0627\u0631\u0627\u0646_\u0648_\u0645\u0634\u062a\u0631\u06cc\u0627\u0646_\u06a9\u0627\u062a\u0627\u0644\u0648\u06af_\u0645\u0648\u0628\u0627\u06cc\u0644",
       "community": 58,
@@ -34239,7 +34239,7 @@
       "label": "\u06f1\u06f0. \u0646\u06a9\u0627\u062a \u0641\u0646\u06cc\u060c \u0627\u0645\u0646\u06cc\u062a\u06cc \u0648 \u0646\u06af\u0647\u062f\u0627\u0631\u06cc \u0633\u06cc\u0633\u062a\u0645",
       "file_type": "document",
       "source_file": "docs/user-guide.md",
-      "source_location": "L136",
+      "source_location": "L139",
       "_origin": "ast",
       "id": "docs_user_guide_\u06f1\u06f0_\u0646\u06a9\u0627\u062a_\u0641\u0646\u06cc_\u0627\u0645\u0646\u06cc\u062a\u06cc_\u0648_\u0646\u06af\u0647\u062f\u0627\u0631\u06cc_\u0633\u06cc\u0633\u062a\u0645",
       "community": 58,
@@ -115152,7 +115152,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/user-guide.md",
-      "source_location": "L136",
+      "source_location": "L139",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_user_guide_\u0631\u0627\u0647\u0646\u0645\u0627\u06cc_\u062c\u0627\u0645\u0639_\u06a9\u0627\u0631\u0628\u0631\u06cc_\u0648_\u0639\u0645\u0644\u06cc\u0627\u062a\u06cc_\u0633\u0627\u0645\u0627\u0646\u0647_\u0627\u0646\u0628\u0627\u0631\u062f\u0627\u0631\u06cc_\u0627\u0646\u0628\u0627\u0631",
@@ -115185,7 +115185,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/user-guide.md",
-      "source_location": "L61",
+      "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_user_guide_\u0631\u0627\u0647\u0646\u0645\u0627\u06cc_\u062c\u0627\u0645\u0639_\u06a9\u0627\u0631\u0628\u0631\u06cc_\u0648_\u0639\u0645\u0644\u06cc\u0627\u062a\u06cc_\u0633\u0627\u0645\u0627\u0646\u0647_\u0627\u0646\u0628\u0627\u0631\u062f\u0627\u0631\u06cc_\u0627\u0646\u0628\u0627\u0631",
@@ -115196,7 +115196,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/user-guide.md",
-      "source_location": "L79",
+      "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_user_guide_\u0631\u0627\u0647\u0646\u0645\u0627\u06cc_\u062c\u0627\u0645\u0639_\u06a9\u0627\u0631\u0628\u0631\u06cc_\u0648_\u0639\u0645\u0644\u06cc\u0627\u062a\u06cc_\u0633\u0627\u0645\u0627\u0646\u0647_\u0627\u0646\u0628\u0627\u0631\u062f\u0627\u0631\u06cc_\u0627\u0646\u0628\u0627\u0631",
@@ -115207,7 +115207,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/user-guide.md",
-      "source_location": "L90",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_user_guide_\u0631\u0627\u0647\u0646\u0645\u0627\u06cc_\u062c\u0627\u0645\u0639_\u06a9\u0627\u0631\u0628\u0631\u06cc_\u0648_\u0639\u0645\u0644\u06cc\u0627\u062a\u06cc_\u0633\u0627\u0645\u0627\u0646\u0647_\u0627\u0646\u0628\u0627\u0631\u062f\u0627\u0631\u06cc_\u0627\u0646\u0628\u0627\u0631",
@@ -115218,7 +115218,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/user-guide.md",
-      "source_location": "L101",
+      "source_location": "L105",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_user_guide_\u0631\u0627\u0647\u0646\u0645\u0627\u06cc_\u062c\u0627\u0645\u0639_\u06a9\u0627\u0631\u0628\u0631\u06cc_\u0648_\u0639\u0645\u0644\u06cc\u0627\u062a\u06cc_\u0633\u0627\u0645\u0627\u0646\u0647_\u0627\u0646\u0628\u0627\u0631\u062f\u0627\u0631\u06cc_\u0627\u0646\u0628\u0627\u0631",
@@ -115229,7 +115229,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/user-guide.md",
-      "source_location": "L114",
+      "source_location": "L117",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_user_guide_\u0631\u0627\u0647\u0646\u0645\u0627\u06cc_\u062c\u0627\u0645\u0639_\u06a9\u0627\u0631\u0628\u0631\u06cc_\u0648_\u0639\u0645\u0644\u06cc\u0627\u062a\u06cc_\u0633\u0627\u0645\u0627\u0646\u0647_\u0627\u0646\u0628\u0627\u0631\u062f\u0627\u0631\u06cc_\u0627\u0646\u0628\u0627\u0631",
@@ -115240,7 +115240,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/user-guide.md",
-      "source_location": "L125",
+      "source_location": "L128",
       "weight": 1.0,
       "_origin": "ast",
       "source": "docs_user_guide_\u0631\u0627\u0647\u0646\u0645\u0627\u06cc_\u062c\u0627\u0645\u0639_\u06a9\u0627\u0631\u0628\u0631\u06cc_\u0648_\u0639\u0645\u0644\u06cc\u0627\u062a\u06cc_\u0633\u0627\u0645\u0627\u0646\u0647_\u0627\u0646\u0628\u0627\u0631\u062f\u0627\u0631\u06cc_\u0627\u0646\u0628\u0627\u0631",
@@ -115271,5 +115271,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "afc3cadb74d8488626b3ff1f1fe3b379812c9c3d"
+  "built_at_commit": "e7860c16c1ae4fb3f86f973065e84a12d4fa6e36"
 }

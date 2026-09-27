@@ -365,8 +365,8 @@
     "semantic_hash": ""
   },
   "src/app/c/[token]/page.tsx": {
-    "mtime": 1790521538.7475328,
-    "ast_hash": "a10b837b8a62fe27543f61abab1d49e6",
+    "mtime": 1790524331.9145522,
+    "ast_hash": "93d67057c15108151ec5e0989ce36899",
     "semantic_hash": ""
   },
   "src/app/layout.tsx": {
@@ -420,8 +420,8 @@
     "semantic_hash": ""
   },
   "src/components/admin/InventoryModule.tsx": {
-    "mtime": 1790510114.1676154,
-    "ast_hash": "f588a8a6e857a060ba02399da55a72b6",
+    "mtime": 1790524686.2028203,
+    "ast_hash": "7afab161b7c93aa4a36edd14d155a67d",
     "semantic_hash": ""
   },
   "src/components/admin/OrderRequestsModule.tsx": {
@@ -435,8 +435,8 @@
     "semantic_hash": ""
   },
   "src/lib/excel.ts": {
-    "mtime": 1790368667.0734622,
-    "ast_hash": "087177a0fb342901270d5508e15e7606",
+    "mtime": 1790524518.9072678,
+    "ast_hash": "d1c50ce14fd17e83401fc53ffc95951f",
     "semantic_hash": ""
   },
   "src/lib/prisma.ts": {
@@ -450,8 +450,8 @@
     "semantic_hash": ""
   },
   "src/types/index.ts": {
-    "mtime": 1790509128.174502,
-    "ast_hash": "2e30c29e85655b54ba69bb0b90d27344",
+    "mtime": 1790524012.6401477,
+    "ast_hash": "de8c53892c5c73e412d826d480577347",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -705,23 +705,23 @@
     "semantic_hash": ""
   },
   "src/app/api/products/[id]/route.ts": {
-    "mtime": 1790454514.427627,
-    "ast_hash": "f4354166702d74da4f4dfefabc340a89",
+    "mtime": 1790524171.3269193,
+    "ast_hash": "5e25a89be7ddeeda139cf1fb6b42f48d",
     "semantic_hash": ""
   },
   "src/app/api/products/bulk/route.ts": {
-    "mtime": 1790454648.556576,
-    "ast_hash": "d7aa1b03f6eab617139c1bb22ca29abf",
+    "mtime": 1790524223.062576,
+    "ast_hash": "9d26a82cb39b98b0105e0ef3a38b7472",
     "semantic_hash": ""
   },
   "src/app/api/products/route.ts": {
-    "mtime": 1790510860.229464,
-    "ast_hash": "03c3a1d9f8224984bd6b711afb6bf2dd",
+    "mtime": 1790524116.9310741,
+    "ast_hash": "7769d68e5b1776a9666eac698a76229d",
     "semantic_hash": ""
   },
   "src/app/api/requests/[id]/convert/route.ts": {
-    "mtime": 1790510546.8731582,
-    "ast_hash": "a5f9cf3630cb0249ea60e062023ec453",
+    "mtime": 1790524273.7062132,
+    "ast_hash": "2c83f3c30e8f406ace964b75b3ef3bd2",
     "semantic_hash": ""
   },
   "src/app/api/requests/route.ts": {
@@ -765,8 +765,8 @@
     "semantic_hash": ""
   },
   "src/lib/validations/product.schema.ts": {
-    "mtime": 1790451512.5403354,
-    "ast_hash": "f095d52e75a1b1593e9805528d2ceebb",
+    "mtime": 1790524065.255109,
+    "ast_hash": "a63792eb8d07e96ae43a238e15445e6b",
     "semantic_hash": ""
   },
   "src/lib/validations/settings.schema.ts": {
@@ -900,8 +900,8 @@
     "semantic_hash": ""
   },
   "tests/excel.test.ts": {
-    "mtime": 1790519805.5057495,
-    "ast_hash": "511df4e86b9768ac33e3aa3fb5d1f4c2",
+    "mtime": 1790524847.9930804,
+    "ast_hash": "51213083b15f04353f5850e2360b0311",
     "semantic_hash": ""
   },
   "tests/permissions.test.ts": {
@@ -915,8 +915,8 @@
     "semantic_hash": ""
   },
   "tests/validations.test.ts": {
-    "mtime": 1790519484.6168933,
-    "ast_hash": "5b4f7f753fd1e5680e7698f812ea9da8",
+    "mtime": 1790524742.8168411,
+    "ast_hash": "9a02f949076abf041e4ce66d685faf5c",
     "semantic_hash": ""
   },
   "vitest.config.ts": {
@@ -937,6 +937,11 @@
   "docs/user-guide.md": {
     "mtime": 1790522612.1246047,
     "ast_hash": "4904131f8a3e1a79fbf9336d99b3409d",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260927154453_add_made_to_order_fields_to_product/migration.sql": {
+    "mtime": 1790523893.773352,
+    "ast_hash": "67bc29850195dcb33d08cfa6863f8dc8",
     "semantic_hash": ""
   }
 }

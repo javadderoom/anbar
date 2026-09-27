@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Warehouse, Lock, Mail, ArrowLeft, Loader2, ShieldCheck, Sparkles } from 'lucide-react';
+import { Warehouse, Lock, Mail, ArrowLeft, Loader2 } from 'lucide-react';
 import { notify } from '@/lib/notify';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuth } from '@/context/AuthContext';
@@ -75,17 +75,6 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-900/5 space-y-6">
-          {/* Security Notice */}
-          <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-xs text-amber-700 dark:text-amber-300">
-            <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
-            <div className="space-y-0.5 leading-relaxed">
-              <span className="font-bold">دسترسی امن با بیت‌ماسک:</span>
-              <p className="text-[11px] opacity-90">
-                در اولین ورود، اولین کاربر به عنوان «مدیر ارشد» (دسترسی کامل ۲۵۵) در دیتابیس ثبت خواهد شد.
-              </p>
-            </div>
-          </div>
-
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
