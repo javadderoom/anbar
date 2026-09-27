@@ -1,11 +1,11 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/query-keys';
 import type { Product, StockMovement } from '@/types';
 import type { CreateProductInput, UpdateProductInput, AdjustStockInput } from '@/lib/validations';
 
-// Fetch products with optional search and category
+// Fetch products with optional search and category (Full List)
 export function useProducts(search = '', category = '') {
   return useQuery<Product[]>({
     queryKey: queryKeys.products.list(search, category),
@@ -21,6 +21,45 @@ export function useProducts(search = '', category = '') {
       }
       return res.json();
     },
+  });
+}
+
+// Fetch products with cursor-based infinite pagination
+export function useInfiniteProducts({
+  search = '',
+  category = '',
+  stockStatus = 'all',
+  limit = 40,
+}: {
+  search?: string;
+  category?: string;
+  stockStatus?: string;
+  limit?: number;
+} = {}) {
+  return useInfiniteQuery({
+    queryKey: ['products', 'infinite', { search, category, stockStatus, limit }],
+    queryFn: async ({ pageParam }) => {
+      const params = new URLSearchParams();
+      params.set('paginate', 'true');
+      params.set('limit', String(limit));
+      if (pageParam) params.set('cursor', pageParam);
+      if (search.trim()) params.set('search', search.trim());
+      if (category && category !== 'all') params.set('category', category);
+      if (stockStatus && stockStatus !== 'all') params.set('stockStatus', stockStatus);
+
+      const res = await fetch(`/api/products?${params.toString()}`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'خطا در بارگذاری کالاها از دیتابیس');
+      }
+      return res.json() as Promise<{
+        items: Product[];
+        nextCursor: string | null;
+        hasMore: boolean;
+      }>;
+    },
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
 }
 

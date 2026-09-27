@@ -93,6 +93,10 @@ model Product {
   orderItems     OrderItem[]
   invoiceItems   InvoiceItem[]
   stockMovements StockMovement[]
+
+  @@index([isActive, category])
+  @@index([isActive, createdAt(sort: Desc)])
+  @@index([isActive, stockQuantity])
 }
 
 model StockMovement {
@@ -127,6 +131,9 @@ model OrderRequest {
 
   items   OrderItem[]
   invoice Invoice?
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([clientId, createdAt(sort: Desc)])
 }
 
 model OrderItem {

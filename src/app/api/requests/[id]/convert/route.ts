@@ -44,24 +44,30 @@ export async function POST(
       // Guarded atomic stock decrement with audit ledger tracking
       if (validated.deductStock) {
         for (const item of order.items) {
-          const currentProd = await tx.product.findUnique({
-            where: { id: item.productId },
-            select: { stockQuantity: true },
+          // Atomic conditional decrement: only decrements if stockQuantity >= requested quantity
+          const updateResult = await tx.product.updateMany({
+            where: {
+              id: item.productId,
+              stockQuantity: { gte: item.quantity },
+            },
+            data: {
+              stockQuantity: { decrement: item.quantity },
+            },
           });
 
-          if (!currentProd || currentProd.stockQuantity < item.quantity) {
+          if (updateResult.count === 0) {
             throw new Error(
               `موجودی کالای «${item.productName}» در انبار برای تحویل این تعداد کافی نمی‌باشد`
             );
           }
 
-          const previousStock = currentProd.stockQuantity;
-          const newStock = previousStock - item.quantity;
-
-          await tx.product.update({
+          const updatedProd = await tx.product.findUnique({
             where: { id: item.productId },
-            data: { stockQuantity: newStock },
+            select: { stockQuantity: true },
           });
+
+          const newStock = updatedProd?.stockQuantity ?? 0;
+          const previousStock = newStock + item.quantity;
 
           await tx.stockMovement.create({
             data: {

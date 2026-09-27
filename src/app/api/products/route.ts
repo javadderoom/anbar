@@ -5,12 +5,16 @@ import { handleApiError, apiSuccess } from '@/lib/api-response';
 import { getCurrentUser } from '@/lib/auth';
 import { hasPermission, Permission } from '@/lib/permissions';
 
-// GET /api/products - list all active products
+// GET /api/products - list active products with optional cursor pagination and filters
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
     const category = searchParams.get('category') || '';
+    const stockStatus = searchParams.get('stockStatus') || 'all';
+    const cursor = searchParams.get('cursor');
+    const isPaginated = searchParams.get('paginate') === 'true' || searchParams.has('cursor');
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '40', 10)));
 
     const where: any = { isActive: true };
 
@@ -24,6 +28,40 @@ export async function GET(request: Request) {
         { sku: { contains: search, mode: 'insensitive' } },
         { category: { contains: search, mode: 'insensitive' } },
       ];
+    }
+
+    if (stockStatus === 'out_of_stock') {
+      where.stockQuantity = 0;
+    } else if (stockStatus === 'in_stock') {
+      where.stockQuantity = { gt: 0 };
+    }
+
+    if (isPaginated) {
+      const products = await prisma.product.findMany({
+        where,
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        skip: cursor ? 1 : 0,
+        orderBy: { createdAt: 'desc' },
+      });
+
+      const hasMore = products.length > limit;
+      const pageProducts = hasMore ? products.slice(0, limit) : products;
+      const nextCursor = hasMore && pageProducts.length > 0 ? pageProducts[pageProducts.length - 1].id : null;
+
+      const serialized = pageProducts.map((p) => ({
+        ...p,
+        unitPrice: Number(p.unitPrice),
+        specifications: (p.specifications as Record<string, string | number>) || undefined,
+        createdAt: p.createdAt.toISOString(),
+        updatedAt: p.updatedAt.toISOString(),
+      }));
+
+      return apiSuccess({
+        items: serialized,
+        nextCursor,
+        hasMore,
+      });
     }
 
     const products = await prisma.product.findMany({

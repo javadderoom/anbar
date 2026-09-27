@@ -22,6 +22,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { notify } from '@/lib/notify';
 import { CreateOrderRequestSchema } from '@/lib/validations';
 import { useProducts, useSubmitOrderRequest } from '@/hooks';
+import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import type { Product } from '@/types';
 
 export default function ClientCatalogPage({
@@ -98,6 +99,15 @@ export default function ClientCatalogPage({
     'all',
     ...Array.from(new Set(products.map((p) => p.category).filter(Boolean))),
   ];
+
+  // DOM Virtualization for ultra-smooth 60fps scrolling on mobile
+  const listRef = React.useRef<HTMLDivElement>(null);
+  const rowVirtualizer = useWindowVirtualizer({
+    count: filteredProducts.length,
+    estimateSize: () => 145,
+    overscan: 6,
+    scrollMargin: listRef.current?.offsetTop ?? 0,
+  });
 
   // Cart summary calculations
   const totalItemsCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
@@ -245,116 +255,136 @@ export default function ClientCatalogPage({
           </div>
         )}
 
-        {/* Product Cards List */}
-        <div className="space-y-3">
-          {filteredProducts.map((product) => {
-            const qty = cart[product.id] || 0;
-            const isOutOfStock = product.stockQuantity <= 0;
-            const hasSpecs = product.specifications && Object.keys(product.specifications).length > 0;
-            const isSpecsOpen = expandedSpecs[product.id];
+        {/* Product Cards List (Virtualized for 60fps scrolling) */}
+        {filteredProducts.length > 0 && (
+          <div
+            ref={listRef}
+            className="relative w-full"
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+            }}
+          >
+            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const product = filteredProducts[virtualRow.index];
+              if (!product) return null;
 
-            return (
-              <div
-                key={product.id}
-                className={`p-4 rounded-2xl border transition-all ${
-                  qty > 0
-                    ? 'bg-white dark:bg-slate-900/90 border-amber-500/50 shadow-md shadow-amber-500/5'
-                    : 'bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm'
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                        {product.sku}
-                      </span>
-                      <span className="text-[11px] text-slate-500">
-                        واحد: {product.unit}
-                      </span>
-                    </div>
+              const qty = cart[product.id] || 0;
+              const isOutOfStock = product.stockQuantity <= 0;
+              const hasSpecs = product.specifications && Object.keys(product.specifications).length > 0;
+              const isSpecsOpen = expandedSpecs[product.id];
 
-                    <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
-                      {product.name}
-                    </h2>
+              return (
+                <div
+                  key={product.id}
+                  ref={rowVirtualizer.measureElement}
+                  data-index={virtualRow.index}
+                  className="absolute top-0 right-0 w-full pb-3"
+                  style={{
+                    transform: `translateY(${virtualRow.start - rowVirtualizer.options.scrollMargin}px)`,
+                  }}
+                >
+                  <div
+                    className={`p-4 rounded-2xl border transition-all ${
+                      qty > 0
+                        ? 'bg-white dark:bg-slate-900/90 border-amber-500/50 shadow-md shadow-amber-500/5'
+                        : 'bg-white dark:bg-slate-900/50 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                            {product.sku}
+                          </span>
+                          <span className="text-[11px] text-slate-500">
+                            واحد: {product.unit}
+                          </span>
+                        </div>
 
-                    <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-                      <div className="text-amber-600 dark:text-amber-400 font-bold">
-                        {formatCurrency(product.unitPrice)}
-                      </div>
-                      <div className="text-slate-500 dark:text-slate-400">
-                        موجودی انبار:{' '}
-                        <span className={product.stockQuantity < 10 ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-slate-700 dark:text-slate-300 font-medium'}>
-                          {formatNumber(product.stockQuantity)} {product.unit}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                        <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
+                          {product.name}
+                        </h2>
 
-                  {/* Quantity Stepper (Mobile Optimized) */}
-                  <div className="flex items-center bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-1 shrink-0">
-                    <button
-                      onClick={() => updateQuantity(product.id, -1, product.stockQuantity)}
-                      disabled={qty <= 0 || isOutOfStock}
-                      aria-label="کاهش تعداد"
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors active:scale-95"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-
-                    <input
-                      type="number"
-                      min={0}
-                      max={product.stockQuantity}
-                      value={qty || ''}
-                      placeholder="۰"
-                      onChange={(e) =>
-                        setDirectQuantity(product.id, parseInt(e.target.value) || 0, product.stockQuantity)
-                      }
-                      className="w-10 text-center font-bold text-amber-600 dark:text-amber-400 text-sm bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-
-                    <button
-                      onClick={() => updateQuantity(product.id, 1, product.stockQuantity)}
-                      disabled={qty >= product.stockQuantity || isOutOfStock}
-                      aria-label="افزایش تعداد"
-                      className="w-8 h-8 rounded-lg flex items-center justify-center bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 disabled:opacity-30 disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 transition-colors active:scale-95"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Collapsible Technical Specifications */}
-                {hasSpecs && (
-                  <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/60">
-                    <button
-                      onClick={() => toggleSpecs(product.id)}
-                      className="w-full flex items-center justify-between text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 transition-colors py-1"
-                    >
-                      <span>مشخصات فنی و استانداردهای کالا</span>
-                      <ChevronDown
-                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                          isSpecsOpen ? 'rotate-180 text-amber-500' : ''
-                        }`}
-                      />
-                    </button>
-
-                    {isSpecsOpen && (
-                      <div className="mt-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800/80 grid grid-cols-2 gap-2 text-xs">
-                        {Object.entries(product.specifications!).map(([key, val]) => (
-                          <div key={key} className="space-y-0.5">
-                            <span className="text-[11px] text-slate-400 block">{key}:</span>
-                            <span className="font-semibold text-slate-700 dark:text-slate-200 block">{val}</span>
+                        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+                          <div className="text-amber-600 dark:text-amber-400 font-bold">
+                            {formatCurrency(product.unitPrice)}
                           </div>
-                        ))}
+                          <div className="text-slate-500 dark:text-slate-400">
+                            موجودی انبار:{' '}
+                            <span className={product.stockQuantity < 10 ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-slate-700 dark:text-slate-300 font-medium'}>
+                              {formatNumber(product.stockQuantity)} {product.unit}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Quantity Stepper (Mobile Optimized) */}
+                      <div className="flex items-center bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-1 shrink-0">
+                        <button
+                          onClick={() => updateQuantity(product.id, -1, product.stockQuantity)}
+                          disabled={qty <= 0 || isOutOfStock}
+                          aria-label="کاهش تعداد"
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors active:scale-95"
+                        >
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+
+                        <input
+                          type="number"
+                          min={0}
+                          max={product.stockQuantity}
+                          value={qty || ''}
+                          placeholder="۰"
+                          onChange={(e) =>
+                            setDirectQuantity(product.id, parseInt(e.target.value) || 0, product.stockQuantity)
+                          }
+                          className="w-10 text-center font-bold text-amber-600 dark:text-amber-400 text-sm bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+
+                        <button
+                          onClick={() => updateQuantity(product.id, 1, product.stockQuantity)}
+                          disabled={qty >= product.stockQuantity || isOutOfStock}
+                          aria-label="افزایش تعداد"
+                          className="w-8 h-8 rounded-lg flex items-center justify-center bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 disabled:opacity-30 disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 transition-colors active:scale-95"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Collapsible Technical Specifications */}
+                    {hasSpecs && (
+                      <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/60">
+                        <button
+                          onClick={() => toggleSpecs(product.id)}
+                          className="w-full flex items-center justify-between text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 transition-colors py-1"
+                        >
+                          <span>مشخصات فنی و استانداردهای کالا</span>
+                          <ChevronDown
+                            className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                              isSpecsOpen ? 'rotate-180 text-amber-500' : ''
+                            }`}
+                          />
+                        </button>
+
+                        {isSpecsOpen && (
+                          <div className="mt-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800/80 grid grid-cols-2 gap-2 text-xs">
+                            {Object.entries(product.specifications!).map(([key, val]) => (
+                              <div key={key} className="space-y-0.5">
+                                <span className="text-[11px] text-slate-400 block">{key}:</span>
+                                <span className="font-semibold text-slate-700 dark:text-slate-200 block">{val}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </main>
 
       {/* Sticky Bottom Floating Action Bar */}
