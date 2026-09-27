@@ -123,6 +123,8 @@ export async function POST(request: Request) {
         unitPrice: validated.unitPrice,
         stockQuantity: validated.stockQuantity,
         minStockAlert: validated.minStockAlert,
+        isCustom: validated.isCustom ?? false,
+        leadTimeText: validated.leadTimeText ?? null,
         description: validated.description ?? null,
         specifications: validated.specifications ? (validated.specifications as any) : undefined,
         isActive: true,

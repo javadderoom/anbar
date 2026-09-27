@@ -9,6 +9,8 @@ export interface ExcelProductRow {
   unitPrice: number;
   stockQuantity: number;
   minStockAlert?: number;
+  isCustom?: boolean;
+  leadTimeText?: string;
   specifications?: string;
 }
 
@@ -21,6 +23,8 @@ export function exportProductsToExcelFile(products: Product[], filename = 'anbar
     'کد کالا (SKU)': p.sku,
     'نام کالا': p.name,
     'دسته‌بندی': p.category || '',
+    'نوع کالا': p.isCustom ? 'سفارشی' : 'عادی',
+    'زمان تحویل': p.leadTimeText || '',
     'واحد سنجش': p.unit,
     'قیمت واحد (تومان)': p.unitPrice,
     'موجودی انبار': p.stockQuantity,
@@ -51,6 +55,9 @@ export async function parseProductsFromExcelFile(file: File): Promise<ExcelProdu
     const sku = String(row['کد کالا (SKU)'] || row['کد کالا'] || row['کد'] || row['sku'] || row['SKU'] || '').trim();
     const name = String(row['نام کالا'] || row['نام'] || row['عنوان'] || row['name'] || row['title'] || '').trim();
     const category = String(row['دسته‌بندی'] || row['دسته'] || row['category'] || '').trim() || undefined;
+    const isCustomVal = row['نوع کالا'] || row['سفارشی'] || row['isCustom'];
+    const isCustom = String(isCustomVal).toLowerCase().includes('سفارشی') || isCustomVal === true || isCustomVal === 'true';
+    const leadTimeText = String(row['زمان تحویل'] || row['مدت تحویل'] || row['leadTime'] || row['leadTimeText'] || '').trim() || undefined;
     const unit = String(row['واحد سنجش'] || row['واحد'] || row['unit'] || 'عدد').trim();
     const unitPrice = parseFloat(row['قیمت واحد (تومان)'] || row['قیمت واحد'] || row['قیمت'] || row['price'] || row['unitPrice'] || 0) || 0;
     const stockQuantity = parseInt(row['موجودی انبار'] || row['موجودی'] || row['تعداد'] || row['stock'] || row['stockQuantity'] || 0, 10) || 0;
@@ -65,6 +72,8 @@ export async function parseProductsFromExcelFile(file: File): Promise<ExcelProdu
       unitPrice,
       stockQuantity,
       minStockAlert,
+      isCustom,
+      leadTimeText,
       specifications: typeof specifications === 'string' ? specifications : JSON.stringify(specifications),
     };
   });

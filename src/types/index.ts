@@ -9,6 +9,8 @@ export interface Product {
   unitPrice: number;
   stockQuantity: number;
   minStockAlert: number;
+  isCustom?: boolean;
+  leadTimeText?: string | null;
   isActive: boolean;
   createdAt?: string;
   updatedAt?: string;

@@ -30,7 +30,12 @@ export async function POST(
     const result = await prisma.$transaction(async (tx) => {
       const order = await tx.orderRequest.findUnique({
         where: { id },
-        include: { items: true, client: true },
+        include: {
+          items: {
+            include: { product: true },
+          },
+          client: true,
+        },
       });
 
       if (!order) {
@@ -44,6 +49,11 @@ export async function POST(
       // Guarded atomic stock decrement with audit ledger tracking
       if (validated.deductStock) {
         for (const item of order.items) {
+          // Custom / Made-to-order products are fabricated on demand and bypass warehouse inventory deduction
+          if (item.product?.isCustom) {
+            continue;
+          }
+
           // Atomic conditional decrement: only decrements if stockQuantity >= requested quantity
           const updateResult = await tx.product.updateMany({
             where: {

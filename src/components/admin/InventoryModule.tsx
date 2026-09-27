@@ -70,6 +70,8 @@ export default function InventoryModule({
     unitPrice: 0,
     stockQuantity: 0,
     minStockAlert: 5,
+    isCustom: false,
+    leadTimeText: '',
   });
 
   // Filtered products by search and stock threshold
@@ -146,6 +148,8 @@ export default function InventoryModule({
         unitPrice: 0,
         stockQuantity: 0,
         minStockAlert: 5,
+        isCustom: false,
+        leadTimeText: '',
       });
 
       if (onRefresh) {
@@ -350,8 +354,12 @@ export default function InventoryModule({
                   )}
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  {isOutOfStock ? (
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {p.isCustom ? (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                      سفارشی / بر اساس تقاضا
+                    </span>
+                  ) : isOutOfStock ? (
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" />
                       <span>اتمام موجودی</span>
@@ -468,14 +476,18 @@ export default function InventoryModule({
                         <div className="flex items-center gap-2">
                           <span
                             className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold ${
-                              isOutOfStock
+                              p.isCustom
+                                ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+                                : isOutOfStock
                                 ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
                                 : isLowStock
                                 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
                                 : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                             }`}
                           >
-                            {formatNumber(p.stockQuantity)} {p.unit}
+                            {p.isCustom
+                              ? (p.leadTimeText ? `سفارشی (${p.leadTimeText})` : 'سفارشی / بر اساس تقاضا')
+                              : `${formatNumber(p.stockQuantity)} ${p.unit}`}
                           </span>
                           {canEditStock && (
                             <button
@@ -647,6 +659,34 @@ export default function InventoryModule({
                   className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-amber-500 font-mono"
                   dir="ltr"
                 />
+              </div>
+
+              {/* Made-to-Order Custom Product Configuration */}
+              <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl space-y-2.5">
+                <label className="flex items-center gap-2 text-xs font-semibold text-amber-900 dark:text-amber-200 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={newProduct.isCustom}
+                    onChange={(e) => setNewProduct({ ...newProduct, isCustom: e.target.checked })}
+                    className="w-4 h-4 rounded border-amber-400 text-amber-600 focus:ring-amber-500"
+                  />
+                  <span>این کالا سفارشی / ساخت بر اساس تقاضا است (فاقد موجودی فیزیکی اولیه)</span>
+                </label>
+
+                {newProduct.isCustom && (
+                  <div>
+                    <label className="block text-[11px] text-slate-600 dark:text-slate-400 mb-1">
+                      مدت زمان تقریبی ساخت یا تحویل
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="مثال: ۳ الی ۵ روز کاری"
+                      value={newProduct.leadTimeText}
+                      onChange={(e) => setNewProduct({ ...newProduct, leadTimeText: e.target.value })}
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-end gap-2 pt-3">

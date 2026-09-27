@@ -32,6 +32,8 @@ export async function PUT(
         ...(validated.unitPrice !== undefined && { unitPrice: validated.unitPrice }),
         ...(validated.stockQuantity !== undefined && { stockQuantity: validated.stockQuantity }),
         ...(validated.minStockAlert !== undefined && { minStockAlert: validated.minStockAlert }),
+        ...(validated.isCustom !== undefined && { isCustom: validated.isCustom }),
+        ...(validated.leadTimeText !== undefined && { leadTimeText: validated.leadTimeText }),
         ...(validated.description !== undefined && { description: validated.description }),
         ...(validated.specifications !== undefined && { specifications: validated.specifications ?? undefined }),
         ...(validated.isActive !== undefined && { isActive: validated.isActive }),

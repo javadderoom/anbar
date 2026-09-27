@@ -41,6 +41,8 @@ export const CreateProductSchema = z.object({
     .default(5),
   description: z.string().trim().max(1000).optional().nullable(),
   specifications: z.record(z.string(), z.union([z.string(), z.number()])).optional().nullable(),
+  isCustom: z.boolean().optional().default(false),
+  leadTimeText: z.string().trim().max(150, 'متن مدت تحویل حداکثر ۱۵۰ کاراکتر است').optional().nullable(),
 });
 
 export const UpdateProductSchema = CreateProductSchema.partial().extend({
@@ -55,6 +57,8 @@ export const BulkImportRowSchema = z.object({
   unitPrice: z.coerce.number().nonnegative().default(0),
   stockQuantity: z.coerce.number().int().nonnegative().default(0),
   minStockAlert: z.coerce.number().int().min(1).default(5),
+  isCustom: z.boolean().optional().default(false),
+  leadTimeText: z.string().trim().max(150).optional().nullable(),
 });
 
 export const BulkImportSchema = z.object({

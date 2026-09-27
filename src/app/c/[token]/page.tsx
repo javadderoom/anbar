@@ -271,7 +271,9 @@ export default function ClientCatalogPage({
               if (!product) return null;
 
               const qty = cart[product.id] || 0;
-              const isOutOfStock = product.stockQuantity <= 0;
+              const isCustom = Boolean(product.isCustom);
+              const isOutOfStock = !isCustom && product.stockQuantity <= 0;
+              const maxStock = isCustom ? 999999 : product.stockQuantity;
               const hasSpecs = product.specifications && Object.keys(product.specifications).length > 0;
               const isSpecsOpen = expandedSpecs[product.id];
 
@@ -294,13 +296,18 @@ export default function ClientCatalogPage({
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                             {product.sku}
                           </span>
                           <span className="text-[11px] text-slate-500">
                             واحد: {product.unit}
                           </span>
+                          {isCustom && (
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30">
+                              سفارشی / ساخت بر اساس تقاضا
+                            </span>
+                          )}
                         </div>
 
                         <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
@@ -311,20 +318,26 @@ export default function ClientCatalogPage({
                           <div className="text-amber-600 dark:text-amber-400 font-bold">
                             {formatCurrency(product.unitPrice)}
                           </div>
-                          <div className="text-slate-500 dark:text-slate-400">
-                            موجودی انبار:{' '}
-                            <span className={product.stockQuantity < 10 ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-slate-700 dark:text-slate-300 font-medium'}>
-                              {formatNumber(product.stockQuantity)} {product.unit}
-                            </span>
-                          </div>
+                          {isCustom ? (
+                            <div className="text-amber-700 dark:text-amber-300 font-medium text-[11px]">
+                              {product.leadTimeText ? `زمان تحویل: ${product.leadTimeText}` : 'تولید/تامین بر اساس سفارش'}
+                            </div>
+                          ) : (
+                            <div className="text-slate-500 dark:text-slate-400">
+                              موجودی انبار:{' '}
+                              <span className={product.stockQuantity < 10 ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-slate-700 dark:text-slate-300 font-medium'}>
+                                {formatNumber(product.stockQuantity)} {product.unit}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
 
                       {/* Quantity Stepper (Mobile Optimized) */}
                       <div className="flex items-center bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-1 shrink-0">
                         <button
-                          onClick={() => updateQuantity(product.id, -1, product.stockQuantity)}
-                          disabled={qty <= 0 || isOutOfStock}
+                          onClick={() => updateQuantity(product.id, -1, maxStock)}
+                          disabled={qty <= 0}
                           aria-label="کاهش تعداد"
                           className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors active:scale-95"
                         >
@@ -334,18 +347,18 @@ export default function ClientCatalogPage({
                         <input
                           type="number"
                           min={0}
-                          max={product.stockQuantity}
+                          max={maxStock}
                           value={qty || ''}
                           placeholder="۰"
                           onChange={(e) =>
-                            setDirectQuantity(product.id, parseInt(e.target.value) || 0, product.stockQuantity)
+                            setDirectQuantity(product.id, parseInt(e.target.value) || 0, maxStock)
                           }
                           className="w-10 text-center font-bold text-amber-600 dark:text-amber-400 text-sm bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
 
                         <button
-                          onClick={() => updateQuantity(product.id, 1, product.stockQuantity)}
-                          disabled={qty >= product.stockQuantity || isOutOfStock}
+                          onClick={() => updateQuantity(product.id, 1, maxStock)}
+                          disabled={(!isCustom && qty >= product.stockQuantity) || isOutOfStock}
                           aria-label="افزایش تعداد"
                           className="w-8 h-8 rounded-lg flex items-center justify-center bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 disabled:opacity-30 disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 transition-colors active:scale-95"
                         >

@@ -74,4 +74,35 @@ describe('Excel Parser for Warehouse Products', () => {
     expect(parsed[0].unit).toBe('عدد'); // Default fallback unit
     expect(parsed[0].minStockAlert).toBe(5); // Default fallback alert
   });
+
+  it('parses Made-to-Order custom products with lead time from Excel', async () => {
+    const data = [
+      {
+        'کد کالا (SKU)': 'CUST-301',
+        'نام کالا': 'مبدل حرارتی سفارشی پوسته و لوله',
+        'دسته‌بندی': 'تجهیزات حرارتی',
+        'نوع کالا': 'سفارشی',
+        'زمان تحویل': '۱۵ روز کاری',
+        'واحد سنجش': 'دستگاه',
+        'قیمت واحد (تومان)': 45000000,
+        'موجودی انبار': 0,
+      },
+    ];
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    const u8 = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+    const file = new File([u8], 'test-custom.xlsx', {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+
+    const parsed = await parseProductsFromExcelFile(file);
+    expect(parsed).toHaveLength(1);
+    expect(parsed[0].sku).toBe('CUST-301');
+    expect(parsed[0].isCustom).toBe(true);
+    expect(parsed[0].leadTimeText).toBe('۱۵ روز کاری');
+    expect(parsed[0].stockQuantity).toBe(0);
+  });
 });

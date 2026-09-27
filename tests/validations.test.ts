@@ -22,6 +22,28 @@ describe('Zod Schema Validations & Integrity', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data.sku).toBe('ANB-101');
+        expect(result.data.isCustom).toBe(false);
+      }
+    });
+
+    it('accepts made-to-order custom product with lead time and 0 physical stock', () => {
+      const result = CreateProductSchema.safeParse({
+        sku: 'CUST-202',
+        name: 'شیر برقی سفارشی ضد انفجار',
+        category: 'سفارشی',
+        unit: 'دستگاه',
+        unitPrice: 12000000,
+        stockQuantity: 0,
+        minStockAlert: 1,
+        isCustom: true,
+        leadTimeText: '۷ تا ۱۰ روز کاری',
+      });
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.isCustom).toBe(true);
+        expect(result.data.leadTimeText).toBe('۷ تا ۱۰ روز کاری');
+        expect(result.data.stockQuantity).toBe(0);
       }
     });
 

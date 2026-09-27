@@ -30,6 +30,8 @@ export async function POST(request: Request) {
           unitPrice: item.unitPrice,
           stockQuantity: item.stockQuantity,
           minStockAlert: item.minStockAlert,
+          isCustom: item.isCustom ?? false,
+          leadTimeText: item.leadTimeText ?? null,
           isActive: true,
         },
         create: {
@@ -40,6 +42,8 @@ export async function POST(request: Request) {
           unitPrice: item.unitPrice,
           stockQuantity: item.stockQuantity,
           minStockAlert: item.minStockAlert,
+          isCustom: item.isCustom ?? false,
+          leadTimeText: item.leadTimeText ?? null,
           isActive: true,
         },
       });
