@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>راهنمای خرید و ثبت استعلام آنلاین (ویژه مشتریان)</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #d97706;
+      --accent-light: #fef3c7;
+      --accent-dark: #b45309;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, Tahoma, sans-serif;
+      background-color: #f1f5f9;
+      color: var(--slate-800);
+      line-height: 1.8;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .ltr-text {
+      direction: ltr;
+      display: inline-block;
+      unicode-bidi: embed;
+      font-family: Consolas, monospace, sans-serif;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--accent);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-title {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-badge {
+      background: var(--accent);
+      color: #000;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+
+    .btn-print {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(217, 119, 6, 0.4);
+    }
+
+    .btn-print:hover {
+      transform: translateY(-1px);
+      background: #fbbf24;
+    }
+
+    /* Document Container */
+    .document-wrapper {
+      max-width: 860px;
+      margin: 32px auto;
+      background: white;
+      padding: 48px 56px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--slate-200);
+    }
+
+    .doc-header {
+      border-bottom: 3px double var(--slate-300);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .brand-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--slate-900);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .brand-subtitle {
+      font-size: 13px;
+      color: var(--slate-600);
+      line-height: 1.6;
+    }
+
+    .doc-badge {
+      background: var(--accent-light);
+      border: 1px solid var(--accent);
+      color: var(--accent-dark);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--slate-900);
+      margin-top: 32px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--slate-200);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .num-badge {
+      background: var(--slate-900);
+      color: var(--accent);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    p {
+      margin-bottom: 14px;
+      color: var(--slate-700);
+      text-align: justify;
+    }
+
+    /* Step Cards */
+    .step-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .step-card {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .step-number {
+      position: absolute;
+      top: -12px;
+      right: 16px;
+      background: var(--accent);
+      color: #0f172a;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .step-title {
+      font-weight: 800;
+      color: var(--slate-900);
+      font-size: 14px;
+      margin-top: 6px;
+      margin-bottom: 8px;
+    }
+
+    .step-desc {
+      font-size: 12px;
+      color: var(--slate-600);
+      line-height: 1.7;
+    }
+
+    .callout {
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 18px 0;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .callout-info {
+      background: var(--blue-light);
+      border-right: 4px solid var(--blue);
+      color: #1e3a8a;
+    }
+
+    .callout-tip {
+      background: var(--emerald-light);
+      border-right: 4px solid var(--emerald);
+      color: #064e3b;
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .badge-sample {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-custom {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-stock {
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+    }
+
+    .doc-footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--slate-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--slate-600);
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        color: #000 !important;
+        font-size: 11pt !important;
+      }
+      .no-print { display: none !important; }
+      .document-wrapper {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .step-card, .callout { page-break-inside: avoid; }
+      @page { size: A4; margin: 15mm; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Floating Action Bar -->
+  <header class="action-bar no-print">
+    <div class="action-title">
+      <span>راهنمای خرید و ثبت استعلام آنلاین کاتالوگ</span>
+      <span class="action-badge">ویژه مشتریان</span>
+    </div>
+    <button class="btn-print" onclick="window.print()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+        <rect x="6" y="14" width="12" height="8"></rect>
+      </svg>
+      <span>چاپ یا ذخیره به صورت PDF</span>
+    </button>
+  </header>
+
+  <main class="document-wrapper">
+
+    <!-- Header -->
+    <header class="doc-header">
+      <div>
+        <h1 class="brand-title">راهنمای خریداران: ثبت سفارش و استعلام آنلاین از کاتالوگ انبار</h1>
+        <p class="brand-subtitle">راهنمای گام‌به‌گام مشاهده موجودی زنده، انتخاب کالاهای دپوشده و سفارشی، و دریافت فوری پیش‌فاکتور رسمی</p>
+      </div>
+      <div class="doc-badge">
+        بدون نیاز به ثبت‌نام یا نصب اپلیکیشن
+      </div>
+    </header>
+
+    <!-- SECTION 1 -->
+    <section>
+      <h2><span class="num-badge">۱</span> نحوه ورود و دسترسی به کاتالوگ</h2>
+      <p>
+        سامانه کاتالوگ به صورت یک پیوند اختصاصی (لینک اختصاصی وب) از طرف انبار یا واحد فروش برای شما در پیام‌رسان‌ها (واتساپ، ایتا، بله) یا پیامک ارسال می‌شود.
+      </p>
+      <ul>
+        <li>کافی است لینک ارسالی (مانند <span class="ltr-text">https://anbar.domain/c/your-name</span>) را در گوشی یا رایانه خود باز نمایید.</li>
+        <li><strong>هیچ‌گونه رمز عبور یا ثبت‌نام اولیه‌ای مورد نیاز نیست</strong>؛ کلیه اطلاعات و تخفیف‌های احتمالی مختص شما در همین لینک فعال است.</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section>
+      <h2><span class="num-badge">۲</span> جستجو و انتخاب کالاها</h2>
+      <p>
+        در بالای صفحه کاتالوگ می‌توانید عنوان محصول، سایز، رده یا کد فنی <span class="ltr-text">(SKU)</span> کالا را جستجو نمایید یا دسته‌بندی دلخواه خود را فیلتر کنید.
+      </p>
+
+      <div class="callout callout-info">
+        <strong>آشنایی با انواع اقلام در کاتالوگ:</strong>
+        <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
+          <div>
+            <span class="badge-sample badge-stock">کالاهای موجود در انبار</span>
+            <span>: اقلامی هستند که در حال حاضر در قفسه‌های انبار دپو شده‌اند و تعداد موجودی زنده آن‌ها درج شده است (مثال: موجودی: ۱۲۰ شاخه).</span>
+          </div>
+          <div>
+            <span class="badge-sample badge-custom">سفارشی / ساخت بر اساس تقاضا</span>
+            <span>: اقلامی که به صورت سفارشی یا بر اساس ابعاد و سفارش شما تامین یا تولید می‌شوند. این اقلام دارای زمان تخمینی تحویل (مانند: ۳ الی ۵ روز کاری) هستند و شما می‌توانید هر تعداد دلخواه را بدون محدودیت سقف موجودی انبار به سبد بیفزایید.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section>
+      <h2><span class="num-badge">۳</span> مراحل ثبت سفارش از کاتالوگ تا صدور فاکتور</h2>
+
+      <div class="step-grid">
+        <div class="step-card">
+          <div class="step-number">۱</div>
+          <div class="step-title">انتخاب تعداد اقلام</div>
+          <div class="step-desc">با فشردن دکمه‌های + و - یا تایپ مستقیم عدد، تعداد کالاهای مورد نظر را تعیین فرمایید. جمع کل برآورد در نوار شناور پایین نمایش می‌یابد.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۲</div>
+          <div class="step-title">ورود مشخصات تحویل‌گیرنده</div>
+          <div class="step-desc">روی دکمه «ادامه و ثبت نهایی» کلیک کنید. نام شخص یا شرکت و شماره همراه معتبر جهت هماهنگی باربری را وارد نمایید.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۳</div>
+          <div class="step-title">درج توضیحات و مشخصات خاص</div>
+          <div class="step-desc">در صورت نیاز به برشکاری، برند خاص، یا زمان خاص بارگیری، توضیحات را در کادر یادداشت قید فرمایید.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۴</div>
+          <div class="step-title">دریافت کد رهگیری</div>
+          <div class="step-desc">پس از ارسال، کد رهگیری مانند <span class="ltr-text">REQ-1025</span> صادر شده و کارشناسان انبار فاکتور رسمی را هماهنگ و ارسال خواهند کرد.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section>
+      <h2><span class="num-badge">۴</span> مزایای استفاده از کاتالوگ آنلاین برای خریداران</h2>
+      <ul>
+        <li><strong>اطلاع لحظه‌ای از قیمت و موجودی:</strong> جلوگیری از معطلی تلفنی برای استعلام قیمت‌های روز بازار.</li>
+        <li><strong>ثبت آسان در موبایل:</strong> طراحی کاملاً روان و بهینه‌سازی‌شده برای تمامی مرورگرهای گوشی‌های هوشمند.</li>
+        <li><strong>قابلیت مطالعه مشخصات فنی:</strong> امکان مشاهده آلیاژ، استاندارد و جدول مشخصات با فشردن بر روی هر محصول.</li>
+        <li><strong>صدور صورتحساب معتبر:</strong> تبدیل استعلام به پیش‌فاکتور رسمی منطبق با ماده ۱۶۹ قانون مالیات‌های مستقیم با درج شناسه ملی و شماره شبا.</li>
+      </ul>
+
+      <div class="callout callout-tip">
+        <strong>نکته مهم:</strong> ثبت استعلام در کاتالوگ به منزله درخواست پیش‌فاکتور است و هیچ‌گونه تعهد مالی اولیه‌ای قبل از تایید نهایی شما و ارسال پیش‌فاکتور ایجاد نمی‌کند.
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="doc-footer">
+      <div>سامانه کاتالوگ هوشمند انبار • ویژه خریداران و بازرگانان</div>
+      <div>پشتیبانی فروش و هماهنگی ارسال سریع اقلام</div>
+    </footer>
+
+  </main>
+
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Warehouse, ArrowRight, LogOut, Shield } from 'lucide-react';
+import { Warehouse, ArrowRight, LogOut, Shield, BookOpen } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 import { useAuth } from '@/context/AuthContext';
 
@@ -44,6 +44,18 @@ export default function AdminHeader() {
               </div>
             </div>
           )}
+
+          {/* Guide Link */}
+          <a
+            href="/docs/user-guide.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="مشاهده راهنمای جامع سامانه و دانلود PDF"
+            className="text-xs text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition-all active:scale-95"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">راهنمای سامانه</span>
+          </a>
 
           <ThemeToggle />
 

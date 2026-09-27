@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>راهنمای جامع کاربری و عملیاتی سامانه انبارداری (انبار)</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #d97706;
+      --accent-light: #fef3c7;
+      --accent-dark: #b45309;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --rose: #e11d48;
+      --rose-light: #fff1f2;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, Tahoma, sans-serif;
+      background-color: #f1f5f9;
+      color: var(--slate-800);
+      line-height: 1.8;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .ltr-text {
+      direction: ltr;
+      display: inline-block;
+      unicode-bidi: embed;
+      font-family: Consolas, monospace, sans-serif;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--accent);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-title {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-badge {
+      background: var(--accent);
+      color: #000;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+
+    .btn-print {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(217, 119, 6, 0.4);
+    }
+
+    .btn-print:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.6);
+      background: #fbbf24;
+    }
+
+    /* Document Container */
+    .document-wrapper {
+      max-width: 960px;
+      margin: 32px auto;
+      background: white;
+      padding: 48px 56px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--slate-200);
+    }
+
+    /* Cover / Header Section */
+    .doc-header {
+      border-bottom: 3px double var(--slate-300);
+      padding-bottom: 28px;
+      margin-bottom: 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--slate-900);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .brand-subtitle {
+      font-size: 14px;
+      color: var(--slate-600);
+      line-height: 1.6;
+    }
+
+    .doc-meta {
+      text-align: left;
+      font-size: 12px;
+      color: var(--slate-600);
+      background: var(--slate-50);
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--slate-200);
+      min-width: 220px;
+    }
+
+    .doc-meta div {
+      margin-bottom: 4px;
+    }
+
+    .doc-meta div:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Table of Contents */
+    .toc-box {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-right: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+
+    .toc-title {
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--slate-900);
+      margin-bottom: 12px;
+    }
+
+    .toc-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 16px;
+    }
+
+    .toc-list li a {
+      color: var(--slate-700);
+      text-decoration: none;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s ease;
+    }
+
+    .toc-list li a:hover {
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+
+    /* Content Typography */
+    h2 {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--slate-900);
+      margin-top: 40px;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--slate-200);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2 .num-badge {
+      background: var(--slate-900);
+      color: var(--accent);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--slate-800);
+      margin-top: 24px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+
+    p {
+      margin-bottom: 14px;
+      color: var(--slate-700);
+      text-align: justify;
+    }
+
+    /* Lists */
+    ul, ol {
+      margin-right: 22px;
+      margin-bottom: 16px;
+      color: var(--slate-700);
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    /* Callout Boxes */
+    .callout {
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 18px 0;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .callout-info {
+      background: var(--blue-light);
+      border-right: 4px solid var(--blue);
+      color: #1e3a8a;
+    }
+
+    .callout-tip {
+      background: var(--emerald-light);
+      border-right: 4px solid var(--emerald);
+      color: #064e3b;
+    }
+
+    .callout-warning {
+      background: var(--accent-light);
+      border-right: 4px solid var(--accent);
+      color: #78350f;
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 20px 0;
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: right;
+    }
+
+    th {
+      background: var(--slate-100);
+      color: var(--slate-900);
+      font-weight: 800;
+      padding: 12px 14px;
+      border-bottom: 2px solid var(--slate-300);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--slate-200);
+      color: var(--slate-700);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--slate-50);
+    }
+
+    /* Keyboard / Badge Tag */
+    kbd {
+      background: var(--slate-100);
+      border: 1px solid var(--slate-300);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-family: Consolas, monospace;
+      color: var(--slate-800);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-amber { background: var(--accent-light); color: var(--accent-dark); }
+    .badge-green { background: var(--emerald-light); color: var(--emerald); }
+    .badge-blue { background: var(--blue-light); color: var(--blue); }
+
+    /* Step Workflow Cards */
+    .step-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .step-card {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: 12px;
+      padding: 18px;
+      position: relative;
+    }
+
+    .step-number {
+      position: absolute;
+      top: -12px;
+      right: 16px;
+      background: var(--accent);
+      color: #0f172a;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .step-title {
+      font-weight: 800;
+      color: var(--slate-900);
+      font-size: 14px;
+      margin-top: 4px;
+      margin-bottom: 6px;
+    }
+
+    .step-desc {
+      font-size: 12px;
+      color: var(--slate-600);
+      line-height: 1.6;
+    }
+
+    /* Page Footer */
+    .doc-footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid var(--slate-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--slate-600);
+    }
+
+    /* Print Stylesheet */
+    @media print {
+      body {
+        background: white !important;
+        color: #000 !important;
+        font-size: 11pt !important;
+        line-height: 1.5 !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .document-wrapper {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      .chapter {
+        page-break-before: always;
+      }
+
+      .avoid-break {
+        page-break-inside: avoid;
+      }
+
+      h2 {
+        page-break-after: avoid;
+        margin-top: 24pt;
+      }
+
+      h3 {
+        page-break-after: avoid;
+      }
+
+      table, .step-card, .callout {
+        page-break-inside: avoid;
+      }
+
+      @page {
+        size: A4;
+        margin: 15mm 15mm 20mm 15mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Floating Bar (Hidden on Print) -->
+  <header class="action-bar no-print">
+    <div class="action-title">
+      <span>مستندات و دفترچه راهنمای سامانه انبار</span>
+      <span class="action-badge">نسخه نهایی</span>
+    </div>
+    <button class="btn-print" onclick="window.print()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+        <rect x="6" y="14" width="12" height="8"></rect>
+      </svg>
+      <span>چاپ یا ذخیره به صورت PDF</span>
+    </button>
+  </header>
+
+  <main class="document-wrapper">
+
+    <!-- Header Section -->
+    <header class="doc-header">
+      <div>
+        <h1 class="brand-title">راهنمای جامع کاربری و عملیاتی سامانه انبارداری و کاتالوگ آنلاین (انبار)</h1>
+        <p class="brand-subtitle">راهنمای گام‌به‌گام انبارداران، مدیران فروش و مشتریان جهت مدیریت کالاها، صدور پیش‌فاکتور و ثبت سفارش آنلاین</p>
+      </div>
+      <div class="doc-meta">
+        <div><strong>نسخه مستند:</strong> ۱.۰.۰</div>
+        <div><strong>تاریخ بروزرسانی:</strong> مهر ۱۴۰۵ (سپتامبر ۲۰۲۶)</div>
+        <div><strong>محیط استقرار:</strong> ابری (Next.js & Neon Serverless)</div>
+        <div><strong>امنیت دسترسی:</strong> دسترسی بر پایه بیت‌ماسک <span class="ltr-text">(Bitmask RBAC)</span></div>
+      </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <nav class="toc-box avoid-break">
+      <div class="toc-title">فهرست موضوعی راهنما</div>
+      <ul class="toc-list">
+        <li><a href="#section-1">۱. معرفی سامانه و معماری گردش کار</a></li>
+        <li><a href="#section-2">۲. ورود اولیه و راه‌اندازی مدیر ارشد</a></li>
+        <li><a href="#section-3">۳. مدیریت کالاها و موجودی انبار</a></li>
+        <li><a href="#section-4">۴. درون‌ریزی و استخراج گروهی با اکسل</a></li>
+        <li><a href="#section-5">۵. ثبت ورود، خروج و انبارگردانی</a></li>
+        <li><a href="#section-6">۶. لینک‌های اختصاصی کاتالوگ مشتریان</a></li>
+        <li><a href="#section-7">۷. تبدیل درخواست به فاکتور و کسر خودکار</a></li>
+        <li><a href="#section-8">۸. تنظیمات سربرگ و قوانین مالیاتی</a></li>
+        <li><a href="#section-9">۹. راهنمای ویژه خریداران و ثبت استعلام</a></li>
+        <li><a href="#section-10">۱۰. کلیدهای میانبر و نکات فنی امنیتی</a></li>
+      </ul>
+    </nav>
+
+    <!-- SECTION 1 -->
+    <section id="section-1" class="chapter">
+      <h2><span class="num-badge">۱</span> معرفی سامانه و معماری گردش کار</h2>
+      <p>
+        سامانه «انبار» یک پلتفرم یکپارچه، سبک و فوق‌سریع تحت وب جهت مدیریت موجودی، زنجیره تامین، صدور صورتحساب رسمی/پیش‌فاکتور و ارائه کاتالوگ دیجیتال به خریداران است. معماری سامانه به گونه‌ای طراحی شده تا ارتباط میان انبار فیزیکی و مشتریان بدون نیاز به ثبت‌نام اجباری مشتریان تسهیل شود.
+      </p>
+
+      <div class="step-grid avoid-break">
+        <div class="step-card">
+          <div class="step-number">۱</div>
+          <div class="step-title">مدیریت انبار مرکزی</div>
+          <div class="step-desc">تعریف کالاها، تنظیم قیمت روز، کنترل هشدار کسری موجودی و ثبت تراکنش‌های ورود و خروج بار.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۲</div>
+          <div class="step-title">تولید لینک اختصاصی</div>
+          <div class="step-desc">ایجاد لینک وب اختصاصی برای هر مشتری یا گروه خریداران بدون نیاز به نصب هیچ‌گونه اپلیکیشن.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۳</div>
+          <div class="step-title">ثبت سبد استعلام آنلاین</div>
+          <div class="step-desc">مشاهده آنلاین کالاهای موجود توسط خریدار در موبایل، ثبت تعداد و ارسال فوری درخواست.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۴</div>
+          <div class="step-title">صدور پیش‌فاکتور رسمی</div>
+          <div class="step-desc">بررسی توسط مدیر، تبدیل با یک کلیک به فاکتور قطعی با کسر اتمیک از انبار و چاپ استاندارد ماده ۱۶۹.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section id="section-2" class="chapter">
+      <h2><span class="num-badge">۲</span> ورود اولیه و راه‌اندازی مدیر ارشد (Super Admin)</h2>
+      <p>
+        جهت حفظ امنیت کامل و عدم وجود رمزهای عبور پیش‌فرض سخت‌کد شده در سیستم، سامانه از الگوریتم راه‌اندازی اولیه خودکار <span class="ltr-text">(Zero-State First-Run Bootstrap)</span> استفاده می‌کند.
+      </p>
+
+      <div class="callout callout-info avoid-break">
+        <strong>نحوه راه‌اندازی حساب مدیر کل در اولین ورود:</strong>
+        هنگامی که دیتابیس سامانه برای اولین بار بارگذاری می‌شود و هیچ کاربری در جدول کاربران وجود ندارد، نخستین شخصی که در آدرس <kbd>/login</kbd> ایمیل و رمزی با حداقل ۶ کاراکتر وارد نماید، به صورت خودکار به عنوان <strong>مدیر کل انبار</strong> با سطح دسترسی نامحدود (<span class="ltr-text">Role: 255</span>) ثبت می‌شود.
+      </div>
+
+      <ol>
+        <li>مرورگر خود را باز کرده و به آدرس سامانه وارد شوید (مثلاً <kbd>https://your-domain.vercel.app/login</kbd>).</li>
+        <li>ایمیل سازمانی و رمز عبور دلخواه خود را وارد نمایید.</li>
+        <li>دکمه <strong>«ورود به سامانه انبارداری»</strong> را کلیک کنید.</li>
+        <li>توکن امنیتی رمزنگاری‌شده <span class="ltr-text">JWT</span> در کوکی سیستم شما ذخیره شده و وارد پنل مدیریت می‌شوید.</li>
+      </ol>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section id="section-3" class="chapter">
+      <h2><span class="num-badge">۳</span> مدیریت کالاها و موجودی انبار (Inventory)</h2>
+      <p>
+        در تب <strong>«موجودی انبار»</strong> می‌توانید لیست تمامی کالاها را همراه با مشخصات، قیمت، موجودی فعلی و آستانه هشدار مشاهده و فیلتر نمایید.
+      </p>
+
+      <h3>تعریف کالای جدید</h3>
+      <ol>
+        <li>بر روی دکمه <strong>«ثبت کالای جدید»</strong> در بالای صفحه کلیک کنید.</li>
+        <li>فیلدهای مشخصات کالا را تکمیل فرمایید:
+          <ul>
+            <li><strong>کد کالا (SKU):</strong> کد شناسه اختصاصی یا بارکد (مثال: <span class="ltr-text">ANB-101</span>).</li>
+            <li><strong>نام کالا:</strong> عنوان کامل فارسی محصول (مثال: لوله مانیسمان رده ۴۰ سایز ۲ اینچ).</li>
+            <li><strong>دسته‌بندی:</strong> انتخاب یا تایپ دسته مانند: لوله و اتصالات، شیرآلات، فلنج.</li>
+            <li><strong>واحد سنجش:</strong> عدد، شاخه، متر، کیلوگرم، رول یا کارتن.</li>
+            <li><strong>قیمت پایه واحد:</strong> قیمت فروش نقدی کالا به تومان.</li>
+            <li><strong>موجودی اولیه:</strong> تعداد فیزیکی موجود در سوله و قفسه‌ها.</li>
+            <li><strong>حداقل موجودی هشدار:</strong> مقداری که در صورت افت موجودی به آن یا کمتر از آن، وضعیت به رنگ زرد (کسری موجودی) درمی‌آید.</li>
+          </ul>
+        </li>
+        <li>دکمه <strong>«افزودن کالا به انبار»</strong> را فشار دهید. کالا بلافاصله در دیتابیس ثبت و کاتالوگ آنلاین مشتریان بروزرسانی می‌شود.</li>
+      </ol>
+
+      <h3>کالاهای سفارشی و ساخت بر اساس تقاضا (Made to Order)</h3>
+      <p>
+        برای اقلامی که در انبار دپوی فیزیکی اولیه ندارند و پس از سفارش مشتری تولید، مونتاژ یا تامین می‌شوند:
+      </p>
+      <ul>
+        <li>در فرم تعریف کالا، تیک گزینه <strong>«این کالا سفارشی / ساخت بر اساس تقاضا است»</strong> را فعال نمایید.</li>
+        <li>در فیلد <strong>مدت زمان تقریبی ساخت یا تحویل</strong>، زمان معمول تحویل را درج فرمایید (مثال: «۳ الی ۵ روز کاری»).</li>
+        <li><strong>مزیت ویژه در کاتالوگ آنلاین:</strong> این کالاها هرگز برچسب قرمز «اتمام موجودی» دریافت نمی‌کنند؛ بلکه با برچسب <strong>«سفارشی / ساخت بر اساس تقاضا»</strong> همراه با زمان تخمینی تحویل نمایش یافته و مشتریان می‌توانند بدون محدودیت موجودی، تعداد درخواستی را به سبد استعلام بیفزایند.</li>
+      </ul>
+
+      <div class="callout callout-warning avoid-break">
+        <strong>فیلترهای هوشمند وضعیت موجودی:</strong>
+        با کلیک بر روی دکمه‌های فیلتر بالای جدول می‌توانید در کسری از ثانیه کالاهای <em>«دارای کسری (کمتر از حد هشدار)»</em> یا <em>«ناموجود (موجودی صفر)»</em> را جهت سفارش‌گذاری فوری به تامین‌کنندگان تفکیک کنید. کالاهای سفارشی در فیلتر مجزا با برچسب آبی مشخص هستند.
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section id="section-4" class="chapter">
+      <h2><span class="num-badge">۴</span> درون‌ریزی و استخراج گروهی با اکسل (Excel Bulk Import/Export)</h2>
+      <p>
+        جهت راحتی انتقال اطلاعات از نرم‌افزارهای حسابداری قدیمی (مانند سپیدار، هلو، شایگان یا اکسل‌های شخصی)، سامانه به ماژول پردازش اکسل دو زبانه با قابلیت انطباق خودکار هدرها مجهز است.
+      </p>
+
+      <div class="table-container avoid-break">
+        <table>
+          <thead>
+            <tr>
+              <th>عنوان ستون فارسی</th>
+              <th>عنوان ستون انگلیسی</th>
+              <th>الزامی بودن</th>
+              <th>نمونه مقدار</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>کد کالا / کد / شناسه</td>
+              <td><span class="ltr-text">sku / code / id</span></td>
+              <td>بله</td>
+              <td><span class="ltr-text">ST-402</span></td>
+            </tr>
+            <tr>
+              <td>نام کالا / شرح کالا / عنوان</td>
+              <td><span class="ltr-text">name / title</span></td>
+              <td>بله</td>
+              <td>فلنج اسلیپون کلاس ۱۵۰</td>
+            </tr>
+            <tr>
+              <td>دسته‌بندی / دسته</td>
+              <td><span class="ltr-text">category</span></td>
+              <td>خیر</td>
+              <td>اتصالات صنعتی</td>
+            </tr>
+            <tr>
+              <td>واحد / واحد سنجش</td>
+              <td><span class="ltr-text">unit</span></td>
+              <td>خیر (پیش‌فرض: عدد)</td>
+              <td>شاخه</td>
+            </tr>
+            <tr>
+              <td>قیمت واحد / قیمت</td>
+              <td><span class="ltr-text">price / unitPrice</span></td>
+              <td>خیر (پیش‌فرض: ۰)</td>
+              <td><span class="ltr-text">1450000</span></td>
+            </tr>
+            <tr>
+              <td>موجودی / تعداد</td>
+              <td><span class="ltr-text">stock / quantity</span></td>
+              <td>خیر (پیش‌فرض: ۰)</td>
+              <td><span class="ltr-text">85</span></td>
+            </tr>
+            <tr>
+              <td>حداقل هشدار / حداقل</td>
+              <td><span class="ltr-text">minStock / alert</span></td>
+              <td>خیر (پیش‌فرض: ۵)</td>
+              <td><span class="ltr-text">10</span></td>
+            </tr>
+            <tr>
+              <td>نوع کالا / سفارشی</td>
+              <td><span class="ltr-text">isCustom / type</span></td>
+              <td>خیر (پیش‌فرض: عادی)</td>
+              <td>سفارشی</td>
+            </tr>
+            <tr>
+              <td>زمان تحویل / مدت تحویل</td>
+              <td><span class="ltr-text">leadTime / leadTimeText</span></td>
+              <td>خیر</td>
+              <td>۵ الی ۷ روز کاری</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip avoid-break">
+        <strong>خروجی گرفتن از موجودی روز:</strong>
+        با کلیک روی گزینه <strong>«خروجی اکسل»</strong> در بالای تب انبارداری، فایل کامل موجودی لحظه‌ای با هدرهای استاندارد فارسی و فرمت‌بندی رسمی دانلود می‌شود.
+      </div>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section id="section-5" class="chapter">
+      <h2><span class="num-badge">۵</span> ثبت ورود، خروج و انبارگردانی (Audit Trail)</h2>
+      <p>
+        جهت جلوگیری از مفقودی کالا و مشخص بودن حساب دقیق انبارداران، هرگونه تغییر در تعداد کالاها با ذکر علت، نوع تراکنش و زمان دقیق ثبت می‌گردد.
+      </p>
+
+      <h3>انواع روش‌های تنظیم موجودی:</h3>
+      <ul>
+        <li><strong>ورود کالا به انبار (<span class="ltr-text">IN</span>):</strong> جهت ثبت بار جدید خریداری شده، رسید مرجوعی از مشتری یا اصلاح کسری گذشته. مقدار وارد شده به موجودی فعلی اضافه می‌گردد.</li>
+        <li><strong>خروج کالا از انبار (<span class="ltr-text">OUT</span>):</strong> جهت ثبت ضایعات، مصارف داخلی کارخانه یا انتقال به پروژه‌ها. موجودی به هیچ عنوان منفی نخواهد شد.</li>
+        <li><strong>شمارش مستقیم و انبارگردانی (<span class="ltr-text">DIRECT / SET</span>):</strong> جهت ثبت آمار دقیق پس از شمارش فیزیکی پایان فصل. در این حالت عدد جدید جایگزین شده و مقدار مغایرت به صورت خودکار به عنوان تراز محاسبه می‌گردد.</li>
+      </ul>
+
+      <p>
+        <strong>مشاهده تاریخچه تراکنش‌ها:</strong> با کلیک روی آیکون ساعت یا تاریخچه در ردیف هر کالا، کارت‌های سوابق همراه با تاریخ و زمان شمسی، نام انباردار و دلیل قید شده قابل استناد است.
+      </p>
+    </section>
+
+    <!-- SECTION 6 -->
+    <section id="section-6" class="chapter">
+      <h2><span class="num-badge">۶</span> لینک‌های اختصاصی کاتالوگ مشتریان (Client Catalog Links)</h2>
+      <p>
+        یکی از قدرتمندترین ابزارهای فروش این سامانه، تولید لینک‌های هوشمند خرید بدون رمز عبور برای خریداران است.
+      </p>
+
+      <div class="step-grid avoid-break">
+        <div class="step-card">
+          <div class="step-number">۱</div>
+          <div class="step-title">تعریف مشتری</div>
+          <div class="step-desc">ورود به تب «لینک‌های مشتریان»، وارد کردن نام شرکت یا شخص خریدار و شماره همراه وی.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۲</div>
+          <div class="step-title">تنظیم توکن دلخواه</div>
+          <div class="step-desc">امکان انتخاب شناسه اختصاصی در آدرس وب (مانند: <span class="ltr-text">/c/foolad-tehran</span>) یا تولید خودکار.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۳</div>
+          <div class="step-title">اشتراک‌گذاری در واتساپ/پیامک</div>
+          <div class="step-desc">تنها با یک کلیک روی دکمه «کپی لینک»، آدرس کاتالوگ آماده ارسال برای مخاطب شماست.</div>
+        </div>
+      </div>
+
+      <div class="callout callout-info avoid-break">
+        <strong>کنترل و فعال/غیرفعال‌سازی:</strong>
+        مدیر هر زمان که تمایل داشته باشد می‌تواند با زدن دکمه ضامن (Toggle)، دسترسی لینک یک مشتری را موقتاً قطع یا مجدداً وصل نماید.
+      </div>
+    </section>
+
+    <!-- SECTION 7 -->
+    <section id="section-7" class="chapter">
+      <h2><span class="num-badge">۷</span> تبدیل درخواست به فاکتور و کسر خودکار انبار</h2>
+      <p>
+        پس از اینکه مشتری از طریق کاتالوگ سفارش خود را ثبت کرد، یک اعلان در تب <strong>«درخواست‌های سفارش»</strong> با وضعیت <em>در انتظار بررسی</em> ظاهر می‌شود.
+      </p>
+
+      <h3>مراحل تبدیل و تایید سفارش:</h3>
+      <ol>
+        <li>روی دکمه <strong>«پیش‌نمایش و چاپ»</strong> کلیک کنید تا پیش‌فاکتور مقدماتی را با محاسبه تخفیف و مالیات بررسی فرمایید.</li>
+        <li>در صورت تایید مالی و هماهنگی با خریدار، دکمه <strong>«تایید و صدور فاکتور قطعی»</strong> را بفشارید.</li>
+        <li>سیستم در قالب یک تراکنش اتمیک دیتابیس (<span class="ltr-text">Prisma Transaction</span>):
+          <ul>
+            <li><strong>تفکیک هوشمند اقلام:</strong> موجودی اقلام دپو شده به میزان سفارش از قفسه‌ها کسر و در لاگ گردش انبار ثبت می‌شود؛ اقلام <strong>سفارشی (ساخت بر اساس تقاضا)</strong> به صورت هوشمند از کسر فیزیکی انبار مستثنی شده و بدون خطا در فاکتور نهایی صادر می‌گردند.</li>
+            <li>وضعیت درخواست به <strong>تایید و صادر شده</strong> تغییر می‌یابد.</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+
+    <!-- SECTION 8 -->
+    <section id="section-8" class="chapter">
+      <h2><span class="num-badge">۸</span> تنظیمات سربرگ و قوانین مالیاتی (ماده ۱۶۹)</h2>
+      <p>
+        در تب <strong>«تنظیمات سیستم»</strong> می‌توانید هویت رسمی بنگاه اقتصادی و سربرگ چاپ فاکتورهای رسمی را سفارشی‌سازی فرمایید.
+      </p>
+
+      <div class="table-container avoid-break">
+        <table>
+          <thead>
+            <tr>
+              <th>عنوان فیلد</th>
+              <th>توضیح کاربرد در فاکتور رسمی</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>نام کسب‌وکار / شرکت</strong></td>
+              <td>عنوان چاپ شده در راس سربرگ و مشخصات فروشنده.</td>
+            </tr>
+            <tr>
+              <td><strong>شناسه ملی / کد ملی</strong></td>
+              <td>شناسه ۱۰ یا ۱۱ رقمی ثبت شرکت‌ها یا کد ملی شخص جهت سامانه مودیان.</td>
+            </tr>
+            <tr>
+              <td><strong>کد اقتصادی (ماده ۱۶۹)</strong></td>
+              <td>شماره اقتصادی معتبر اداره کل مالیات جهت صورتحساب رسمی.</td>
+            </tr>
+            <tr>
+              <td><strong>شماره شبا و حساب واریز</strong></td>
+              <td>شماره حساب بانکی مندرج در ذیل پیش‌فاکتور جهت سهولت واریز وجه توسط خریدار.</td>
+            </tr>
+            <tr>
+              <td><strong>درصد مالیات بر ارزش افزوده (VAT)</strong></td>
+              <td>نرخ قانونی (پیش‌فرض ۱۰٪)؛ در صورت صفر بودن فاکتور بدون ارزش افزوده صادر می‌شود.</td>
+            </tr>
+            <tr>
+              <td><strong>مدت اعتبار پیش‌فاکتور</strong></td>
+              <td>تعداد ساعات معتبر بودن قیمت‌های اعلامی (پیش‌فرض ۴۸ ساعت).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip avoid-break">
+        <strong>تبدیل خودکار مبالغ به حروف:</strong>
+        سامانه به موتور تبدیل ارقام فارسی مجهز است؛ به محض محاسبه فاکتور، جمع کل به صورت خودکار به حروف فارسی (مثال: <em>«ده میلیون و چهارصد و پنجاه هزار تومان»</em>) جهت درج در ته چک یا فاکتور ثبت می‌شود.
+      </div>
+    </section>
+
+    <!-- SECTION 9 -->
+    <section id="section-9" class="chapter">
+      <h2><span class="num-badge">۹</span> راهنمای ویژه خریداران و مشتریان (کاتالوگ موبایل)</h2>
+      <p>
+        کاتالوگ سفارش‌گذاری خریداران به صورت واکنش‌گرا و بهینه‌سازی شده برای گوشی‌های تلفن همراه طراحی گردیده است.
+      </p>
+
+      <div class="step-grid avoid-break">
+        <div class="step-card">
+          <div class="step-number">۱</div>
+          <div class="step-title">ورود به لینک کاتالوگ</div>
+          <div class="step-desc">خریدار لینک پیامک یا واتساپ شده را در موبایل لمس کرده و فوراً لیست کالاها را می‌بیند.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۲</div>
+          <div class="step-title">جستجو و فیلتر دسته‌ها</div>
+          <div class="step-desc">با تایپ نام یا سایز کالا، اقلام فیلتر شده و موجودی زنده هر قلم نمایش می‌یابد.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۳</div>
+          <div class="step-title">انتخاب اقلام و تعداد</div>
+          <div class="step-desc">با زدن دکمه‌های + و - تعداد انتخاب می‌شود. کالاهای دپوشده تا سقف موجودی انبار و کالاهای سفارشی به میزان دلخواه بدون محدودیت قابل سفارش هستند.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">۴</div>
+          <div class="step-title">ثبت نهایی و دریافت کد رهگیری</div>
+          <div class="step-desc">خریدار نام و شماره تلفن خود را وارد کرده و با زدن ثبت، کد رهگیری مانند <span class="ltr-text">REQ-1025</span> دریافت می‌کند.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 10 -->
+    <section id="section-10" class="chapter">
+      <h2><span class="num-badge">۱۰</span> کلیدهای میانبر، امنیت و نکات نگهداری سیستم</h2>
+
+      <h3>توصیه‌های امنیتی مدیر سیستم:</h3>
+      <ul>
+        <li><strong>رمزنگاری JWT:</strong> توکن‌های ورود با کلید اختصاصی با طول حداقل ۳۲ کاراکتر رمزنگاری شده و دارای مدت زمان انقضای ۷ روزه هستند. در پایان کار در محیط‌های اشتراکی حتماً از دکمه <strong>«خروج از حساب»</strong> استفاده فرمایید.</li>
+        <li><strong>تله ضداسپم (Honeypot):</strong> فرم کاتالوگ عمومی مجهز به فیلدهای تله ضدربات است که ربات‌های اینترنتی را به شکل خاموش شناسایی و درخواست‌های نامعتبر را بدون بارگذاری در دیتابیس دفع می‌نماید.</li>
+        <li><strong>محدودکننده نرخ درخواست (Rate Limiting):</strong> سامانه از الگوریتم پنجره لغزان برای محافظت در برابر حملات محروم‌سازی سرویس (<span class="ltr-text">DDoS</span>) و خزش اطلاعات کالاها استفاده می‌کند (حداکثر ۶۰ درخواست در دقیقه برای هر <span class="ltr-text">IP</span>).</li>
+      </ul>
+
+      <div class="callout callout-info avoid-break">
+        <strong>حالت نمایش شب و روز (Dark / Light Theme):</strong>
+        جهت کاهش خستگی چشم در محیط‌های کم‌نور انبار در شیفت‌های شبانه، می‌توانید از منوی بالا یا تنظیمات تم، بین حالت تاریک مدرن و حالت روشن روز جابجا شوید.
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="doc-footer">
+      <div>طراحی و توسعه یافته با معماری نسل جدید ابری • انبار</div>
+      <div>مستندات استاندارد کاربری و عملیاتی سامانه • صفحه رسمی نگهداری</div>
+    </footer>
+
+  </main>
+
+</body>
+</html>

@@ -825,8 +825,8 @@
     "semantic_hash": ""
   },
   "src/app/login/page.tsx": {
-    "mtime": 1790453899.1141157,
-    "ast_hash": "78f77af81ee8b302191d7e13a3a2d2d5",
+    "mtime": 1790525461.038124,
+    "ast_hash": "4355b16ae3e954a425790cab672e0026",
     "semantic_hash": ""
   },
   "src/context/AuthContext.tsx": {
@@ -930,13 +930,13 @@
     "semantic_hash": ""
   },
   "docs/user-guide.html": {
-    "mtime": 1790522585.3339605,
-    "ast_hash": "1185de57b36975c8fc1cc843d00741d3",
+    "mtime": 1790525673.1605673,
+    "ast_hash": "027d91caac4239cebdd7bc5ccb7fbd3f",
     "semantic_hash": ""
   },
   "docs/user-guide.md": {
-    "mtime": 1790522612.1246047,
-    "ast_hash": "4904131f8a3e1a79fbf9336d99b3409d",
+    "mtime": 1790525766.3504486,
+    "ast_hash": "859f214f778f659e88ad519f7114cd62",
     "semantic_hash": ""
   },
   "prisma/migrations/20260927154453_add_made_to_order_fields_to_product/migration.sql": {

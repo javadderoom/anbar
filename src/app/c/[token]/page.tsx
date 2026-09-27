@@ -16,6 +16,7 @@ import {
   Sparkles,
   Loader2,
   PackageOpen,
+  HelpCircle,
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -184,6 +185,16 @@ export default function ClientCatalogPage({
           </div>
 
           <div className="flex items-center gap-2">
+            <a
+              href="/docs/client-guide.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="راهنمای ثبت سفارش و چاپ PDF"
+              className="text-xs text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200 flex items-center gap-1 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-1.5 rounded-lg border border-amber-500/30 transition-colors"
+            >
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span className="hidden xs:inline sm:inline">راهنما</span>
+            </a>
             <ThemeToggle />
             <Link
               href="/"

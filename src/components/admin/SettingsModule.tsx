@@ -13,6 +13,8 @@ import {
   Check,
   ShieldCheck,
   Download,
+  BookOpen,
+  ExternalLink,
 } from 'lucide-react';
 import { useTheme } from '@/components/ThemeProvider';
 import { WarehouseSettingsSchema } from '@/lib/validations';
@@ -373,7 +375,62 @@ export default function SettingsModule() {
         </div>
       </div>
 
-      {/* SECTION 4: Data & Backup */}
+      {/* SECTION 4: Documentation & Guides */}
+      <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm">
+        <div className="space-y-1">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-amber-500" />
+            <span>مستندات و راهنمای سامانه</span>
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            مشاهده آنلاین و دانلود نسخه قابل چاپ (PDF) راهنماهای سامانه
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <a
+            href="/docs/user-guide.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all group"
+          >
+            <div className="flex items-center gap-2.5">
+              <FileText className="w-4 h-4 text-amber-500" />
+              <div>
+                <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                  راهنمای جامع مدیران و انبارداری
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                  آموزش انبارگردانی، صدور فاکتور و تنظیمات
+                </div>
+              </div>
+            </div>
+            <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition-colors" />
+          </a>
+
+          <a
+            href="/docs/client-guide.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-amber-500/50 hover:bg-amber-500/5 transition-all group"
+          >
+            <div className="flex items-center gap-2.5">
+              <Warehouse className="w-4 h-4 text-emerald-500" />
+              <div>
+                <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                  راهنمای خریداران و کاتالوگ آنلاین
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                  آموزش استعلام، کالاهای سفارشی و ثبت سبد
+                </div>
+              </div>
+            </div>
+            <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition-colors" />
+          </a>
+        </div>
+      </div>
+
+      {/* SECTION 5: Data & Backup */}
       <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
         <div className="space-y-1">
           <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
