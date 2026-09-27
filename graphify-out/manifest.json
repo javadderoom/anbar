@@ -375,8 +375,8 @@
     "semantic_hash": ""
   },
   "src/app/page.tsx": {
-    "mtime": 1790448688.658408,
-    "ast_hash": "7d47ab5831adfe940543e71798d4b5f5",
+    "mtime": 1790541444.9043322,
+    "ast_hash": "c716ec68d2ca20f2cbecbc9630685263",
     "semantic_hash": ""
   },
   "src/components/InvoicePrintModal.tsx": {
@@ -410,8 +410,8 @@
     "semantic_hash": ""
   },
   "src/components/admin/AdminSidebar.tsx": {
-    "mtime": 1790454013.7610924,
-    "ast_hash": "4906760c8857c6c0b4e29146e2ff45af",
+    "mtime": 1790541412.3874488,
+    "ast_hash": "b677abda43d8ac110ff9678204c56d5a",
     "semantic_hash": ""
   },
   "src/components/admin/ClientLinksModule.tsx": {

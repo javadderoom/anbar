@@ -81,7 +81,7 @@ export default function Home() {
             </Link>
             <Link
               href="/c/demo"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-semibold transition-all hover:border-slate-400 dark:hover:border-slate-700 active:scale-98 shadow-sm"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-semibold transition-all hover:border-slate-400 dark:hover:border-slate-700 active:scale-98 shadow-sm"
             >
               <span>مشاهده نمونه لینک مشتری (موبایل)</span>
               <Smartphone className="w-4 h-4 text-amber-500 dark:text-amber-400" />

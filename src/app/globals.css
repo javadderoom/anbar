@@ -17,6 +17,8 @@
   --font-sans: var(--font-sans);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-slate-750: #253347;
+  --color-slate-850: #172033;
 }
 
 body {
