@@ -928,5 +928,15 @@
     "mtime": 1790521587.4494464,
     "ast_hash": "cda0dbf7d102de67a6688fd8787c18c4",
     "semantic_hash": ""
+  },
+  "docs/user-guide.html": {
+    "mtime": 1790522585.3339605,
+    "ast_hash": "1185de57b36975c8fc1cc843d00741d3",
+    "semantic_hash": ""
+  },
+  "docs/user-guide.md": {
+    "mtime": 1790522612.1246047,
+    "ast_hash": "4904131f8a3e1a79fbf9336d99b3409d",
+    "semantic_hash": ""
   }
 }

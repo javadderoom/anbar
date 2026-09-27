@@ -159,6 +159,8 @@
   "157": "tailwind-merge",
   "158": "tailwindcss",
   "159": "pg",
+  "160": "resolveWorkspaceProjectRoot",
   "161": "@tanstack/react-query",
-  "162": "Phase 2: Client State Management & Cache Synchronization (TanStack Query v5)"
+  "162": "Phase 2: Client State Management & Cache Synchronization (TanStack Query v5)",
+  "163": "checkHeroEyebrow"
 }
