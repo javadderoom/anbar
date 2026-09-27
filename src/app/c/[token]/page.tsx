@@ -52,6 +52,7 @@ export default function ClientCatalogPage({
   const [clientName, setClientName] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [clientNotes, setClientNotes] = useState('');
+  const [honeypot, setHoneypot] = useState('');
 
   const token = unwrappedParams?.token ?? 'demo';
   const isDemo = token === 'demo';
@@ -137,6 +138,7 @@ export default function ClientCatalogPage({
       clientName: clientName.trim(),
       clientPhone: clientPhone.trim(),
       notes: clientNotes.trim() || undefined,
+      hp_company: honeypot.trim() || undefined,
       items,
     });
 
@@ -461,6 +463,20 @@ export default function ClientCatalogPage({
 
             {/* Quick Contact Form */}
             <form onSubmit={handleSubmitRequest} className="space-y-3 pt-2">
+              {/* Invisible Honeypot Anti-Spam Trap */}
+              <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
+                <label htmlFor="hp_company">لطفاً این فیلد را خالی بگذارید</label>
+                <input
+                  type="text"
+                  id="hp_company"
+                  name="hp_company"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </div>
+
               <div>
                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                   نام و نام خانوادگی / نام شرکت

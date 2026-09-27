@@ -4,6 +4,12 @@ import prisma from '@/lib/prisma';
 import { hashPassword, verifyPassword, signSessionToken, SESSION_COOKIE_NAME, type AuthUser } from '@/lib/auth';
 import { UserRole } from '@/lib/permissions';
 import { handleApiError, apiSuccess } from '@/lib/api-response';
+import {
+  checkRateLimit,
+  getClientIp,
+  RATE_LIMIT_PRESETS,
+  rateLimitExceededResponse,
+} from '@/lib/rate-limit';
 
 const LoginSchema = z.object({
   email: z.string().trim().email('ایمیل وارد شده نامعتبر است'),
@@ -12,6 +18,16 @@ const LoginSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    // Brute-force protection: 5 attempts per 15 minutes per IP
+    const clientIp = getClientIp(request);
+    const rateLimit = await checkRateLimit(`login:${clientIp}`, RATE_LIMIT_PRESETS.AUTH_LOGIN);
+    if (!rateLimit.success) {
+      return rateLimitExceededResponse(
+        rateLimit,
+        'تعداد تلاش‌های ناموفق ورود بیش از حد مجاز است. به دلایل امنیتی، ورود به مدت ۱۵ دقیقه مسدود موقت شد.'
+      );
+    }
+
     const body = await request.json();
     const { email, password } = LoginSchema.parse(body);
 

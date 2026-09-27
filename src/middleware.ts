@@ -1,5 +1,12 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
+import {
+  checkRateLimit,
+  getClientIp,
+  RATE_LIMIT_PRESETS,
+  rateLimitExceededResponse,
+  withRateLimitHeaders,
+} from '@/lib/rate-limit';
 
 const SESSION_COOKIE_NAME = 'anbar_session';
 const JWT_SECRET_STRING = process.env.JWT_SECRET || 'anbar_default_secure_key_32_characters_long_min!';
@@ -41,9 +48,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/admin', request.url));
   }
 
-  // Public customer catalog routes (/c/[token])
+  // Public customer catalog routes (/c/[token]) with scraper rate limiting (60 req/min)
   if (pathname.startsWith('/c/')) {
-    return NextResponse.next();
+    const clientIp = getClientIp(request);
+    const rateLimit = await checkRateLimit(`catalog:${clientIp}`, RATE_LIMIT_PRESETS.CATALOG_BROWSE);
+    if (!rateLimit.success) {
+      return rateLimitExceededResponse(
+        rateLimit,
+        'تعداد درخواست‌های مشاهده کاتالوگ بیش از حد مجاز است. لطفاً یک دقیقه دیگر مراجعه نمایید.'
+      );
+    }
+    const res = NextResponse.next();
+    return withRateLimitHeaders(res, rateLimit);
   }
 
   // Public customer order submission API (POST /api/requests) & catalog products (GET /api/products)

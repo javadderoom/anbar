@@ -2,6 +2,13 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { CreateOrderRequestSchema } from '@/lib/validations';
 import { handleApiError, apiSuccess } from '@/lib/api-response';
+import {
+  checkRateLimit,
+  getClientIp,
+  RATE_LIMIT_PRESETS,
+  rateLimitExceededResponse,
+  withRateLimitHeaders,
+} from '@/lib/rate-limit';
 
 // GET /api/requests - list all incoming requests
 export async function GET() {
@@ -56,8 +63,30 @@ export async function GET() {
 // POST /api/requests - client submits an order request with Zod validation
 export async function POST(request: Request) {
   try {
+    // 1. IP Sliding Window Rate Limiting (5 quotes per 10 minutes)
+    const clientIp = getClientIp(request);
+    const rateLimit = await checkRateLimit(`quote:${clientIp}`, RATE_LIMIT_PRESETS.QUOTE_SUBMIT);
+    if (!rateLimit.success) {
+      return rateLimitExceededResponse(
+        rateLimit,
+        'تعداد استعلام‌های ارسالی شما بیش از حد مجاز است. لطفاً پس از ۱۰ دقیقه دوباره تلاش فرمایید.'
+      );
+    }
+
     const body = await request.json();
     const validated = CreateOrderRequestSchema.parse(body);
+
+    // 2. Invisible Honeypot Anti-Spam Trap
+    if (validated.hp_company && validated.hp_company.trim().length > 0) {
+      // Discard bot submission silently without database write
+      const fakeOrder = {
+        id: 'bot-discarded',
+        orderNumber: 'REQ-1000',
+        clientName: validated.clientName,
+        status: 'PENDING',
+      };
+      return withRateLimitHeaders(apiSuccess(fakeOrder, 201), rateLimit);
+    }
 
     // Find link if provided
     let link = null;
@@ -101,7 +130,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return apiSuccess(newOrder, 201);
+    return withRateLimitHeaders(apiSuccess(newOrder, 201), rateLimit);
   } catch (error) {
     return handleApiError(error);
   }

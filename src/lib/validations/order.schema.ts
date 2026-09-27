@@ -27,6 +27,7 @@ export const CreateOrderRequestSchema = z.object({
     .min(8, 'شماره تماس باید حداقل ۸ رقم باشد')
     .max(25, 'شماره تماس نامعتبر است'),
   notes: z.string().trim().max(1000, 'توضیحات حداکثر ۱۰۰۰ کاراکتر است').optional().nullable(),
+  hp_company: z.string().optional(), // Invisible anti-spam honeypot field
   items: z
     .array(OrderItemSchema)
     .min(1, 'حداقل یک قلم کالا باید برای ثبت پیش‌فاکتور انتخاب شود'),
