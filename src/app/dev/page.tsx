@@ -52,7 +52,7 @@ export default function DevDocsPage() {
     { id: 'sec-database', title: '۳. دیتابیس Neon Serverless', badge: 'Postgres' },
     { id: 'sec-orm', title: '۴. لایه داده Prisma 7', badge: 'Adapter-PG' },
     { id: 'sec-auth', title: '۵. سیستم دسترسی بیت‌ماسک', badge: 'Bitmask' },
-    { id: 'sec-jwt', title: '۶. سشن و رمزنگاری کلمات عبور', badge: 'JWT HttpOnly' },
+    { id: 'sec-jwt', title: '۶. مدیریت سشن در فرانت‌اند و JWT', badge: 'AuthContext' },
     { id: 'sec-concurrency', title: '۷. همزمانی و کسر اتمیک انبار', badge: 'Atomic' },
     { id: 'sec-custom-items', title: '۸. اقلام سفارشی (MTO)', badge: 'Lead Time' },
     { id: 'sec-catalog', title: '۹. کاتالوگ عمومی بدون اصطکاک', badge: 'Tokenized' },
@@ -404,22 +404,136 @@ export default function DevDocsPage() {
             </div>
           </section>
 
-          {/* SECTION 6: JWT & Session */}
-          <section id="sec-jwt" className="scroll-mt-24 space-y-4">
+          {/* SECTION 6: JWT & Frontend Session Management */}
+          <section id="sec-jwt" className="scroll-mt-24 space-y-5">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-black text-xs">۶</span>
-                <span>مدیریت سشن، رمزنگاری و توکن‌های JWT</span>
+                <span>مدیریت سشن در فرانت‌اند و معماری احراز هویت (Frontend Session Lifecycle)</span>
               </h3>
               <span className="text-[11px] px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-mono font-semibold" dir="ltr">
-                HttpOnly Cookie
+                AuthContext + HttpOnly
               </span>
             </div>
 
-            <ul className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-2 leading-relaxed">
-              <li><strong>رمزنگاری Bcrypt:</strong> تمام کلمات عبور با ۱۰ دور نمک‌پاشی استاندارد هش شده و هرگز در هیچ رخداد یا دیتابیسی به صورت متن آشکار ذخیره نمی‌گردند.</li>
-              <li><strong>کوکی‌های امن با فلگ HttpOnly و SameSite=Lax:</strong> توکن‌ها در داخل کوکی‌های محافظت‌شده قرار دارند تا دسترسی جاوااسکریپت و امکان سرقت از طریق حملات XSS ناممکن شود.</li>
-              <li><strong>راه‌اندازی اولیه خودکار (Auto-Bootstrap):</strong> در بدو راه‌اندازی دیتابیس نو، سیستم نخستین کاربری که فرم ورود را تکمیل کند به صورت خودکار به عنوان سوپرادمین (Role: 255) ایجاد می‌نماید تا هیچ پسورد هاردکدشده‌ای در پروژه وجود نداشته باشد.</li>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed text-justify">
+              مدیریت نشست‌های کاربری (Session Management) در فرانت‌اند انبار طبق رویکرد <strong>«امنیت لایه‌ای بدون ریدیس (Layered Zero-Trust Architecture)»</strong> پیاده شده است. هیچ توکنی در <code className="font-mono text-amber-500">localStorage</code> ذخیره نمی‌شود و فرانت‌اند از طریق کوکی‌های امن با سرور همگام است.
+            </p>
+
+            {/* 3-Layer Pipeline Card */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400">
+                  <Lock className="w-4 h-4" />
+                  <span>لایه ۱: کوکی HttpOnly</span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                  توکن JWT در کوکی <code className="font-mono text-amber-500">anbar_session</code> با فلگ‌های <code className="font-mono text-blue-500">httpOnly: true</code>، <code className="font-mono text-blue-500">SameSite: 'lax'</code> و <code className="font-mono text-blue-500">Secure</code> قرار دارد. کد جاوااسکریپت فرانت‌اند به این کوکی دسترسی خواندن ندارد، بنابراین حملات XSS توانایی سرقت سشن را ندارند.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400">
+                  <Server className="w-4 h-4" />
+                  <span>لایه ۲: پراکسی رهگیر (src/proxy.ts)</span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                  پیش از رندر هر صفحه در Next.js، فایل <code className="font-mono text-amber-500">proxy.ts</code> کوکی ورودی را رهگیری و با کلید محرمانه ۵۱۲ بیتی بررسی می‌کند. اگر کاربر بدون سشن به <code className="font-mono">/admin</code> برود، در لایه سرور فوراً به <code className="font-mono">/login</code> هدایت (Redirect) می‌شود.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>لایه ۳: کانتکست React (AuthContext)</span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                  هوک <code className="font-mono text-emerald-500">useAuth()</code> مشخصات کاربر احرازشده (<code className="font-mono">id, email, role</code>) را به صورت در-حافظه (In-Memory) نگهداری کرده و متدهای ارزیابی سریع بیت‌ماسک (<code className="font-mono">can, canAny, canAll</code>) را به تمام اجزای UI ارائه می‌دهد.
+                </p>
+              </div>
+            </div>
+
+            {/* Step-by-Step Lifecycle Flow */}
+            <div className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+              <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <GitBranch className="w-4 h-4 text-amber-500" />
+                <span>چرخه حیات سشن در فرانت‌اند (Lifecycle Step-by-Step)</span>
+              </h4>
+              <ol className="text-xs text-slate-600 dark:text-slate-300 space-y-2.5 list-decimal list-inside leading-relaxed">
+                <li>
+                  <strong>بارگذاری اولیه صفحه (Bootstrapping):</strong> در هنگام مانت شدن کامپوننت ریشه در <code className="font-mono text-amber-500">src/app/layout.tsx</code>، هوک <code className="font-mono">useEffect</code> متد <code className="font-mono text-blue-500">refreshUser()</code> را فراخوانی می‌کند.
+                </li>
+                <li>
+                  <strong>احراز هویت بدون ارسال توکن دستی (Automatic Cookie Transport):</strong> تابع <code className="font-mono">refreshUser</code> یک درخواست <code className="font-mono">GET /api/auth/me</code> ارسال می‌کند. مرورگر کوکی HttpOnly را به شکل خودکار ضمیمه می‌کند (نیازی به ارسال دستی <code className="font-mono">Bearer Token</code> در هدرها نیست).
+                </li>
+                <li>
+                  <strong>تزریق استیت در حافظه (Hydration):</strong> در صورت معتبر بودن کوکی، پاسخ شامل آبجکت کاربر بوده و متغیر <code className="font-mono">user</code> و نقش عددی <code className="font-mono">role</code> مقداردهی می‌شوند. متغیر <code className="font-mono">isLoading</code> روی <code className="font-mono">false</code> قرار می‌گیرد.
+                </li>
+                <li>
+                  <strong>کنترل دسترسی المان‌های صفحه (Permission Gate):</strong> کامپوننت‌های فرانت‌اند با استفاده از کامپوننت <code className="font-mono text-emerald-500">&lt;PermissionGate&gt;</code> یا شرط‌های <code className="font-mono">can(Permission.STOCK_MOVE)</code> دکمه‌ها و منوهای مجاز را نمایش می‌دهند.
+                </li>
+                <li>
+                  <strong>فرآیند خروج امن (Logout):</strong> کاربر با فشردن دکمه خروج، متد <code className="font-mono text-rose-500">logout()</code> را اجرا می‌کند؛ یک درخواست <code className="font-mono">POST /api/auth/logout</code> ارسال شده، کوکی سمت سرور با <code className="font-mono">maxAge: 0</code> باطل می‌شود، استیت فرانت‌اند پاک شده و با <code className="font-mono">router.push('/login')</code> به صفحه ورود هدایت می‌گردد.
+                </li>
+              </ol>
+            </div>
+
+            {/* Code Snippet for PermissionGate */}
+            <div className="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs border border-slate-800 leading-relaxed overflow-x-auto" dir="ltr">
+              <div className="text-slate-500">// Example: Declarative UI Gate using In-Memory Session in Frontend</div>
+              <span className="text-purple-400">import</span> &#123; useAuth, PermissionGate &#125; <span className="text-purple-400">from</span> <span className="text-amber-300">'@/context/AuthContext'</span>;<br />
+              <span className="text-purple-400">import</span> &#123; Permission &#125; <span className="text-purple-400">from</span> <span className="text-amber-300">'@/lib/permissions'</span>;<br /><br />
+              <span className="text-purple-400">function</span> <span className="text-blue-400">InventoryActions</span>() &#123;<br />
+              &nbsp;&nbsp;<span className="text-purple-400">const</span> &#123; user, can &#125; = useAuth();<br /><br />
+              &nbsp;&nbsp;<span className="text-purple-400">return</span> (<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&lt;<span className="text-emerald-400">div</span>&gt;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span className="text-emerald-400">span</span>&gt;کاربر فعال: &#123;user?.name&#125;&lt;/<span className="text-emerald-400">span</span>&gt;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span className="text-blue-400">PermissionGate</span> permission=&#123;Permission.CREATE_EDIT&#125;&gt;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span className="text-emerald-400">button</span>&gt;افزودن کالای جدید&lt;/<span className="text-emerald-400">button</span>&gt;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span className="text-blue-400">PermissionGate</span>&gt;<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span className="text-emerald-400">div</span>&gt;<br />
+              &nbsp;&nbsp;);<br />
+              &#125;
+            </div>
+
+            {/* Comparison Box: LocalStorage vs HttpOnly */}
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 shadow-sm">
+              <table className="w-full text-right text-xs">
+                <thead>
+                  <tr className="bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white">
+                    <th className="p-3.5 font-bold">معیار مقایسه</th>
+                    <th className="p-3.5 font-bold text-emerald-600 dark:text-emerald-400">معماری انبار (HttpOnly Cookie + React State)</th>
+                    <th className="p-3.5 font-bold text-rose-600 dark:text-rose-400">روش رایج سنتی (LocalStorage Bearer Token)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
+                  <tr>
+                    <td className="p-3.5 font-bold text-slate-900 dark:text-white">مقاومت در برابر سرقت با XSS</td>
+                    <td className="p-3.5 text-emerald-600 dark:text-emerald-400 font-semibold">۱۰۰٪ مصون (جاوااسکریپت امکان دسترسی به کوکی ندارد)</td>
+                    <td className="p-3.5 text-rose-600 dark:text-rose-400">آسیب‌پذیر شدید (هر اسکریپت آلوده توکن را می‌دزدد)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3.5 font-bold text-slate-900 dark:text-white">سربار کدنویسی کلاینت</td>
+                    <td className="p-3.5">صفر (مرورگر خودکار کوکی را در تمام درخواست‌ها الصاق می‌کند)</td>
+                    <td className="p-3.5">بالا (الزام به پیاده‌سازی اینترسپتور Axios یا هدر Bearer در تمام Fetch ها)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3.5 font-bold text-slate-900 dark:text-white">محافظت CSRF</td>
+                    <td className="p-3.5">تضمین‌شده با فلگ <code className="font-mono">SameSite: 'lax'</code> و اعتبارسنجی مبدا</td>
+                    <td className="p-3.5">حملات مستقیم هدر را دفع می‌کند اما در برابر XSS بی‌دفاع است</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3.5 font-bold text-slate-900 dark:text-white">سربار باندل کلاینت</td>
+                    <td className="p-3.5">کمتر از ۲ کیلوبایت (کد خالص هوک‌های بومی React بدون کتابخانه حجیم)</td>
+                    <td className="p-3.5">بیش از ۱۰۰ کیلوبایت در پکیج‌های سنگین مانند NextAuth یا Firebase SDK</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <ul className="text-xs text-slate-600 dark:text-slate-300 space-y-1.5 leading-relaxed pt-2">
+              <li><strong>رمزنگاری پسوردها در بک‌اند:</strong> تمام کلمات عبور با ۱۰ دور نمک‌پاشی استاندارد <code className="font-mono text-amber-500">bcryptjs</code> ذخیره می‌شوند.</li>
+              <li><strong>راه‌اندازی اولیه بدون پسورد پیش‌فرض (Auto-Bootstrap):</strong> در بدو راه‌اندازی، نخستین کاربری که ثبت‌نام کند خودکار مدیر کل (Role: 255) می‌شود.</li>
             </ul>
           </section>
 

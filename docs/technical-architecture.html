@@ -1125,18 +1125,87 @@ export const db = new PrismaClient({ adapter });</pre>
         <div class="section-header">
           <h2 class="section-title">
             <span class="section-num">۶</span>
-            <span>مدیریت سشن، رمزنگاری کلمات عبور و توکن‌های JWT</span>
+            <span>مدیریت سشن در فرانت‌اند و معماری احراز هویت (Frontend Session Lifecycle)</span>
           </h2>
-          <span class="tech-pill">Authentication Layer</span>
+          <span class="tech-pill">AuthContext + HttpOnly</span>
         </div>
         <p>
-          سامانه از رویکرد <strong>Stateless Authentication</strong> با توکن‌های JWT امضاشده و ذخیره‌سازی در کوکی‌های امن استفاده می‌کند.
+          مدیریت نشست‌های کاربری (Session Management) در فرانت‌اند انبار طبق رویکرد <strong>«امنیت لایه‌ای بدون ریدیس (Layered Zero-Trust Architecture)»</strong> پیاده شده است. هیچ توکنی در <span class="ltr-inline">localStorage</span> ذخیره نمی‌شود و فرانت‌اند از طریق کوکی‌های امن با سرور همگام است.
         </p>
-        <ul>
-          <li><strong>رمزنگاری پسوردها:</strong> استفاده از لایبرری استاندارد <span class="ltr-inline">bcryptjs</span> با ۱۰ دور نمک‌پاشی (<span class="ltr-inline">10 salt rounds</span>). به این ترتیب در صورت افشای پایگاه داده، پسوردها به دلیل ماهیت یک‌طرفه هش قابل بازیابی نیستند.</li>
-          <li><strong>کوکی‌های امن HttpOnly:</strong> توکن ورود داخل کوکی با فلگ‌های <span class="ltr-inline">httpOnly: true</span> و <span class="ltr-inline">SameSite: 'lax'</span> قرار می‌گیرد تا حملات اسکریپت‌نویسی متقاطع (XSS) امکان دسترسی و سرقت توکن را از طریق کد جاوااسکریپت نداشته باشند.</li>
-          <li><strong>پروتکل راه‌اندازی اولیه بدون پسورد هاردکد (Auto-Bootstrapping):</strong> هیچ پسورد کارخانه‌ای درون کدها وجود ندارد. دیتابیس در اولین بارگذاری چک می‌کند؛ اگر هیچ کاربری وجود نداشت، اولین کاربری که ثبت‌نام کند خودبه‌خود با دسترسی ۲۵۵ به عنوان مدیر کل کلید می‌خورد.</li>
-        </ul>
+
+        <!-- 3-Layer Architecture Cards -->
+        <div class="decision-grid">
+          <div class="decision-card">
+            <span class="card-badge badge-primary">لایه ۱: کوکی HttpOnly امن</span>
+            <h3 class="card-title">مصونیت ۱۰۰٪ در برابر حملات XSS</h3>
+            <p class="card-desc">
+              توکن JWT در کوکی <span class="ltr-inline">anbar_session</span> با فلگ‌های <span class="ltr-inline">httpOnly: true</span>، <span class="ltr-inline">SameSite: 'lax'</span> و <span class="ltr-inline">Secure</span> ذخیره می‌شود. کد جاوااسکریپت فرانت‌اند به این کوکی دسترسی خواندن ندارد، بنابراین اسکریپت‌های مخرب تحت هیچ شرایطی امکان سرقت سشن را ندارند.
+            </p>
+          </div>
+
+          <div class="decision-card">
+            <span class="card-badge badge-primary">لایه ۲: پراکسی رهگیر (src/proxy.ts)</span>
+            <h3 class="card-title">گارد سرورلس پیش از رندر صفحات</h3>
+            <p class="card-desc">
+              پیش از رندر هر صفحه در Next.js، فایل <span class="ltr-inline">proxy.ts</span> کوکی ورودی را رهگیری و با کلید محرمانه ۵۱۲ بیتی با کتابخانه <span class="ltr-inline">jose</span> اعتبارسنجی می‌کند. کاربر احرازنشده به مسیرهای حفاظت‌شده مانند <span class="ltr-inline">/admin</span> در کسری از میلی‌ثانیه به <span class="ltr-inline">/login</span> ریدایرکت می‌شود.
+            </p>
+          </div>
+
+          <div class="decision-card">
+            <span class="card-badge badge-primary">لایه ۳: کانتکست React (AuthContext)</span>
+            <h3 class="card-title">مدیریت سشن در حافظه (In-Memory State)</h3>
+            <p class="card-desc">
+              هوک <span class="ltr-inline">useAuth()</span> مشخصات کاربر (<span class="ltr-inline">id, email, role</span>) را در وضعیت داخلی React ذخیره نموده و توابع ارزیابی سریع بیت‌ماسک (<span class="ltr-inline">can, canAny, canAll</span>) را به تمامی کامپوننت‌های پنل مدیریت تزریق می‌کند.
+            </p>
+          </div>
+        </div>
+
+        <!-- Lifecycle Step-by-Step Callout -->
+        <div class="callout callout-blue">
+          <strong>چرخه حیات سشن در فرانت‌اند (Frontend Session Step-by-Step):</strong>
+          <ol style="margin-top: 8px;">
+            <li><strong>بارگذاری اولیه صفحه (Bootstrapping):</strong> در هنگام مانت شدن کامپوننت ریشه، هوک <span class="ltr-inline">useEffect</span> متد <span class="ltr-inline">refreshUser()</span> را فراخوانی می‌کند.</li>
+            <li><strong>احراز هویت بدون ارسال توکن دستی (Automatic Transport):</strong> تابع <span class="ltr-inline">refreshUser</span> یک درخواست <span class="ltr-inline">GET /api/auth/me</span> ارسال می‌کند. مرورگر کوکی HttpOnly را به شکل خودکار در هدر ضمیمه می‌نماید.</li>
+            <li><strong>تزریق استیت در حافظه (Hydration):</strong> پس از تایید سرور، مشخصات کاربر و نقش عددی بیت‌ماسک بارگذاری شده و فلگ <span class="ltr-inline">isLoading</span> به <span class="ltr-inline">false</span> تغییر می‌یابد.</li>
+            <li><strong>کنترل دسترسی المان‌ها (&lt;PermissionGate&gt;):</strong> کامپوننت‌های واسط کاربری با بهره‌گیری از بیت‌ماسک‌ها و گیت اختصاصی <span class="ltr-inline">&lt;PermissionGate permission={Permission.STOCK_MOVE}&gt;</span> دکمه‌ها و فرم‌ها را مشروط می‌سازند.</li>
+            <li><strong>خروج امن (Sign-Out):</strong> متد <span class="ltr-inline">logout()</span> درخواست <span class="ltr-inline">POST /api/auth/logout</span> را صادر کرده، کوکی در سمت سرور با <span class="ltr-inline">maxAge: 0</span> باطل می‌شود، استیت فرانت‌اند پاک شده و کاربر به <span class="ltr-inline">/login</span> هدایت می‌گردد.</li>
+          </ol>
+        </div>
+
+        <!-- Comparison Table: LocalStorage vs HttpOnly -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>معیار ارزیابی امنیت و فرانت‌اند</th>
+                <th>رویکرد سامانه انبار (HttpOnly Cookie + React State)</th>
+                <th>رویکرد سنتی (LocalStorage Bearer Token)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>مقاومت در برابر سرقت با XSS</strong></td>
+                <td><span class="pro-tag">✓ ۱۰۰٪ مصون:</span> جاوااسکریپت امکان خواندن کوکی HttpOnly را ندارد.</td>
+                <td><span class="con-tag">! آسیب‌پذیر بحرانی:</span> هر اسکریپت آلوده یا پکیج npm مخرب توکن را سرقت می‌کند.</td>
+              </tr>
+              <tr>
+                <td><strong>سربار کدنویسی در درخواست‌های API</strong></td>
+                <td><span class="pro-tag">✓ صفر:</span> مرورگر خودبه‌خود کوکی را در تمام فراخوانی‌های fetch الصاق می‌نماید.</td>
+                <td><span class="con-tag">! بالا:</span> الزام به ساخت Interceptor در Axios یا الحاق دستی هدر Bearer در هر کوئری.</td>
+              </tr>
+              <tr>
+                <td><strong>محافظت در برابر CSRF</strong></td>
+                <td><span class="pro-tag">✓ تضمین‌شده:</span> با فلگ <span class="ltr-inline">SameSite: 'lax'</span> مرورگر اجازه ارسال کراس-سایت را نمی‌دهد.</td>
+                <td>در برابر CSRF امن است اما در برابر XSS کلاً بی‌دفاع است.</td>
+              </tr>
+              <tr>
+                <td><strong>سربار حجم باندل جاوااسکریپت</strong></td>
+                <td><span class="pro-tag">✓ کمتر از ۲ کیلوبایت:</span> کد کاملاً بومی بر پایه هوک‌های React.</td>
+                <td><span class="con-tag">! بالای ۱۰۰ کیلوبایت:</span> پکیج‌های سنگین SDK نظیر Auth.js یا Firebase.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <!-- SECTION 7 -->

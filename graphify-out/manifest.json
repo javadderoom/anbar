@@ -960,18 +960,18 @@
     "semantic_hash": ""
   },
   "src/app/dev/page.tsx": {
-    "mtime": 1790539960.3816178,
-    "ast_hash": "a90e1e8ea91e48196bd98deb97c1b8e4",
+    "mtime": 1790543186.3052287,
+    "ast_hash": "50db4065e3030573588ae9b97bfef00d",
     "semantic_hash": ""
   },
   "docs/technical-architecture.html": {
-    "mtime": 1790539535.3039658,
-    "ast_hash": "2b8717e193bf6931c3b930afd934c526",
+    "mtime": 1790543517.047044,
+    "ast_hash": "d81b71f5bcdc9bcbdad9d7c85e8a6936",
     "semantic_hash": ""
   },
   "public/docs/technical-architecture.html": {
-    "mtime": 1790539535.3039658,
-    "ast_hash": "2b8717e193bf6931c3b930afd934c526",
+    "mtime": 1790543517.047044,
+    "ast_hash": "d81b71f5bcdc9bcbdad9d7c85e8a6936",
     "semantic_hash": ""
   },
   "src/proxy.ts": {
